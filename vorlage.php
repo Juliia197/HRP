@@ -1,8 +1,8 @@
 <?php
-$servername = "dedivirt720.your-server.de";
-$username = "hrppr_1";
-$password = "J49Wj7wUbSsKmNC5";
-$dbname = "hrppr_db1";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "dhbw";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
