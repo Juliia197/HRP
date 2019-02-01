@@ -1,3 +1,76 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+
+$gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_user=1 LIMIT 1";
+$gehoeft_name_result = $conn->query($gehoeft_name_sql);
+
+$gehoeft_adresse_sql = "SELECT * FROM adresse WHERE id_gehoeft=1 LIMIT 1";
+$gehoeft_adresse_result = $conn->query($gehoeft_adresse_sql);
+
+$anzahl_paddockbox_sql = "SELECT COUNT(id_box) as anzahl_paddockbox FROM box WHERE id_gehoeft=1 AND id_boxentyp=2";
+$anzahl_paddockbox_result = $conn->query($anzahl_paddockbox_sql);
+if ($anzahl_paddockbox_result->num_rows > 0) {
+  while($row = $anzahl_paddockbox_result->fetch_assoc()) {
+    $anzahl_paddockbox = $row["anzahl_paddockbox"];
+  }
+}
+
+$anzahl_innenbox_sql = "SELECT COUNT(id_box) as anzahl_innenbox FROM box WHERE id_gehoeft=1 AND id_boxentyp=1";
+$anzahl_innenbox_result = $conn->query($anzahl_innenbox_sql);
+if ($anzahl_innenbox_result->num_rows > 0) {
+  while($row = $anzahl_innenbox_result->fetch_assoc()) {
+    $anzahl_innenbox = $row["anzahl_innenbox"];
+  }
+}
+
+$anzahl_boxbelegt_sql = "SELECT COUNT(pferd.id_box) as anzahl_belegt, box.id_gehoeft FROM pferd, box WHERE id_gehoeft=1 AND pferd.id_box = box.id_box";
+$anzahl_boxbelegt_result = $conn->query($anzahl_boxbelegt_sql);
+if ($anzahl_boxbelegt_result->num_rows > 0) {
+  while($row = $anzahl_boxbelegt_result->fetch_assoc()) {
+    $anzahl_boxbelegt = $row["anzahl_belegt"];
+  }
+}
+
+$anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=1";
+$anzahl_boxfrei_result = $conn->query($anzahl_boxfrei_sql);
+if ($anzahl_boxfrei_result->num_rows > 0) {
+  while($row = $anzahl_boxfrei_result->fetch_assoc()) {
+    $anzahl_boxfrei = $row["anzahl_frei"]-$anzahl_boxbelegt;
+  }
+}
+
+$anzahl_boxbelegt_paddock_sql = "SELECT COUNT(box.id_box) as anzahl_belegt FROM box, pferd WHERE box.id_gehoeft=1 AND box.id_boxentyp=2 AND pferd.id_box = box.id_box";
+$anzahl_boxbelegt_paddock_result = $conn->query($anzahl_boxbelegt_paddock_sql);
+if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
+  while($row = $anzahl_boxbelegt_paddock_result->fetch_assoc()){
+    $anzahl_boxbelegt_paddock = $row["anzahl_belegt"];
+  }
+}
+
+$anzahl_boxfrei_paddock = $anzahl_paddockbox-$anzahl_boxbelegt_paddock;
+
+$anzahl_boxbelegt_innen_sql = "SELECT COUNT(box.id_box) as anzahl_belegt FROM box, pferd WHERE box.id_gehoeft=1 AND box.id_boxentyp=1 AND pferd.id_box = box.id_box";
+$anzahl_boxbelegt_innen_result = $conn->query($anzahl_boxbelegt_innen_sql);
+if ($anzahl_boxbelegt_innen_result->num_rows > 0){
+  while($row = $anzahl_boxbelegt_innen_result->fetch_assoc()){
+    $anzahl_boxbelegt_innen = $row["anzahl_belegt"];
+  }
+}
+
+$anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,6 +95,56 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
+
+    <script>
+      window.onload = function() {
+        var anzahl_belegt = <?php echo $anzahl_boxbelegt ?>;
+        var anzahl_frei = <?php echo $anzahl_boxfrei ?>;
+        var anzahl_boxbelegt_paddock = <?php echo $anzahl_boxbelegt_paddock ?>;
+        var anzahl_boxfrei_paddock = <?php echo $anzahl_boxfrei_paddock ?>;
+        var anzahl_boxbelegt_innen = <?php echo $anzahl_boxbelegt_innen ?>;
+        var anzahl_boxfrei_innen = <?php echo $anzahl_boxfrei_innen ?>;
+
+        var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
+          animationEnabled: true,
+          title: {
+            text: "Belegung der Boxen"
+          },
+          data: [{
+            type: "pie",
+            startAngle: 240,
+            yValueFormatString: "##0",
+            indexLabel: "{label} {y}",
+            dataPoints: [
+              {y: anzahl_belegt, label: "Belegte Boxen"},
+              {y: anzahl_frei, label: "Freie Boxen"}
+            ]
+          }]
+        });
+        boxen_belegt_frei.render();
+        
+        var verhaeltnis_frei_belegt_paddock_innen = new CanvasJS.Chart("verhaeltnis_frei_belegt_paddock_innen", {
+          animationEnabled: true,
+          theme: "light2",
+          title:{
+            text: "Freie und Belegte Boxen anhand des Boxentyps"
+          },
+          axisY: {
+            title: "Anzahl der Boxen"
+          },
+          data: [{        
+            type: "column",
+            dataPoints: [      
+              { y: anzahl_boxbelegt_paddock, label: "Paddockboxen belegt" },
+              { y: anzahl_boxfrei_paddock,  label: "Paddockboxen frei" },
+              { y: anzahl_boxbelegt_innen,  label: "Innenboxen belegt" },
+              { y: anzahl_boxfrei_innen,  label: "Innenboxen frei" }
+            ]
+          }]
+        });
+        verhaeltnis_frei_belegt_paddock_innen.render();
+      } 
+    </script>
 
   </head>
 
@@ -55,7 +178,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="gehoeft.php">
+          <a class="nav-link active" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
           </a>
@@ -85,11 +208,30 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Gehöft: 
+            <?php if ($gehoeft_name_result->num_rows > 0) {
+                // output data of each row
+                while($row = $gehoeft_name_result->fetch_assoc()) {
+                    echo $row["name_gehoeft"];
+                }
+            } else {
+                echo "Nicht gefunden.";
+            }?> 
+          </h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <p>
+            <?php if ($gehoeft_adresse_result->num_rows > 0) {
+              while($row = $gehoeft_adresse_result->fetch_assoc()) {
+                echo $row["strasse"] . " " . $row["hausnr"] . "<br>" . $row["plz"] . " " . $row["ort"];
+              }
+            }
+            ?>
+          </p>
+          <hr>
+          <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
+          <hr>
+          <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
 
-        </div>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -140,6 +282,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
   </body>
 
