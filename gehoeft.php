@@ -108,6 +108,8 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
           title: {
+            fontFamily: "Segoe UI",
+            fontWeight: "bold",
             text: "Belegung der Boxen"
           },
           data: [{
@@ -127,6 +129,8 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           animationEnabled: true,
           theme: "light2",
           title:{
+            fontFamily: "Segoe UI",
+            fontWeight: "bold",
             text: "Freie und Belegte Boxen anhand des Boxentyps"
           },
           axisY: {
