@@ -97,7 +97,8 @@
             </tr>
 
             <?php
-
+              
+              //Login Daten
               $servername = "localhost";
               $username = "root";
               $password = "";
@@ -115,12 +116,19 @@
               $sql = "SELECT pferdename, geschlecht, boxenbez FROM pferd, boxentyp";
               $query = $conn->query($sql) or die(mysql_error());
 
+              //Tabelle wird erzeigt mit der Anzahl an Zeilen wie einträge
+
               while($fetch = mysqli_fetch_assoc($query)){
                 echo '<tr>';
                   echo '<td>' . $fetch['pferdename'] . '</td>';
                   echo '<td>' . $fetch['geschlecht'] . '</td>';
                   echo '<td>' . $fetch['boxenbez'] . '</td>';
 
+                  echo '<td> 
+                    <a href="pferd-show.php" >Anzeigen</a>
+                    <a href="pferd-edit.php" >Bearbeiten</a>
+                    <a href="pferd-delet.php" >Löschen</a>
+                  </td>';
                 echo '</tr>';
               }
 
