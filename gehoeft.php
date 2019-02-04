@@ -11,10 +11,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_user=1 LIMIT 1";
+$gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_gehoeft=1";
 $gehoeft_name_result = $conn->query($gehoeft_name_sql);
 
-$gehoeft_adresse_sql = "SELECT * FROM adresse WHERE id_gehoeft=1 LIMIT 1";
+$gehoeft_adresse_sql = "SELECT gehoeft.id_adresse, adresse.id_adresse, adresse.strasse, adresse.hausnr, adresse.plz, adresse.ort FROM adresse, gehoeft WHERE gehoeft.id_gehoeft=1 AND adresse.id_adresse=gehoeft.id_adresse";
 $gehoeft_adresse_result = $conn->query($gehoeft_adresse_sql);
 
 $anzahl_paddockbox_sql = "SELECT COUNT(id_box) as anzahl_paddockbox FROM box WHERE id_gehoeft=1 AND id_boxentyp=2";
@@ -33,7 +33,7 @@ if ($anzahl_innenbox_result->num_rows > 0) {
   }
 }
 
-$anzahl_boxbelegt_sql = "SELECT COUNT(pferd.id_box) as anzahl_belegt, box.id_gehoeft FROM pferd, box WHERE id_gehoeft=1 AND pferd.id_box = box.id_box";
+$anzahl_boxbelegt_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=1 AND id_pferd IS NOT NULL";
 $anzahl_boxbelegt_result = $conn->query($anzahl_boxbelegt_sql);
 if ($anzahl_boxbelegt_result->num_rows > 0) {
   while($row = $anzahl_boxbelegt_result->fetch_assoc()) {
@@ -41,15 +41,15 @@ if ($anzahl_boxbelegt_result->num_rows > 0) {
   }
 }
 
-$anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=1";
+$anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=1 AND id_pferd IS NULL";
 $anzahl_boxfrei_result = $conn->query($anzahl_boxfrei_sql);
 if ($anzahl_boxfrei_result->num_rows > 0) {
   while($row = $anzahl_boxfrei_result->fetch_assoc()) {
-    $anzahl_boxfrei = $row["anzahl_frei"]-$anzahl_boxbelegt;
+    $anzahl_boxfrei = $row["anzahl_frei"];
   }
 }
 
-$anzahl_boxbelegt_paddock_sql = "SELECT COUNT(box.id_box) as anzahl_belegt FROM box, pferd WHERE box.id_gehoeft=1 AND box.id_boxentyp=2 AND pferd.id_box = box.id_box";
+$anzahl_boxbelegt_paddock_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=1 AND id_boxentyp=2 AND id_pferd IS NOT NULL";
 $anzahl_boxbelegt_paddock_result = $conn->query($anzahl_boxbelegt_paddock_sql);
 if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
   while($row = $anzahl_boxbelegt_paddock_result->fetch_assoc()){
@@ -59,7 +59,7 @@ if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
 
 $anzahl_boxfrei_paddock = $anzahl_paddockbox-$anzahl_boxbelegt_paddock;
 
-$anzahl_boxbelegt_innen_sql = "SELECT COUNT(box.id_box) as anzahl_belegt FROM box, pferd WHERE box.id_gehoeft=1 AND box.id_boxentyp=1 AND pferd.id_box = box.id_box";
+$anzahl_boxbelegt_innen_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=1 AND id_boxentyp=1 AND id_pferd IS NOT NULL";
 $anzahl_boxbelegt_innen_result = $conn->query($anzahl_boxbelegt_innen_sql);
 if ($anzahl_boxbelegt_innen_result->num_rows > 0){
   while($row = $anzahl_boxbelegt_innen_result->fetch_assoc()){
@@ -104,6 +104,8 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         var anzahl_boxfrei_paddock = <?php echo $anzahl_boxfrei_paddock ?>;
         var anzahl_boxbelegt_innen = <?php echo $anzahl_boxbelegt_innen ?>;
         var anzahl_boxfrei_innen = <?php echo $anzahl_boxfrei_innen ?>;
+        var anzahl_paddockbox = <?php echo $anzahl_paddockbox ?>;
+        var anzahl_innenbox = <?php echo $anzahl_innenbox ?>;
 
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
@@ -139,10 +141,10 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           data: [{        
             type: "column",
             dataPoints: [      
-              { y: anzahl_boxbelegt_paddock, label: "Paddockboxen belegt" },
-              { y: anzahl_boxfrei_paddock,  label: "Paddockboxen frei" },
-              { y: anzahl_boxbelegt_innen,  label: "Innenboxen belegt" },
-              { y: anzahl_boxfrei_innen,  label: "Innenboxen frei" }
+              { y: anzahl_paddockbox, label: "Paddockboxen gesamt" },
+              { y: anzahl_boxbelegt_paddock,  label: "Paddockboxen belegt" },
+              { y: anzahl_innenbox,  label: "Innenboxen gesamt" },
+              { y: anzahl_boxbelegt_innen,  label: "Innenboxen belegt" }
             ]
           }]
         });
@@ -194,13 +196,13 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -210,13 +212,21 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
       <div id="content-wrapper">
 
         <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">
+            Gehöft
+          </li>
+        </ol>
 
           <!-- Page Content -->
           <h1>Gehöft: 
             <?php if ($gehoeft_name_result->num_rows > 0) {
                 // output data of each row
                 while($row = $gehoeft_name_result->fetch_assoc()) {
-                    echo $row["name_gehoeft"];
+                    echo $row["gehoeftname"];
                 }
             } else {
                 echo "Nicht gefunden.";
@@ -232,9 +242,30 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
             ?>
           </p>
           <hr>
-          <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
+          <div class="card mb-3">
+            <div class="card-header">
+            <i class="fas fa-chart-pie"></i>
+            Belegung der Boxen
+            </div>
+            <div class="card-body">
+              <div class="row justify-content-end">
+                <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
+              </div>
+              <div class="row">
+                <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
+              </div>
+            </div>
+          </div>
           <hr>
-          <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
+          <div class="card mb-3">
+            <div class="card-header">
+            <i class="fas fa-chart-area"></i>
+            Verhältnis der freien zu belegten Boxen
+            </div>
+            <div class="card-body">
+              <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
+            </div>
+          </div>
 
         <!-- /.container-fluid -->
 
