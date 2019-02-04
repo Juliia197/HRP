@@ -66,7 +66,7 @@
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="pferde.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
@@ -85,11 +85,105 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Pferde
+            </li>
+          </ol>
+
+          <div class="container-fluid">
+          <div class="row justify-content-end">
+          <a class="btn btn-success" role="button" href="pferd-edit.php?id_pferd=0">Hinzufügen</a>
+          </div>
+          </div>
+          
+          <p>
+          <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Geschlecht</th>
+              <th>Besitzer</th>
+              <th>Boxentyp</th>
+              <th>Aktion</th>
+            </tr>
+          </thead>
+
+            <?php
+
+              $servername = "localhost";
+              $username = "root";
+              $password = "";
+              $dbname = "hrppr_db1";
+
+              // Create connection
+              $conn = new mysqli($servername, $username, $password, $dbname);
+              $mysqli = new mysqli($servername, $username, $password, $dbname);
+              // Check connection
+              if ($conn->connect_error) {
+                  die("Connection failed: " . $conn->connect_error);
+              } 
+                        
+              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
+              $pferd = "SELECT * FROM pferd";
+              
+              $query = $conn->query($pferd) or die(mysql_error());
+
+              while($fetch = mysqli_fetch_assoc($query)){
+                echo '<tr>';
+                  echo '<td>' . $fetch['pferdename'] . '</td>';
+                  echo '<td>' ;
+                    if( $fetch['geschlecht'] =='s')
+                      {
+                        echo "Stute";
+                      }
+                    else if( $fetch['geschlecht'] =='w')
+                      {
+                        echo "Wallach";
+                      }
+                    else
+                      {
+                        echo "Hengst";
+                      }
+              
+                  echo '</td>';
+
+                  $besitzer = 'SELECT person.vorname, person.nachname From person, beziehung  WHERE beziehung.id_pferd = '.$fetch['id_pferd'].' AND beziehung.id_funktion = 1 AND beziehung.id_person=person.id_person';
+                    $query1 = $conn->query($besitzer) or die (mysql_error());
+                    while($fetch1 = mysqli_fetch_assoc($query1)){
+                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
+                    }
+                  
+                  $boxentyp = 'SELECT boxentyp.boxenbez From box, boxentyp WHERE box.id_pferd = '.$fetch['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp' ;
+                    $query2 = $conn->query($boxentyp) or die (mysql_error());
+                    while($fetch2 = mysqli_fetch_assoc($query2)){
+                      echo '<td>' . $fetch2['boxenbez'] . '</td>'  ;
+                    }
+
+                  echo '<td> 
+                    <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
+                    <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
+                    <a href="pferd-delet.php?id_pferd=' . $fetch["id_pferd"] . '" >Löschen</a> <br>
+                  </td>';
+
+                echo '</tr>';
+              }
+
+              ?>
+                          
+
+          </table>
+            </div>
+            </p>
+      
 
         </div>
+        
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -138,8 +232,16 @@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
