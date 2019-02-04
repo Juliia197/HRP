@@ -54,7 +54,7 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -67,13 +67,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -83,11 +83,29 @@
       <div id="content-wrapper">
 
         <div class="container-fluid">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gehoeft.php">Gehöft</a>
+            </li>
+            <li class="breadcrumb-item">
+              Box hinzufügen
+            </li>
+          </ol>
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Box hinzufügen</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <form action="box-edited.php" method="post">
+            <label>Boxentyp:</label>
+            <p><input type="radio" name="innenbox">Innenbox<br>
+            <input type="radio" name="paddockbox">Paddockbox</p>
+            <label>Boxenpreis:</label><br>
+            <input type="text" name="boxenpreis">
+            <button type="submit" class="btn btn-success">Abschicken</button>
+          </form>
 
         </div>
         <!-- /.container-fluid -->
