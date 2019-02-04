@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "dhbw";
+$dbname = "hrppr_db1";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -10,6 +10,9 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+$verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
+$verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,20 +76,20 @@ if ($conn->connect_error) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -98,12 +101,120 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+            <?php
+              if($verbrauchsgut_result->num_rows > 0){
+                while($row_g = $verbrauchsgut_result->fetch_assoc()){   
+                  echo "<ol class=\"breadcrumb\">
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"dashboard.php\">Dashboard</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item active\">
+                            Lieferung bearbeiten
+                          </li>
+                        </ol>
+                        <h1>Lieferung bearbeiten</h1>
+                        <hr>
+                        <form action=\"/dashboard.php\" method=\"post\">";
+                  echo "<label>Verbrauchsgütertyp:</label>";
+                  echo "<select class=\"form-control\">";
+                  $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
+                  $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
+                  if($verbrauchsguttyp_result->num_rows > 0){
+                    while($row_vgt = $verbrauchsguttyp_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_vgt["id_verbrauchsguttyp"] . "\" selected>" . $row_vgt["verbrauchsguttypbez"] . "</option>";
+                    }
+                  }
+                  $notverbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE NOT id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
+                  $notverbrauchsguttyp_result = $conn->query($notverbrauchsguttyp_sql);
+                  if($notverbrauchsguttyp_result->num_rows > 0){
+                    while($row_nvgt = $notverbrauchsguttyp_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_nvgt["id_verbrauchsguttyp"] . "\">" . $row_nvgt["verbrauchsguttypbez"] . "</option>";
+                    }
+                  }
+                  echo "</select>";
+                  echo "<label>Bezeichnung</label>";
+                  echo "<input class=\"form-control\" type=\"text\" placeholder=\"" . $row_g["verbrauchsgutbez"] . "\">";
+                  echo "<label>Lieferdatum (yyyy-mm-dd)</label>";
+                  echo "<input class=\"form-control\" type=\"text\" placeholder=\"" . $row_g["lieferdatum"] . "\">";
+                  echo "<label>Lieferant</label>";
+                  echo "<select class=\"form-control\">";
+                  $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
+                  $lieferant_result = $conn->query($lieferant_sql);
+                  if($lieferant_result->num_rows > 0){
+                    while($row_l = $lieferant_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
+                    }
+                  }
+                  $notlieferant_sql = "SELECT * FROM person WHERE id_person IS NOT NULL AND NOT id_person = " . $row_g["id_person"];
+                  $notlieferant_result = $conn->query($notlieferant_sql);
+                  if($notlieferant_result->num_rows > 0){
+                    while($row_nl = $notlieferant_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_nl["id_person"] . "\">" . $row_nl["vorname"] . " " . $row_nl["nachname"] . "</option>";
+                    }
+                  }
+                  echo "</select>";
+                  echo "<label>Menge</label>";
+                  echo "<input class=\"form-control\" type=\"number\" placeholder=\"" . $row_g["menge"] . "\">";
+                  echo "<label>Einkaufspreis</label>";
+                  echo "<input class=\"form-control\" type=\"number\" placeholder=\"" . $row_g["einkaufspreis"] . "\">";
+                }
+              }
+              else {
+                echo "<ol class=\"breadcrumb\">
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"dashboard.php\">Dashboard</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item active\">
+                            Lieferung erstellen
+                          </li>
+                        </ol>
+                        <h1>Lieferung erstellen</h1>
+                        <hr>
+                      <form action=\"/dashboard.php\" method=\"post\">";
+                echo "<label>Verbrauchsgütertyp:</label>";
+                echo "<select class=\"form-control\">";
+                $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
+                $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
+                if ($verbrauchsguttypall_result->num_rows > 0){
+                  while($row_vgtall = $verbrauchsguttypall_result->fetch_assoc()){
+                    echo "<option value=\"" . $row_vgtall["id_verbrauchsguttyp"] . "\">" . $row_vgtall["verbrauchsguttypbez"] . "</option>";
+                  }
+                }
+                echo "</select>";
+                echo "<label>Bezeichnung</label>";
+                echo "<input class=\"form-control\" type=\"text\">";
+                echo "<label>Lieferdatum (yyyy-mm-dd)</label>";
+                echo "<input class=\"form-control\" type=\"text\">";
+                echo "<label>Lieferant</label>";
+                echo "<select class=\"form-control\">";
+                $lieferantall_sql = "SELECT * FROM person";
+                $lieferantall_result = $conn->query($lieferantall_sql);
+                if($lieferantall_result->num_rows > 0){
+                  while($row_lall = $lieferantall_result->fetch_assoc()){
+                    echo "<option value=\"" . $row_lall["id_person"] . "\">" . $row_lall["vorname"] . " " . $row_lall["nachname"] . "</option>";
+                  }
+                }
+                echo "</select>";
+                echo "<label>Menge</label>";
+                echo "<input class=\"form-control\" type=\"number\">";
+                echo "<label>Einkaufspreis</label>";
+                echo "<input class=\"form-control\" type=\"number\">";
+              }
+              ?>
+            <div class="form-group"></div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success">Abschicken</button>
+              <button class="btn btn-secondary" href="dashboard.php" role="button">Abbrechen</button>
+            </div>
+          </form>
 
         </div>
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">

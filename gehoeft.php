@@ -323,3 +323,6 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
   </body>
 
 </html>
+<?php 
+  $conn->close();
+?>
