@@ -1,17 +1,3 @@
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "hrppr_db1";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -81,13 +67,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+        <li class="nav-item active">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -99,7 +85,45 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+
+          <?php
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "hrppr_db1";
+
+            // Create connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            } 
+
+            $personsql = "SELECT * FROM person WHERE id_person=" . $_GET['id_person'];
+            $person = $conn->query($personsql);
+
+
+          if($person->num_rows>0){
+            while($row_p = $person->fetch_assoc()){
+              echo "<ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"dashboard.php\">Dashboard</a>
+                    </li>
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"person.php\">Personen</a>
+                    </li>
+                    <li class=\"breadcrumb-item active\">
+                      Person bearbeiten
+                    </li>
+                  </ol>";
+              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+              
+
+            }
+          }
+          ?>
+
+          <h1>B</h1>
           <hr>
           <p>Hier könnte Ihre Werbung stehen.</p>
 
