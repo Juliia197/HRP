@@ -117,9 +117,9 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                         </ol>
                         <h1>Lieferung bearbeiten</h1>
                         <hr>
-                        <form action=\"/dashboard.php\" method=\"post\">";
+                        <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<label>Verbrauchsgütertyp:</label>";
-                  echo "<select class=\"form-control\">";
+                  echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
                   if($verbrauchsguttyp_result->num_rows > 0){
@@ -136,11 +136,11 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                   }
                   echo "</select>";
                   echo "<label>Bezeichnung</label>";
-                  echo "<input class=\"form-control\" type=\"text\" placeholder=\"" . $row_g["verbrauchsgutbez"] . "\">";
+                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\">";
                   echo "<label>Lieferdatum (yyyy-mm-dd)</label>";
-                  echo "<input class=\"form-control\" type=\"text\" placeholder=\"" . $row_g["lieferdatum"] . "\">";
+                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\">";
                   echo "<label>Lieferant</label>";
-                  echo "<select class=\"form-control\">";
+                  echo "<select class=\"form-control\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
@@ -157,9 +157,14 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                   }
                   echo "</select>";
                   echo "<label>Menge</label>";
-                  echo "<input class=\"form-control\" type=\"number\" placeholder=\"" . $row_g["menge"] . "\">";
+                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\">";
                   echo "<label>Einkaufspreis</label>";
-                  echo "<input class=\"form-control\" type=\"number\" placeholder=\"" . $row_g["einkaufspreis"] . "\">";
+                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\">";
+                  echo "<div class=\"form-group\"></div>
+                      <div class=\"form-group\">
+                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abbrechen</button>
+                      </div>";
                 }
               }
               else {
@@ -176,9 +181,9 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                         </ol>
                         <h1>Lieferung erstellen</h1>
                         <hr>
-                      <form action=\"/dashboard.php\" method=\"post\">";
+                      <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<label>Verbrauchsgütertyp:</label>";
-                echo "<select class=\"form-control\">";
+                echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
                 if ($verbrauchsguttypall_result->num_rows > 0){
@@ -188,11 +193,11 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                 }
                 echo "</select>";
                 echo "<label>Bezeichnung</label>";
-                echo "<input class=\"form-control\" type=\"text\">";
+                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\">";
                 echo "<label>Lieferdatum (yyyy-mm-dd)</label>";
-                echo "<input class=\"form-control\" type=\"text\">";
+                echo "<input class=\"form-control\" type=\"text\" name=\"lieferdatum\">";
                 echo "<label>Lieferant</label>";
-                echo "<select class=\"form-control\">";
+                echo "<select class=\"form-control\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person";
                 $lieferantall_result = $conn->query($lieferantall_sql);
                 if($lieferantall_result->num_rows > 0){
@@ -202,16 +207,16 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                 }
                 echo "</select>";
                 echo "<label>Menge</label>";
-                echo "<input class=\"form-control\" type=\"number\">";
+                echo "<input class=\"form-control\" type=\"number\" name=\"menge\">";
                 echo "<label>Einkaufspreis</label>";
-                echo "<input class=\"form-control\" type=\"number\">";
+                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\">";
+                echo "<div class=\"form-group\"></div>
+                      <div class=\"form-group\">
+                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
+                      </div>";
               }
               ?>
-            <div class="form-group"></div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-success">Abschicken</button>
-              <button class="btn btn-secondary" href="dashboard.php" role="button">Abbrechen</button>
-            </div>
           </form>
 
         </div>
