@@ -67,13 +67,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -143,9 +143,9 @@
                   echo '</td>';
 
                   echo '<td> 
-                    <a href="pferd-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
-                    <a href="pferd-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br>
+                    <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
+                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>
+                    <a href="person-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br>
                   </td>';
 
                 echo '</tr>';
