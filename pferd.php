@@ -85,11 +85,53 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          
+          <p>
+          <table class=table>
+            <tr>
+              <th>Name</th>
+              <th>Geschlecht</th>
+              <th>Besitzer</th>
+              <th>Boxentyp</th>
+              <th>Aktion</th>
+            </tr>
+
+            <?php
+
+              $servername = "localhost";
+              $username = "root";
+              $password = "";
+              $dbname = "hrppr_db1";
+
+              // Create connection
+              $conn = new mysqli($servername, $username, $password, $dbname);
+              $mysqli = new mysqli($servername, $username, $password, $dbname);
+              // Check connection
+              if ($conn->connect_error) {
+                  die("Connection failed: " . $conn->connect_error);
+              } 
+                        
+              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
+              $sql = "SELECT pferdename, geschlecht, boxenbez FROM pferd, boxentyp";
+              $query = $conn->query($sql) or die(mysql_error());
+
+              while($fetch = mysqli_fetch_assoc($query)){
+                echo '<tr>';
+                  echo '<td>' . $fetch['pferdename'] . '</td>';
+                  echo '<td>' . $fetch['geschlecht'] . '</td>';
+                  echo '<td>' . $fetch['boxenbez'] . '</td>';
+
+                echo '</tr>';
+              }
+
+              ?>
+                          
+
+          </table>
+          </p>
 
         </div>
+        
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->

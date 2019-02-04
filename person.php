@@ -1,3 +1,18 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,7 +102,16 @@
           <!-- Page Content -->
           <h1>Überschrift</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <p><table class=table>
+            <tr>
+              <th>Vorname</th>
+              <th>Name</th>
+              <th>Beziehung</th>
+              <th>Aktion</th>
+            </tr>
+                          
+
+          </table></p>
 
         </div>
         <!-- /.container-fluid -->
