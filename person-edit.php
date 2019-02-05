@@ -117,7 +117,7 @@
                     </li>
                   </ol>";
               echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-              echo "<form action=\"person-edited.php?id_person=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
+              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "\" method=\"post\">";
 
               echo "<label>Vorname</label>";
               echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
