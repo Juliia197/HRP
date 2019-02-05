@@ -80,13 +80,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -99,7 +99,16 @@ if ($conn->connect_error) {
           
           <!-- Page Content -->
           <?php
-            echo "<ol class=\"breadcrumb\">
+            $verbrauchsgutbez = $_POST["verbrauchsgutbez"];
+            $lieferdatum = $_POST["lieferdatum"];
+            $menge = $_POST["menge"];
+            $einkaufspreis = $_POST["einkaufspreis"];
+            $id_gehoeft = 1;
+            $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
+            $id_person = $_POST["id_person"];
+            $update = $_GET["id_verbrauchsgut"];
+            if ($update > 0){
+              echo "<ol class=\"breadcrumb\">
                     <li class=\"breadcrumb-item\">
                       <a href=\"dashboard.php\">Dashboard</a>
                     </li>
@@ -110,15 +119,6 @@ if ($conn->connect_error) {
                       Lieferung bearbeiten
                     </li>
                   </ol>"; 
-            $verbrauchsgutbez = $_POST["verbrauchsgutbez"];
-            $lieferdatum = $_POST["lieferdatum"];
-            $menge = $_POST["menge"];
-            $einkaufspreis = $_POST["einkaufspreis"];
-            $id_gehoeft = 1;
-            $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
-            $id_person = $_POST["id_person"];
-            $update = $_GET["id_verbrauchsgut"];
-            if ($update > 0){
               $update_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $update;
               $update_result = $conn->query($update_sql);
               if($update_result->num_rows > 0){
