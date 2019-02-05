@@ -1,3 +1,16 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,7 +67,7 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -67,13 +80,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -83,11 +96,34 @@
       <div id="content-wrapper">
 
         <div class="container-fluid">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gehoeft.php">Gehöft</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Box hinzufügen
+            </li>
+          </ol>
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Box hinzufügen</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <?php
+          $boxenpreis = $_POST["boxenpreis"];
+            if(isset($_POST["innenbox"])){
+              $boxentyp=1;
+            }
+            else if(isset($_POST["paddockbox"])) {
+              $boxentyp=2;
+            }
+            $boxenadd_sql = "INSERT INTO box (id_box, boxenpreis, id_gehoeft, id_boxentyp, id_pferd) VALUES (NULL, '$boxenpreis',1,$boxentyp,NULL)";
+            $boxenadd_result = $conn->query($boxenadd_sql);
+
+          ?>
+          <p>Die Box wurde hinzugefügt!</p>
 
         </div>
         <!-- /.container-fluid -->
