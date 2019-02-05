@@ -85,7 +85,6 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-
           <?php
             $servername = "localhost";
             $username = "root";
@@ -99,9 +98,9 @@
                 die("Connection failed: " . $conn->connect_error);
             } 
 
-            $personsql = "SELECT * FROM person WHERE id_person=" . $_GET['id_person'];
+            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
             $person = $conn->query($personsql);
-
+            //echo $person;
 
           if($person->num_rows>0){
             while($row_p = $person->fetch_assoc()){
@@ -133,6 +132,23 @@
               
               echo "<label>Geburtsdatum</label>";
               echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\">";
+
+              echo "<br><h3> Adresse </h3>";
+
+              echo "<label>Straße</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\">";
+
+              echo "<label>Hausnummer</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\">";
+
+              echo "<label>Postleitzahl</label>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\">";
+
+              echo "<label>Ortschaft</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\">";
+
+              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\">";
 
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
@@ -172,6 +188,23 @@
             
             echo "<label>Geburtsdatum</label>";
             echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\">";
+
+            echo "<br><h3> Adresse </h3>";
+
+            echo "<label>Straße</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\">";
+
+            echo "<label>Hausnummer</label>";
+            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\">";
+
+            echo "<label>Postleitzahl</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"plz\">";
+
+            echo "<label>Ortschaft</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\">";
+
+            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"land\">";
           
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">

@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "dhbw";
+$dbname = "hrppr_db1";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -99,30 +99,43 @@ if ($conn->connect_error) {
 
           <!-- Page Content -->
           <?php
-            echo "<ol class=\"breadcrumb\">
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"dashboard.php\">Dashboard</a>
-                    </li>
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"person.php\">Personen</a>
-                    </li>
-                    <li class=\"breadcrumb-item active\">
-                      Person bearbeiten
-                    </li>
-                  </ol>"; 
+
             $vorname = $_POST["vorname"];
             $nachname = $_POST["nachname"];
             $email = $_POST["email"];
             $telefonnr = $_POST["telefonnr"];
+            $geburtsdatum = $_POST["geburtsdatum"];
+            $strasse = $_POST["strasse"];
+            $hausnr = $_POST["hausnr"];
+            $plz = $_POST["plz"];
+            $ort = $_POST["ort"];
+            $land = $_POST["land"];
             $update = $_GET["id_person"];
+            $update2 = $_GET["id_adresse"];
+
             if ($update > 0){
-              $update_sql = "SELECT * FROM person WHERE id_person=" . $update;
+            echo "<ol class=\"breadcrumb\">
+              <li class=\"breadcrumb-item\">
+                <a href=\"dashboard.php\">Dashboard</a>
+              </li>
+              <li class=\"breadcrumb-item\">
+                <a href=\"person.php\">Personen</a>
+              </li>
+              <li class=\"breadcrumb-item active\">
+                Person bearbeiten
+              </li>
+            </ol>"; 
+
+              $update_sql = "SELECT * FROM person, adresse WHERE id_person=" . $_GET["id_person"] . "AND person.id_adresse = adresse.id_adresse";
+
               $update_result = $conn->query($update_sql);
               if($update_result->num_rows > 0){
                 while($row_u = $update_result->fetch_assoc()){
                   echo "<h1>Änderung Person: " . $row_u["vorname"] . " " . $row_u["nachname"] . "</h1>";
-                  $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update;
-                  $personupdate_result = $conn->query($personupdate_sql)";
+                  $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
+                  $adresseupdate_result = $conn->query($adresseupdate_sql);
+                  $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update";
+                  $personupdate_result = $conn->query($personupdate_sql);
                   echo "<p>Ihre Person wurde geändert!</p>";
                 }
               }
@@ -140,7 +153,12 @@ if ($conn->connect_error) {
                     </li>
                   </ol>";
               echo "<h1>Neue Person hinzufügen</h1>";
-              $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum) VALUES (NULL, '$vorname', '$nachname', '$email', '$telefonnr', '$geburtsdatum')";
+
+              $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
+              $adressenew_result = $conn->query($adressenew_sql);
+              $id_adresse = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse',hausnr='$hausnr', plz='$plz', ort='$ort', land='$land'";
+              $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, $geburtsdatum, $id_adresse)";
+              //echo $personnew_sql;
               $personnew_result = $conn->query($personnew_sql);
               echo "<p>Ihre Person wurde hinzugefügt!</p>";
             }
