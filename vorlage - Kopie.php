@@ -1,3 +1,16 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,7 +85,7 @@
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -85,66 +98,10 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
+          <h1>Überschrift</h1>
+          <hr>
+          <p>Hier könnte Ihre Werbung stehen.</p>
 
-          <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbname = "hrppr_db1";
-
-            // Create connection
-            $conn = new mysqli($servername, $username, $password, $dbname);
-            // Check connection
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            } 
-
-            $personsql = "SELECT * FROM person WHERE id_person=" . $_GET['id_person'];
-            $person = $conn->query($personsql);
-
-
-          if($person->num_rows>0){
-            while($row_p = $person->fetch_assoc()){
-              echo "<ol class=\"breadcrumb\">
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"dashboard.php\">Dashboard</a>
-                    </li>
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"person.php\">Personen</a>
-                    </li>
-                    <li class=\"breadcrumb-item active\">
-                      Person bearbeiten
-                    </li>
-                  </ol>";
-              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-              echo "<form action=\"person-edited.php?id_person=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
-
-              echo "<label>Vorname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
-              
-              echo "<label>Nachname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\">";
-              
-              echo "<label>E-Mail</label>";
-              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\">";
-              
-              echo "<label>Telefonnummer</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\">";
-              
-              echo "<label>Geburtsdatum</label>";
-              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\">";
-
-              echo "<div class=\"form-group\"></div>
-              <div class=\"form-group\">
-                <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
-              </div>";
-
-            }
-          }
-          ?>
-          
-          </form>
         </div>
         <!-- /.container-fluid -->
 
