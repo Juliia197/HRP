@@ -117,7 +117,7 @@
                     </li>
                   </ol>";
               echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-              echo "<form action=\"person-edited.php?id_person=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
+              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "\" method=\"post\">";
 
               echo "<label>Vorname</label>";
               echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
@@ -137,10 +137,47 @@
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
                 <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
+                <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
               </div>";
+              echo "</form>";
 
             }
+          }
+          else{
+            echo "<ol class=\"breadcrumb\">
+                <li class=\"breadcrumb-item\">
+                  <a href=\"dashboard.php\">Dashboard</a>
+                </li>
+                <li class=\"breadcrumb-item\">
+                  <a href=\"person.php\">Personen</a>
+                </li>
+                <li class=\"breadcrumb-item active\">
+                  Person bearbeiten
+                </li>
+              </ol>";
+            echo "<form action=\"person-edited.php?id_person=0\" method=\"post\">";
+            
+            
+            echo "<label>Vorname</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\">";
+            
+            echo "<label>Nachname</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\">";
+            
+            echo "<label>E-Mail</label>";
+            echo "<input class=\"form-control\" type=\"email\" name=\"email\">";
+            
+            echo "<label>Telefonnummer</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\">";
+            
+            echo "<label>Geburtsdatum</label>";
+            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\">";
+          
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+              <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+              <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+            </div>";
           }
           ?>
           

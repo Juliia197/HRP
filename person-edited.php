@@ -80,13 +80,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+        <li class="nav-item active">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -98,9 +98,53 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <?php
+            echo "<ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"dashboard.php\">Dashboard</a>
+                    </li>
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"person.php\">Personen</a>
+                    </li>
+                    <li class=\"breadcrumb-item active\">
+                      Person bearbeiten
+                    </li>
+                  </ol>"; 
+            $vorname = $_POST["vorname"];
+            $nachname = $_POST["nachname"];
+            $email = $_POST["email"];
+            $telefonnr = $_POST["telefonnr"];
+            $update = $_GET["id_person"];
+            if ($update > 0){
+              $update_sql = "SELECT * FROM person WHERE id_person=" . $update;
+              $update_result = $conn->query($update_sql);
+              if($update_result->num_rows > 0){
+                while($row_u = $update_result->fetch_assoc()){
+                  echo "<h1>Änderung Person: " . $row_u["vorname"] . " " . $row_u["nachname"] . "</h1>";
+                  $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update;
+                  $personupdate_result = $conn->query($personupdate_sql)";
+                  echo "<p>Ihre Person wurde geändert!</p>";
+                }
+              }
+            }
+            else {
+              echo "<ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"dashboard.php\">Dashboard</a>
+                    </li>
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"person.php\">Personen</a>
+                    </li>
+                    <li class=\"breadcrumb-item active\">
+                      Person erstellen
+                    </li>
+                  </ol>";
+              echo "<h1>Neue Person hinzufügen</h1>";
+              $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum) VALUES (NULL, '$vorname', '$nachname', '$email', '$telefonnr', '$geburtsdatum')";
+              $personnew_result = $conn->query($personnew_sql);
+              echo "<p>Ihre Person wurde hinzugefügt!</p>";
+            }
+          ?>
 
         </div>
         <!-- /.container-fluid -->
