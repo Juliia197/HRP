@@ -81,13 +81,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+        <li class="nav-item activ">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -97,11 +97,55 @@ if ($conn->connect_error) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
+                  <!-- Page Content -->
 
-          <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+        <?php
+          $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+          $person = $conn->query($personsql);
+
+          while($row_p = $person->fetch_assoc()){
+            echo "<ol class=\"breadcrumb\">
+                  <li class=\"breadcrumb-item\">
+                    <a href=\"dashboard.php\">Dashboard</a>
+                  </li>
+                  <li class=\"breadcrumb-item\">
+                    <a href=\"person.php\">Personen</a>
+                  </li>
+                  <li class=\"breadcrumb-item active\">
+                    Person anzeigen
+                  </li>
+                </ol>";
+            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+            
+            echo "<p>E-Mail: " . $row_p['email'] . "</p>";
+            echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
+            echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
+
+            echo "<br><h3> Adresse </h3>";
+
+            echo "<p>Straße: " . $row_p['strasse'] . "</p>";
+            echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
+            echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
+            echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
+            echo "<p>Land: " . $row_p['land'] . "</p>";  
+            
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+              <button  class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" role=\"button\">Bearbeiten</button>
+              <button  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" role=\"button\">Löschen</button>
+              <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">zurück zur Übersicht</button>     
+            </div>";
+
+            
+
+          
+            }
+
+
+        ?>
+
+
+
 
         </div>
         <!-- /.container-fluid -->
