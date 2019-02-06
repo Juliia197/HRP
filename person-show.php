@@ -1,17 +1,3 @@
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "hrppr_db1";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -86,7 +72,7 @@ if ($conn->connect_error) {
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item activ">
+        <li class="nav-item active">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -97,54 +83,79 @@ if ($conn->connect_error) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
-                  <!-- Page Content -->
 
-        <?php
-          $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-          $person = $conn->query($personsql);
+          <!-- Page Content -->
 
-          while($row_p = $person->fetch_assoc()){
-            echo "<ol class=\"breadcrumb\">
-                  <li class=\"breadcrumb-item\">
-                    <a href=\"dashboard.php\">Dashboard</a>
-                  </li>
-                  <li class=\"breadcrumb-item\">
-                    <a href=\"person.php\">Personen</a>
-                  </li>
-                  <li class=\"breadcrumb-item active\">
-                    Person anzeigen
-                  </li>
-                </ol>";
-            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-            
-            echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-            echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-            echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Personen
+            </li>
+          </ol>
 
-            echo "<br><h3> Adresse </h3>";
+          <div class="container-fluid">
+          <div class="row justify-content-end">
+          <a class="btn btn-success" role="button" href="person-edit.php?id_person=0">Hinzufügen</a>
+          </div>
+          </div>
 
-            echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-            echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-            echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-            echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-            echo "<p>Land: " . $row_p['land'] . "</p>";  
-            
-            echo "<div class=\"form-group\"></div>
-            <div class=\"form-group\">
-              <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-              <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
-              <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
-            </div>";
+          <p>
+          <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+           <thead>
+            <tr >
+              <th >Vorname</th>
+              <th >Name</th>
+              <th >Beziehung</th>
+              <th>Aktion</th>
+            </tr>
+            </thead>
+                          
+            <?php
+              $servername = "localhost";
+              $username = "root";
+              $password = "";
+              $dbname = "hrppr_db1";
 
-            
+              // Create connection
+              $conn = new mysqli($servername, $username, $password, $dbname);
+              // Check connection
+              if ($conn->connect_error) {
+                  die("Connection failed: " . $conn->connect_error);
+              } 
 
-          
-            }
+              $person = "SELECT * FROM person";
+              $query = $conn ->query($person) or die(mysql_error());
+
+              while($fetch = mysqli_fetch_assoc($query)){
+                echo '<tr>';
+                  echo'<td>' . $fetch['vorname'] .  '</td>';
+                  echo'<td>' . $fetch['nachname'] . '</td>';
+                 
+                  echo '<td>';
+                 $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
+                  $query1 = $conn->query($funktion) or die (mysql_error());
+                  while($fetch1 = mysqli_fetch_assoc($query1)){
+                    echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
+                  }
+                  echo '</td>';
+
+                  echo '<td> 
+                    <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
+                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>
+                    <a href="person-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br>
+                  </td>';
+
+                echo '</tr>';
+              }
 
 
-        ?>
-
-
+              ?>
+          </table>
+            </div>
+        </p>
 
 
         </div>
@@ -196,8 +207,16 @@ if ($conn->connect_error) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
