@@ -188,7 +188,6 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
             </tbody>                
           </table>
           </div>  
-
         </div>
         <!-- /.container-fluid -->
 
@@ -239,8 +238,8 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
 
     <!-- Custom scripts for all pages-->
