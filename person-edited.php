@@ -112,6 +112,7 @@ if ($conn->connect_error) {
             $land = $_POST["land"];
             $update = $_GET["id_person"];
             $update2 = $_GET["id_adresse"];
+          
 
             $schonvorhanden_sql = "SELECT * FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum' ";
             $schonvorhanden = $conn->query($schonvorhanden_sql);
@@ -120,23 +121,11 @@ if ($conn->connect_error) {
 
 
               if ($update > 0){
-                echo "<ol class=\"breadcrumb\">
-                  <li class=\"breadcrumb-item\">
-                    <a href=\"dashboard.php\">Dashboard</a>
-                  </li>
-                  <li class=\"breadcrumb-item\">
-                    <a href=\"person.php\">Personen</a>
-                  </li>
-                  <li class=\"breadcrumb-item active\">
-                    Person bearbeiten
-                  </li>
-                </ol>"; 
 
                 $update_sql = "SELECT * FROM person, adresse WHERE id_person=" . $_GET["id_person"] . " AND person.id_adresse = adresse.id_adresse AND person.id_adresse=".  $_GET["id_adresse"];
                 $update_result = $conn->query($update_sql);
 
                 while($row_u = $update_result->fetch_assoc()){
-                  echo "<h1>Änderung der Person: " . $row_u["vorname"] . " " . $row_u["nachname"] . "</h1>";
 
                   $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
                   $adresseupdate_result = $conn->query($adresseupdate_sql);
@@ -144,24 +133,11 @@ if ($conn->connect_error) {
                   $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update";
                   $personupdate_result = $conn->query($personupdate_sql);
 
-                  echo "<p>Ihre Person wurde geändert!</p>";
-
                 }
+                $erfolg = 1;
               }
               
               else {
-                echo "<ol class=\"breadcrumb\">
-                      <li class=\"breadcrumb-item\">
-                        <a href=\"dashboard.php\">Dashboard</a>
-                      </li>
-                      <li class=\"breadcrumb-item\">
-                        <a href=\"person.php\">Personen</a>
-                      </li>
-                      <li class=\"breadcrumb-item active\">
-                        Person erstellen
-                      </li>
-                    </ol>";
-                echo "<h1>Neue Person hinzufügen</h1>";
 
                 $id_adresse_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
                 $id_adresse_result = $conn->query($id_adresse_sql);
@@ -172,6 +148,7 @@ if ($conn->connect_error) {
                       $id_adresse_übergabe = $row_i['id_adresse'];
                       $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresse_übergabe')";
                       $personnew_result = $conn->query($personnew_sql);
+                      $erfolg = 2;
                     }
                   }
 
@@ -188,32 +165,159 @@ if ($conn->connect_error) {
                       $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
                       $personnew_result = $conn->query($personnew_sql);
                     }
-
+                    $erfolg = 2;
                   }
-                echo 'die Person wurde hinzugefügt';
-                }
+                
+              }
+               
 
             }
             else{
-    
-              while($row_v = $schonvorhanden->fetch_assoc()){
-                echo "<h1>Diese Person ist schon vorhanden</h1><hr>";
-                echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
-
-                echo "<div class=\"form-group\"></div>
-                  <div class=\"form-group\">
-                    <a class=\"btn btn-secondary\" href=\"person-show.php?id_person=" . $row_v['id_person'] . "\" >Person anzeigen</a>
-                    <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
-                    <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
-                  </div>";
+              $erfolg = 3;
               }
+//echo $erfolg;
+
+
+//wiederanzeige der Hinzufügenseite
+
+      if($erfolg==1){
+        
+        $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = $update";
+        $person = $conn->query($personsql);
+
+        while($row_p = $person->fetch_assoc()){
+        echo "<ol class=\"breadcrumb\">
+          <li class=\"breadcrumb-item\">
+            <a href=\"dashboard.php\">Dashboard</a>
+          </li>
+          <li class=\"breadcrumb-item\"
+            <a href=\"person.php\">Personen</a>
+          </li>
+          <li class=\"breadcrumb-item active\">
+            Person bearbeiten
+          </li>
+          </ol>";
+          echo "<div class=\"alert alert-success\" role=\"alert\">Diese Person wurde geändert!</div>";
+              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
+
+
+              echo "<label>Vorname</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
+              
+              echo "<label>Nachname</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\">";
+              
+              echo "<label>E-Mail</label>";
+              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\">";
+              
+              echo "<label>Telefonnummer</label>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\">";
+              
+              echo "<label>Geburtsdatum</label>";
+              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\">";
+
+              echo "<br><h3> Adresse </h3>";
+
+              echo "<label>Straße</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\">";
+
+              echo "<label>Hausnummer</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\">";
+
+              echo "<label>Postleitzahl</label>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\">";
+
+              echo "<label>Ortschaft</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\">";
+
+              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\">";
+
+              echo "<div class=\"form-group\"></div>
+              <div class=\"form-group\">
+                <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+                <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+              </div>";
+              echo "</form>";
 
             }
-            
 
+        }
+
+        else if($erfolg==3){
+          while($row_v = $schonvorhanden->fetch_assoc()){
+            echo "<h1>Diese Person ist schon vorhanden</h1><hr>";
+            echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
+
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+            <a class=\"btn btn-secondary\" href=\"person-show.php?id_person=" . $row_v['id_person'] . "\" >Person anzeigen</a>
+            <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
+            <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
+            </div>";
+          }
+        }
+
+        else{
+          echo "<ol class=\"breadcrumb\">
+                <li class=\"breadcrumb-item\">
+                  <a href=\"dashboard.php\">Dashboard</a>
+                </li>
+                <li class=\"breadcrumb-item\">
+                  <a href=\"person.php\">Personen</a>
+                </li>
+                <li class=\"breadcrumb-item active\">
+                  Person hinzufügen
+                </li>
+              </ol>";
+            echo "<div class=\"alert alert-success\" role=\"alert\">" . $vorname . " " . $nachname . " wurde hinzugefügt</div>";
+            echo "<h1>Person hinzufügen </h1><hr>";
+            echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
             
+            
+            echo "<label>Vorname</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\">";
+            
+            echo "<label>Nachname</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\">";
+            
+            echo "<label>E-Mail</label>";
+            echo "<input class=\"form-control\" type=\"email\" name=\"email\">";
+            
+            echo "<label>Telefonnummer</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\">";
+            
+            echo "<label>Geburtsdatum</label>";
+            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\">";
+
+            echo "<br><h3> Adresse </h3>";
+
+            echo "<label>Straße</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\">";
+
+            echo "<label>Hausnummer</label>";
+            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\">";
+
+            echo "<label>Postleitzahl</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"plz\">";
+
+            echo "<label>Ortschaft</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\">";
+
+            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"land\">";
+          
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+              <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+              <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+            </div>";
+
+        }
+
+        // }
           ?>
-
         </div>
         <!-- /.container-fluid -->
 

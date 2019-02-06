@@ -169,9 +169,10 @@
                   <a href=\"person.php\">Personen</a>
                 </li>
                 <li class=\"breadcrumb-item active\">
-                  Person bearbeiten
+                  Person hinzufügen
                 </li>
               </ol>";
+            echo "<h1>Person hinzufügen </h1><hr>";
             echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
             
             
