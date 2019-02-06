@@ -115,7 +115,6 @@ if ($conn->connect_error) {
 
             $schonvorhanden_sql = "SELECT * FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum' ";
             $schonvorhanden = $conn->query($schonvorhanden_sql);
-//             echo $schonvorhanden_sql;
 
   	        if($schonvorhanden->num_rows==0){
 
@@ -196,11 +195,6 @@ if ($conn->connect_error) {
 
             }
             else{
-
-              // $personvsql = "SELECT vorname, nachname,geburtstag FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum'";
-              // $personv = $conn->query($personvsql);
-              // echo '<br>else<br>';
-              // echo $personvsql;
     
               while($row_v = $schonvorhanden->fetch_assoc()){
                 echo "<h1>Diese Person ist schon vorhanden</h1><hr>";
