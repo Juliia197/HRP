@@ -97,7 +97,7 @@
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             } 
-
+          $personid = $_GET["id_person"];
             $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
             $person = $conn->query($personsql);
             //echo $person;
@@ -116,7 +116,8 @@
                     </li>
                   </ol>";
               echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "\" method=\"post\">";
+              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
+
 
               echo "<label>Vorname</label>";
               echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
@@ -171,7 +172,7 @@
                   Person bearbeiten
                 </li>
               </ol>";
-            echo "<form action=\"person-edited.php?id_person=0\" method=\"post\">";
+            echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
             
             
             echo "<label>Vorname</label>";
