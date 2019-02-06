@@ -191,7 +191,7 @@ if ($conn->connect_error) {
                     }
 
                   }
-                echo 'die Person wurde hinzugefügt'
+                echo 'die Person wurde hinzugefügt';
                 }
 
             }
@@ -203,7 +203,8 @@ if ($conn->connect_error) {
               // echo $personvsql;
     
               while($row_v = $schonvorhanden->fetch_assoc()){
-                echo "<h1>Die Person " . $row_v['vorname'] ." " . $row_v['nachname'] . " mit dem Geburtsdatum: " . $row_v['geburtsdatum'] . " ist bereits vorhanden</h1> <hr>";
+                echo "<h1>Diese Person ist schon vorhanden</h1><hr>";
+                echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
 
                 echo "<div class=\"form-group\"></div>
                   <div class=\"form-group\">
