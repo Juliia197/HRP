@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "dhbw";
+$dbname = "hrppr_db1";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -10,6 +10,38 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+$preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp1 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1";
+$preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
+if ($preis_verbrauchsguttyp1_result->num_rows > 0) {
+  while($row = $preis_verbrauchsguttyp1_result->fetch_assoc()) {
+    $preis_verbrauchsguttyp1 = $row["preis_verbrauchsguttyp1"];
+  }
+}
+
+$preis_verbrauchsguttyp2_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=2";
+$preis_verbrauchsguttyp2_result = $conn->query($preis_verbrauchsguttyp2_sql);
+if ($preis_verbrauchsguttyp2_result->num_rows > 0) {
+  while($row = $preis_verbrauchsguttyp2_result->fetch_assoc()) {
+    $preis_verbrauchsguttyp2 = $row["preis_verbrauchsguttyp2"];
+  }
+}
+
+$preis_verbrauchsguttyp3_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp3 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=3";
+$preis_verbrauchsguttyp3_result = $conn->query($preis_verbrauchsguttyp3_sql);
+if ($preis_verbrauchsguttyp3_result->num_rows > 0) {
+  while($row = $preis_verbrauchsguttyp3_result->fetch_assoc()) {
+    $preis_verbrauchsguttyp3 = $row["preis_verbrauchsguttyp3"];
+  }
+}
+
+$preis_verbrauchsguttyp4_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp4 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=4";
+$preis_verbrauchsguttyp4_result = $conn->query($preis_verbrauchsguttyp4_sql);
+if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
+  while($row = $preis_verbrauchsguttyp4_result->fetch_assoc()) {
+    $preis_verbrauchsguttyp4 = $row["preis_verbrauchsguttyp4"];
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,9 +130,58 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Güter</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <div class="container-fluid">
+          <div class="row justify-content-end">
+          <a class="btn btn-success" role="button" href="gueter-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
+          </div>
+          </div>
+          
+          <p>
+          <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>Typ</th>
+              <th>Bestand</th>
+              <th>Durchschnittspreis je kg</th>
+            </tr>
+            </thead>          
+            <tbody>
+            <?php  
+              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
+              $verbrauchsguttyp = "SELECT * FROM verbrauchsguttyp";
+              
+              $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
+
+              while($fetch = mysqli_fetch_assoc($query)){
+                echo '<tr>';
+                  echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
+                  echo '<td>' . $fetch['bestand'] . '</td>';
+                  echo '<td>' ;
+                    if( $fetch['id_verbrauchsguttyp'] == 1)
+                      {
+                        echo $preis_verbrauchsguttyp1;
+                      }
+                    else if( $fetch['id_verbrauchsguttyp'] == 2)
+                      {
+                        echo $preis_verbrauchsguttyp2;
+                      }
+                    else if( $fetch['id_verbrauchsguttyp'] == 3)
+                      {
+                        echo $preis_verbrauchsguttyp3;
+                      }
+                    else
+                      {
+                        echo $preis_verbrauchsguttyp4;
+                      }
+                  echo '</td>';
+                  }
+            ?>
+            </tbody>                
+          </table>
+          </div>  
 
         </div>
         <!-- /.container-fluid -->
@@ -151,8 +232,16 @@ if ($conn->connect_error) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
