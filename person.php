@@ -95,6 +95,9 @@
             </li>
           </ol>
 
+          <h1>Übersicht Personen</h1>
+          <hr>
+
           <div class="container-fluid">
           <div class="row justify-content-end">
           <a class="btn btn-success" role="button" href="person-edit.php?id_person=0">Hinzufügen</a>
