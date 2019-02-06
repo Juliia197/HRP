@@ -11,11 +11,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp1 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1";
+$preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1";
 $preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
 if ($preis_verbrauchsguttyp1_result->num_rows > 0) {
   while($row = $preis_verbrauchsguttyp1_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp1 = $row["preis_verbrauchsguttyp1"];
+    $preis_verbrauchsguttyp1 = $row["preis_verbrauchsguttyp2"];
   }
 }
 
@@ -130,11 +130,17 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Güter</h1>
-          <hr>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Güter
+            </li>            
+          </ol>
           <div class="container-fluid">
           <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="gueter-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
+          <a class="btn btn-success" role="button" href="lieferung.php?id_verbrauchsgut=0">Lieferungen</a>
           </div>
           </div>
           
