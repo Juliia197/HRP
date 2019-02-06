@@ -80,13 +80,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferd.php">
+          <a class="nav-link" href="pferde.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="person.php">
+          <a class="nav-link" href="personen.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -107,47 +107,146 @@ if ($conn->connect_error) {
             $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
             $id_person = $_POST["id_person"];
             $update = $_GET["id_verbrauchsgut"];
-            if ($update > 0){
-              echo "<ol class=\"breadcrumb\">
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"dashboard.php\">Dashboard</a>
-                    </li>
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"gueter.php\">Güter</a>
-                    </li>
-                    <li class=\"breadcrumb-item active\">
-                      Lieferung bearbeiten
-                    </li>
-                  </ol>"; 
-              $update_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $update;
-              $update_result = $conn->query($update_sql);
-              if($update_result->num_rows > 0){
-                while($row_u = $update_result->fetch_assoc()){
-                  echo "<h1>Änderung Produkt: " . $row_u["verbrauchsgutbez"] . "</h1>";
-                  $gutupdate_sql = "UPDATE verbrauchsgut SET verbrauchsgutbez = '$verbrauchsgutbez', lieferdatum = '$lieferdatum', menge ='$menge', einkaufspreis = '$einkaufspreis', id_gehoeft = '$id_gehoeft', id_person='$id_person',id_verbrauchsguttyp='$id_verbrauchsguttyp' WHERE id_verbrauchsgut=$update AND id_gehoeft=1";
-                  $gutupdate_result = $conn->query($gutupdate_sql);
-                  echo "<p>Ihre Lieferung wurde geändert!</p>";
+            if($update > 0){
+            $update_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $update;
+                  $update_result = $conn->query($update_sql);
+                  if($update_result->num_rows > 0){
+                    while($row_u = $update_result->fetch_assoc()){
+                      $gutupdate_sql = "UPDATE verbrauchsgut SET verbrauchsgutbez = '$verbrauchsgutbez', lieferdatum = '$lieferdatum', menge ='$menge', einkaufspreis = '$einkaufspreis', id_gehoeft = '$id_gehoeft', id_person='$id_person',id_verbrauchsguttyp='$id_verbrauchsguttyp' WHERE id_verbrauchsgut=$update AND id_gehoeft=1";
+                      $gutupdate_result = $conn->query($gutupdate_sql);
+                      
+                    }
+                  }
+                }
+              else {
+                $gutnew_sql = "INSERT INTO verbrauchsgut (id_verbrauchsgut, verbrauchsgutbez, lieferdatum, id_person, menge, einkaufspreis, id_gehoeft, id_verbrauchsguttyp) VALUES (NULL, '$verbrauchsgutbez', '$lieferdatum', '$id_person', '$menge', '$einkaufspreis', '$id_gehoeft', '$id_verbrauchsguttyp')";
+                $gutnew_result = $conn->query($gutnew_sql);
+              }
+          ?>
+          <?php
+          if($update > 0){
+            $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
+            $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
+              if($verbrauchsgut_result->num_rows > 0){
+                while($row_g = $verbrauchsgut_result->fetch_assoc()){   
+                  echo "<ol class=\"breadcrumb\">
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"dashboard.php\">Dashboard</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item active\">
+                            Lieferung bearbeiten
+                          </li>
+                        </ol>
+                        <h1>Lieferung bearbeiten</h1>
+                        <hr>";
+                  echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde geändert!</div>";
+                  echo "<form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
+                  echo "<label>Verbrauchsgütertyp</label>";
+                  echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                  $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
+                  $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
+                  if($verbrauchsguttyp_result->num_rows > 0){
+                    while($row_vgt = $verbrauchsguttyp_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_vgt["id_verbrauchsguttyp"] . "\" selected>" . $row_vgt["verbrauchsguttypbez"] . "</option>";
+                    }
+                  }
+                  $notverbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE NOT id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
+                  $notverbrauchsguttyp_result = $conn->query($notverbrauchsguttyp_sql);
+                  if($notverbrauchsguttyp_result->num_rows > 0){
+                    while($row_nvgt = $notverbrauchsguttyp_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_nvgt["id_verbrauchsguttyp"] . "\">" . $row_nvgt["verbrauchsguttypbez"] . "</option>";
+                    }
+                  }
+                  echo "</select>";
+                  echo "<label>Bezeichnung</label>";
+                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\">";
+                  echo "<label>Lieferdatum</label>";
+                  echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\">";
+                  echo "<label>Lieferant</label>";
+                  echo "<select class=\"form-control\" name=\"id_person\">";
+                  $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
+                  $lieferant_result = $conn->query($lieferant_sql);
+                  if($lieferant_result->num_rows > 0){
+                    while($row_l = $lieferant_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
+                    }
+                  }
+                  $notlieferant_sql = "SELECT * FROM person WHERE id_person IS NOT NULL AND NOT id_person = " . $row_g["id_person"];
+                  $notlieferant_result = $conn->query($notlieferant_sql);
+                  if($notlieferant_result->num_rows > 0){
+                    while($row_nl = $notlieferant_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_nl["id_person"] . "\">" . $row_nl["vorname"] . " " . $row_nl["nachname"] . "</option>";
+                    }
+                  }
+                  echo "</select>";
+                  echo "<label>Menge</label>";
+                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\">";
+                  echo "<label>Einkaufspreis</label>";
+                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\">";
+                  echo "<div class=\"form-group\"></div>
+                      <div class=\"form-group\">
+                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abbrechen</button>
+                      </div>";
                 }
               }
             }
-            else {
-              echo "<ol class=\"breadcrumb\">
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"dashboard.php\">Dashboard</a>
-                    </li>
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"gueter.php\">Güter</a>
-                    </li>
-                    <li class=\"breadcrumb-item active\">
-                      Lieferung erstellen
-                    </li>
-                  </ol>";
-              echo "<h1>Neue Lieferung hinzufügen</h1>";
-              $gutnew_sql = "INSERT INTO verbrauchsgut (id_verbrauchsgut, verbrauchsgutbez, lieferdatum, id_person, menge, einkaufspreis, id_gehoeft, id_verbrauchsguttyp) VALUES (NULL, '$verbrauchsgutbez', '$lieferdatum', '$id_person', '$menge', '$einkaufspreis', '$id_gehoeft', '$id_verbrauchsguttyp')";
-              $gutnew_result = $conn->query($gutnew_sql);
-              echo "<p>Ihre Lieferung wurde hinzugefügt!</p>";
-            }
-          ?>
+            
+              else {
+                echo "<ol class=\"breadcrumb\">
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"dashboard.php\">Dashboard</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item active\">
+                            Lieferung erstellen
+                          </li>
+                        </ol>
+                        <h1>Lieferung erstellen</h1>
+                        <hr>";
+                echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde hinzugefügt!</div>";
+                echo "<form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
+                echo "<label>Verbrauchsgütertyp:</label>";
+                echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
+                $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
+                if ($verbrauchsguttypall_result->num_rows > 0){
+                  while($row_vgtall = $verbrauchsguttypall_result->fetch_assoc()){
+                    echo "<option value=\"" . $row_vgtall["id_verbrauchsguttyp"] . "\">" . $row_vgtall["verbrauchsguttypbez"] . "</option>";
+                  }
+                }
+                echo "</select>";
+                echo "<label>Bezeichnung</label>";
+                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\">";
+                echo "<label>Lieferdatum</label>";
+                echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\">";
+                echo "<label>Lieferant</label>";
+                echo "<select class=\"form-control\" name=\"id_person\">";
+                $lieferantall_sql = "SELECT * FROM person";
+                $lieferantall_result = $conn->query($lieferantall_sql);
+                if($lieferantall_result->num_rows > 0){
+                  while($row_lall = $lieferantall_result->fetch_assoc()){
+                    echo "<option value=\"" . $row_lall["id_person"] . "\">" . $row_lall["vorname"] . " " . $row_lall["nachname"] . "</option>";
+                  }
+                }
+                echo "</select>";
+                echo "<label>Menge</label>";
+                echo "<input class=\"form-control\" type=\"number\" name=\"menge\">";
+                echo "<label>Einkaufspreis</label>";
+                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\">";
+                echo "<div class=\"form-group\"></div>
+                      <div class=\"form-group\">
+                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
+                      </div>";
+              }
+              ?>
+            </form>
 
         </div>
         <!-- /.container-fluid -->

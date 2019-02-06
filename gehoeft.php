@@ -251,6 +251,10 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
               <div class="row justify-content-end">
                 <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
               </div>
+              <br>
+              <div class="row justify-content-end">
+                <a class="btn btn-danger" href="box-delete.php">Box löschen</a>
+              </div>
               <div class="row">
                 <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
               </div>
@@ -258,13 +262,13 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           </div>
           <hr>
           <div class="card mb-3">
-            <div class="card-header">
-            <i class="fas fa-chart-area"></i>
-            Verhältnis der freien zu belegten Boxen
-            </div>
-            <div class="card-body">
-              <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
-            </div>
+          <div class="card-header">
+          <i class="fas fa-chart-area"></i>
+          Verhältnis der freien zu belegten Boxen
+          </div>
+          <div class="card-body">
+            <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
+          </div>
           </div>
 
         <!-- /.container-fluid -->
@@ -323,6 +327,3 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
   </body>
 
 </html>
-<?php 
-  $conn->close();
-?>

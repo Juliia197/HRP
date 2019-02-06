@@ -118,7 +118,7 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                         <h1>Lieferung bearbeiten</h1>
                         <hr>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
-                  echo "<label>Verbrauchsgütertyp</label>";
+                  echo "<label>Verbrauchsgütertyp:</label>";
                   echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
@@ -182,7 +182,7 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                         <h1>Lieferung erstellen</h1>
                         <hr>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
-                echo "<label>Verbrauchsgütertyp</label>";
+                echo "<label>Verbrauchsgütertyp:</label>";
                 echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
