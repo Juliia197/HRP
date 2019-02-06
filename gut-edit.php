@@ -118,7 +118,7 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                         <h1>Lieferung bearbeiten</h1>
                         <hr>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
-                  echo "<label>Verbrauchsgütertyp:</label>";
+                  echo "<div class=\"form-group\"><label>Verbrauchsgütertyp:</label>";
                   echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
@@ -134,12 +134,12 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                       echo "<option value=\"" . $row_nvgt["id_verbrauchsguttyp"] . "\">" . $row_nvgt["verbrauchsguttypbez"] . "</option>";
                     }
                   }
-                  echo "</select>";
-                  echo "<label>Bezeichnung</label>";
-                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\">";
-                  echo "<label>Lieferdatum (yyyy-mm-dd)</label>";
-                  echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\">";
-                  echo "<label>Lieferant</label>";
+                  echo "</select></div>";
+                  echo "<div class=\"form-group\"><label>Bezeichnung</label>";
+                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"></div>";
+                  echo "<div class=\"form-group\"><label>Lieferdatum</label>";
+                  echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div>";
+                  echo "<div class=\"form-group\"><label>Lieferant</label>";
                   echo "<select class=\"form-control\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
                   $lieferant_result = $conn->query($lieferant_sql);
@@ -155,13 +155,12 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                       echo "<option value=\"" . $row_nl["id_person"] . "\">" . $row_nl["vorname"] . " " . $row_nl["nachname"] . "</option>";
                     }
                   }
-                  echo "</select>";
-                  echo "<label>Menge</label>";
-                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\">";
-                  echo "<label>Einkaufspreis</label>";
-                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\">";
-                  echo "<div class=\"form-group\"></div>
-                      <div class=\"form-group\">
+                  echo "</select></div>";
+                  echo "<div class=\"form-group\"><label>Menge</label>";
+                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\"></div>";
+                  echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
+                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
+                  echo "<div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
                         <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abbrechen</button>
                       </div>";
@@ -182,7 +181,7 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                         <h1>Lieferung erstellen</h1>
                         <hr>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
-                echo "<label>Verbrauchsgütertyp:</label>";
+                echo "<div class=\"form-group\"><label>Verbrauchsgütertyp:</label>";
                 echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
@@ -191,12 +190,12 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                     echo "<option value=\"" . $row_vgtall["id_verbrauchsguttyp"] . "\">" . $row_vgtall["verbrauchsguttypbez"] . "</option>";
                   }
                 }
-                echo "</select>";
-                echo "<label>Bezeichnung</label>";
-                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\">";
-                echo "<label>Lieferdatum (yyyy-mm-dd)</label>";
-                echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\">";
-                echo "<label>Lieferant</label>";
+                echo "</select></div>";
+                echo "<div class=\"form-group\"><label>Bezeichnung</label>";
+                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"></div>";
+                echo "<div class=\"form-group\"><label>Lieferdatum</label>";
+                echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"></div>";
+                echo "<div class=\"form-group\"><label>Lieferant</label>";
                 echo "<select class=\"form-control\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person";
                 $lieferantall_result = $conn->query($lieferantall_sql);
@@ -205,13 +204,12 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                     echo "<option value=\"" . $row_lall["id_person"] . "\">" . $row_lall["vorname"] . " " . $row_lall["nachname"] . "</option>";
                   }
                 }
-                echo "</select>";
-                echo "<label>Menge</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"menge\">";
-                echo "<label>Einkaufspreis</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\">";
-                echo "<div class=\"form-group\"></div>
-                      <div class=\"form-group\">
+                echo "</select></div>";
+                echo "<div class=\"form-group\"><label>Menge</label>";
+                echo "<input class=\"form-control\" type=\"number\" name=\"menge\"></div>";
+                echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
+                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
+                echo "<div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
                         <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
                       </div>";
