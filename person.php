@@ -97,7 +97,7 @@
 
           <div class="container-fluid">
           <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="pferd-edit.php?id_pferd=0">Hinzufügen</a>
+          <a class="btn btn-success" role="button" href="person-edit.php?id_person=0">Hinzufügen</a>
           </div>
           </div>
 

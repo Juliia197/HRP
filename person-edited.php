@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "dhbw";
+$dbname = "hrppr_db1";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -99,51 +99,119 @@ if ($conn->connect_error) {
 
           <!-- Page Content -->
           <?php
-            echo "<ol class=\"breadcrumb\">
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"dashboard.php\">Dashboard</a>
-                    </li>
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"person.php\">Personen</a>
-                    </li>
-                    <li class=\"breadcrumb-item active\">
-                      Person bearbeiten
-                    </li>
-                  </ol>"; 
+
             $vorname = $_POST["vorname"];
             $nachname = $_POST["nachname"];
             $email = $_POST["email"];
             $telefonnr = $_POST["telefonnr"];
+            $geburtsdatum = $_POST["geburtsdatum"];
+            $strasse = $_POST["strasse"];
+            $hausnr = $_POST["hausnr"];
+            $plz = $_POST["plz"];
+            $ort = $_POST["ort"];
+            $land = $_POST["land"];
             $update = $_GET["id_person"];
-            if ($update > 0){
-              $update_sql = "SELECT * FROM person WHERE id_person=" . $update;
-              $update_result = $conn->query($update_sql);
-              if($update_result->num_rows > 0){
+            $update2 = $_GET["id_adresse"];
+
+            $schonvorhanden_sql = "SELECT * FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum' ";
+            $schonvorhanden = $conn->query($schonvorhanden_sql);
+
+  	        if($schonvorhanden->num_rows==0){
+
+
+              if ($update > 0){
+                echo "<ol class=\"breadcrumb\">
+                  <li class=\"breadcrumb-item\">
+                    <a href=\"dashboard.php\">Dashboard</a>
+                  </li>
+                  <li class=\"breadcrumb-item\">
+                    <a href=\"person.php\">Personen</a>
+                  </li>
+                  <li class=\"breadcrumb-item active\">
+                    Person bearbeiten
+                  </li>
+                </ol>"; 
+
+                $update_sql = "SELECT * FROM person, adresse WHERE id_person=" . $_GET["id_person"] . " AND person.id_adresse = adresse.id_adresse AND person.id_adresse=".  $_GET["id_adresse"];
+                $update_result = $conn->query($update_sql);
+
                 while($row_u = $update_result->fetch_assoc()){
-                  echo "<h1>Änderung Person: " . $row_u["vorname"] . " " . $row_u["nachname"] . "</h1>";
-                  $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update;
-                  $personupdate_result = $conn->query($personupdate_sql)";
+                  echo "<h1>Änderung der Person: " . $row_u["vorname"] . " " . $row_u["nachname"] . "</h1>";
+
+                  $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
+                  $adresseupdate_result = $conn->query($adresseupdate_sql);
+
+                  $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update";
+                  $personupdate_result = $conn->query($personupdate_sql);
+
                   echo "<p>Ihre Person wurde geändert!</p>";
+
                 }
               }
+              
+              else {
+                echo "<ol class=\"breadcrumb\">
+                      <li class=\"breadcrumb-item\">
+                        <a href=\"dashboard.php\">Dashboard</a>
+                      </li>
+                      <li class=\"breadcrumb-item\">
+                        <a href=\"person.php\">Personen</a>
+                      </li>
+                      <li class=\"breadcrumb-item active\">
+                        Person erstellen
+                      </li>
+                    </ol>";
+                echo "<h1>Neue Person hinzufügen</h1>";
+
+                $id_adresse_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
+                $id_adresse_result = $conn->query($id_adresse_sql);
+
+                  if($id_adresse_result->num_rows>0){
+                    while($row_i = $id_adresse_result->fetch_assoc()){
+
+                      $id_adresse_übergabe = $row_i['id_adresse'];
+                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresse_übergabe')";
+                      $personnew_result = $conn->query($personnew_sql);
+                    }
+                  }
+
+
+                  else{    
+                    $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
+                    $adressenew_result = $conn->query($adressenew_sql);
+
+                    $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
+                    $id_adresse_result1 = $conn->query($id_adresse_sql1);
+
+                    while($row_a = $id_adresse_result1->fetch_assoc()){   
+                      $id_adresseh = $row_a['id_adresse'];
+                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
+                      $personnew_result = $conn->query($personnew_sql);
+                    }
+
+                  }
+                echo 'die Person wurde hinzugefügt';
+                }
+
             }
-            else {
-              echo "<ol class=\"breadcrumb\">
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"dashboard.php\">Dashboard</a>
-                    </li>
-                    <li class=\"breadcrumb-item\">
-                      <a href=\"person.php\">Personen</a>
-                    </li>
-                    <li class=\"breadcrumb-item active\">
-                      Person erstellen
-                    </li>
-                  </ol>";
-              echo "<h1>Neue Person hinzufügen</h1>";
-              $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum) VALUES (NULL, '$vorname', '$nachname', '$email', '$telefonnr', '$geburtsdatum')";
-              $personnew_result = $conn->query($personnew_sql);
-              echo "<p>Ihre Person wurde hinzugefügt!</p>";
+            else{
+    
+              while($row_v = $schonvorhanden->fetch_assoc()){
+                echo "<h1>Diese Person ist schon vorhanden</h1><hr>";
+                echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
+
+                echo "<div class=\"form-group\"></div>
+                  <div class=\"form-group\">
+                    <a class=\"btn btn-secondary\" href=\"person-show.php?id_person=" . $row_v['id_person'] . "\" >Person anzeigen</a>
+                    <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
+                    <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
+                  </div>";
+              }
+
             }
+            
+
+            
           ?>
 
         </div>

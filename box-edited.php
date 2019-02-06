@@ -123,7 +123,21 @@ if ($conn->connect_error) {
             $boxenadd_result = $conn->query($boxenadd_sql);
 
           ?>
-          <p>Die Box wurde hinzugefügt!</p>
+          <div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div>
+          <form action="box-edited.php" method="post">
+            <div class="form-group">
+            <label>Boxentyp:</label>
+            <p><input type="radio" name="innenbox">Innenbox<br>
+            <input type="radio" name="paddockbox">Paddockbox</p>
+            </div>
+            <div class="form-group">
+            <label>Boxenpreis:</label><br>
+            <input type="text" name="boxenpreis">
+            </div>
+            <div class="form-group">
+            <button type="submit" class="btn btn-success">Abschicken</button>
+            </div>
+          </form>
 
         </div>
         <!-- /.container-fluid -->

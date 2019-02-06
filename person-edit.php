@@ -85,7 +85,6 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-
           <?php
             $servername = "localhost";
             $username = "root";
@@ -98,10 +97,10 @@
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             } 
-
-            $personsql = "SELECT * FROM person WHERE id_person=" . $_GET['id_person'];
+          $personid = $_GET["id_person"];
+            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
             $person = $conn->query($personsql);
-
+            //echo $person;
 
           if($person->num_rows>0){
             while($row_p = $person->fetch_assoc()){
@@ -117,7 +116,8 @@
                     </li>
                   </ol>";
               echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "\" method=\"post\">";
+              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
+
 
               echo "<label>Vorname</label>";
               echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
@@ -133,6 +133,23 @@
               
               echo "<label>Geburtsdatum</label>";
               echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\">";
+
+              echo "<br><h3> Adresse </h3>";
+
+              echo "<label>Straße</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\">";
+
+              echo "<label>Hausnummer</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\">";
+
+              echo "<label>Postleitzahl</label>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\">";
+
+              echo "<label>Ortschaft</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\">";
+
+              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\">";
 
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
@@ -155,7 +172,7 @@
                   Person bearbeiten
                 </li>
               </ol>";
-            echo "<form action=\"person-edited.php?id_person=0\" method=\"post\">";
+            echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
             
             
             echo "<label>Vorname</label>";
@@ -172,6 +189,23 @@
             
             echo "<label>Geburtsdatum</label>";
             echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\">";
+
+            echo "<br><h3> Adresse </h3>";
+
+            echo "<label>Straße</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\">";
+
+            echo "<label>Hausnummer</label>";
+            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\">";
+
+            echo "<label>Postleitzahl</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"plz\">";
+
+            echo "<label>Ortschaft</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\">";
+
+            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"land\">";
           
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">

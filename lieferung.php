@@ -215,5 +215,4 @@ if ($conn->connect_error) {
   <script src="js/demo/datatables-demo.js"></script>
 
   </body>
-
 </html>

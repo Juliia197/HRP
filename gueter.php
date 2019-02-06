@@ -249,5 +249,4 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
   <script src="js/demo/datatables-demo.js"></script>
 
   </body>
-
 </html>
