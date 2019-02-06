@@ -99,12 +99,18 @@
           <h1>Box hinzufügen</h1>
           <hr>
           <form action="box-edited.php" method="post">
+            <div class="form-group">
             <label>Boxentyp:</label>
             <p><input type="radio" name="innenbox">Innenbox<br>
             <input type="radio" name="paddockbox">Paddockbox</p>
+            </div>
+            <div class="form-group">
             <label>Boxenpreis:</label><br>
             <input type="text" name="boxenpreis">
+            </div>
+            <div class="form-group">
             <button type="submit" class="btn btn-success">Abschicken</button>
+            </div>
           </form>
 
         </div>

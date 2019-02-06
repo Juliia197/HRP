@@ -96,48 +96,32 @@ if ($conn->connect_error) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="#">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a href="gehoeft.php">Gehöft</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Box hinzufügen
-            </li>
-          </ol>
 
           <!-- Page Content -->
-          <h1>Box hinzufügen</h1>
+          <h1>Box löschen</h1>
           <hr>
+          <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <td>Boxentyp</td>
+              <td>Boxenpreis</td>
+              <td>Aktion</td>
+            </tr>
+          </thead>
+          <tbody>
           <?php
-          $boxenpreis = $_POST["boxenpreis"];
-            if(isset($_POST["innenbox"])){
-              $boxentyp=1;
+            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=1 AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
+            $boxfrei_result = $conn->query($boxfrei_sql);
+            if($boxfrei_result->num_rows > 0){
+              while ($row_bf = $boxfrei_result->fetch_assoc()){
+                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf["id_box"] . "\">Box löschen</a></td></tr>";
+              }
             }
-            else if(isset($_POST["paddockbox"])) {
-              $boxentyp=2;
-            }
-            $boxenadd_sql = "INSERT INTO box (id_box, boxenpreis, id_gehoeft, id_boxentyp, id_pferd) VALUES (NULL, '$boxenpreis',1,$boxentyp,NULL)";
-            $boxenadd_result = $conn->query($boxenadd_sql);
-
           ?>
-          <div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div>
-          <form action="box-edited.php" method="post">
-            <div class="form-group">
-            <label>Boxentyp:</label>
-            <p><input type="radio" name="innenbox">Innenbox<br>
-            <input type="radio" name="paddockbox">Paddockbox</p>
-            </div>
-            <div class="form-group">
-            <label>Boxenpreis:</label><br>
-            <input type="text" name="boxenpreis">
-            </div>
-            <div class="form-group">
-            <button type="submit" class="btn btn-success">Abschicken</button>
-            </div>
-          </form>
+          </tbody>
+          </table>
+          </div>
 
         </div>
         <!-- /.container-fluid -->
@@ -190,6 +174,10 @@ if ($conn->connect_error) {
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
