@@ -102,7 +102,7 @@ if ($conn->connect_error) {
           <hr>
           <div class="container-fluid">
           <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="lieferung.php?id_verbrauchsgut=0">Hinzufügen</a>
+          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
           </div>
           </div>
           
