@@ -131,9 +131,9 @@ if ($conn->connect_error) {
             
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
-              <button  class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" role=\"button\">Bearbeiten</button>
-              <button  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" role=\"button\">Löschen</button>
-              <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">zurück zur Übersicht</button>     
+              <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+              <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
+              <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
             </div>";
 
             
