@@ -98,11 +98,20 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Lieferungen</h1>
-          <hr>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+              <a href="gueter.php">Güter</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Lieferungen
+            </li>            
+          </ol>
           <div class="container-fluid">
           <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="lieferung.php?id_verbrauchsgut=0">Hinzufügen</a>
+          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
           </div>
           </div>
           
@@ -111,6 +120,7 @@ if ($conn->connect_error) {
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
+              <th>Lieferung</th>  
               <th>Lieferdatum</th>
               <th>Menge in kg</th>
               <th>Einkaufspreis je kg</th>
@@ -127,11 +137,12 @@ if ($conn->connect_error) {
               while($fetch = mysqli_fetch_assoc($query)){
                 echo '<tr>';
                   echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
+                  echo '<td>' . $fetch['lieferdatum'] . '</td>';
                   echo '<td>' . $fetch['menge'] . '</td>';
                   echo '<td>' . $fetch['einkaufspreis'] . '</td>';
                   $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
                   $query1 = $conn->query($lieferant) or die (mysql_error());
-                    while($fetch1 = mysqli_fetch_assoc($query1)){
+                    if($fetch1 = mysqli_fetch_assoc($query1)){
                       echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
                     }
               }
@@ -192,8 +203,16 @@ if ($conn->connect_error) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
