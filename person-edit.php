@@ -98,8 +98,8 @@
                 die("Connection failed: " . $conn->connect_error);
             } 
           $personid = $_GET["id_person"];
-            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-            $person = $conn->query($personsql);
+          $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+          $person = $conn->query($personsql);
             //echo $person;
 
           if($person->num_rows>0){
