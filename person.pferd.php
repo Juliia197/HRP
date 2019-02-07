@@ -67,7 +67,7 @@ if ($conn->connect_error) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -85,7 +85,7 @@ if ($conn->connect_error) {
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -107,77 +107,46 @@ if ($conn->connect_error) {
               <a href="person.php">Personen</a>
             </li>
             <li class="breadcrumb-item active">
-              Person löschen
-            </li>
+              Pferde zur Person
           </ol>
+          <tr>
+
           <?php  
             $id_person = $_GET['id_person'];
-            $id_delete = $_GET['id_delete'];
-          
-            $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-            $person = $conn->query($personsql);
+            $person_sql = "SELECT vorname, nachname FROM person WHERE id_person = $id_person";
+            $person = $conn->query($person_sql);
+//            echo $person_sql;
 
-            if($id_delete==1){
+            while ($fetch1 = mysqli_fetch_assoc($person)){
+              echo "<h1> Pferde zu " . $fetch1['vorname'] . " " . $fetch1['nachname'] . "</h1>";
+              $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
+              $pferd_bez = $conn->query($pferd_sql);
 
-              echo '<div class="alert alert-danger" role="alert"> Diese Person kann gelöscht werden!</div><hr>';
+              echo "
+                <p>
+                <div class='table-responsive'>
+                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                <thead>
+                  <tr >
+                    <th >Pferdename</th>
+                    <th >Beziehung</th>
+                    <th>Aktion</th>
+                  </tr>
+                  </thead>";
 
-              while($row_p = $person->fetch_assoc()){
+              while($fetch = mysqli_fetch_assoc($pferd_bez)){
+                echo '<tr>';
+                echo'<td>' . $fetch['pferdename'] .  '</td>';
+                echo'<td>' . $fetch['funktionsbez'] . '</td>';
 
-                echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-                
-                echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-                echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-                echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
-    
-                echo "<br><h3> Adresse </h3>";
-    
-                echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-                echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-                echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-                echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-                echo "<p>Land: " . $row_p['land'] . "</p>"; 
-                
-                echo "<hr>";
-
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
-              }       
-              
-
-
+                echo '<td> 
+                  <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '" >Anzeigen</a> <br>
+                  <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>';
+                echo '</tr>';
+                } 
             }
-            else{
-              echo '<div class="alert alert-success" role="alert"> Diese Person kann nicht gelöscht werden, da ihr Pferde oder Lieferungen zugeordnet sind!</div><hr>';
-    
-              while($row_p = $person->fetch_assoc()){
 
-                echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-                
-                echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-                echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-                echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
-    
-                echo "<br><h3> Adresse </h3>";
-    
-                echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-                echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-                echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-                echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-                echo "<p>Land: " . $row_p['land'] . "</p>"; 
-                
-                echo "<hr>";
 
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferde anzeigen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
-
-              }
-            }
 
           ?>
 

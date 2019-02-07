@@ -119,6 +119,10 @@ if ($conn->connect_error) {
 
   	        if($schonvorhanden->num_rows==0){
 
+              // echo "<br>";
+              // echo "z121";
+              // echo "<br>";
+
 
               if ($update > 0){
 
@@ -135,6 +139,10 @@ if ($conn->connect_error) {
 
                 }
                 $erfolg = 1;
+
+                // echo "<br>";
+                // echo "z139";
+                // echo "<br>";
               }
               
               else {
@@ -150,6 +158,10 @@ if ($conn->connect_error) {
                       $personnew_result = $conn->query($personnew_sql);
                       $erfolg = 2;
                     }
+
+                    // echo "<br>";
+                    // echo "z155";
+                    // echo "<br>";
                   }
 
 
@@ -166,6 +178,11 @@ if ($conn->connect_error) {
                       $personnew_result = $conn->query($personnew_sql);
                     }
                     $erfolg = 2;
+
+                    // echo "<br>";
+                    // echo "z172";
+                    // echo "<br>";
+
                   }
                 
               }
@@ -174,6 +191,11 @@ if ($conn->connect_error) {
             }
             else{
               $erfolg = 3;
+
+              // echo "<br>";
+              // echo "z181";
+              // echo "<br>";
+
               }
 //echo $erfolg;
 
@@ -184,6 +206,10 @@ if ($conn->connect_error) {
         
         $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = $update";
         $person = $conn->query($personsql);
+
+        // echo "<br>";
+        // echo "z192";
+        // echo "<br>";
 
         while($row_p = $person->fetch_assoc()){
         echo "<ol class=\"breadcrumb\">
@@ -237,9 +263,13 @@ if ($conn->connect_error) {
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
                 <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+                <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">Abbrechen</button>
               </div>";
               echo "</form>";
+              
+              // echo "<br>";
+              // echo "250";
+              // echo "<br>";
 
             }
 
@@ -247,7 +277,7 @@ if ($conn->connect_error) {
 
         else if($erfolg==3){
           while($row_v = $schonvorhanden->fetch_assoc()){
-            echo "<h1>Diese Person ist schon vorhanden</h1><hr>";
+            echo "<h1>Diese Person ist bereits vorhanden!</h1><hr>";
             echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
 
             echo "<div class=\"form-group\"></div>
@@ -257,6 +287,9 @@ if ($conn->connect_error) {
             <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
             </div>";
           }
+          // echo "<br>";
+          // echo "268";
+          // echo "<br>";
         }
 
         else{
@@ -313,8 +346,13 @@ if ($conn->connect_error) {
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-              <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+              <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">Abbrechen</button>
             </div>";
+            
+
+            // echo "<br>";
+            // echo "328";
+            // echo "<br>";
 
         }
 

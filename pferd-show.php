@@ -100,8 +100,10 @@ if ($conn->connect_error) {
                   <!-- Page Content -->
 
         <?php
-          $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+          $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
+
+         // echo $personsql;
 
           while($row_p = $person->fetch_assoc()){
             echo "<ol class=\"breadcrumb\">
@@ -127,16 +129,29 @@ if ($conn->connect_error) {
             echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
             echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
             echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-            echo "<p>Land: " . $row_p['land'] . "</p>";  
+            echo "<p>Land: " . $row_p['land'] . "</p>"; 
             
-            echo "<div class=\"form-group\"></div>
-            <div class=\"form-group\">
-              <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-              <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
-              <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
-            </div>";
+            echo "<hr>";
 
-            
+            $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $_GET['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
+            $query1 = $conn->query($funktion) ; 
+
+              if($query1->num_rows==0){ 
+               echo "<div class=\"form-group\"></div>
+               <div class=\"form-group\">
+               <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+               <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=1\" >Löschen</a>
+               <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+              }
+              else{
+                echo "<h5> Dieser Person ist mindestens ein Pferd zugeordnet </h5>
+                <a class=\"btn btn-secondary\" href=\"person-pferde.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
+                echo "<div class=\"form-group\"></div>
+                <div class=\"form-group\">
+                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+                <a class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=0\" >Löschen nicht möglich</a>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+              }           
 
           
             }

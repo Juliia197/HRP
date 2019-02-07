@@ -66,13 +66,13 @@
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -91,34 +91,32 @@
               <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item active">
-              Pferde
+              Personen
             </li>
           </ol>
 
-          <h1>Übersicht Pferde</h1>
+          <h1>Übersicht Personen</h1>
           <hr>
 
           <div class="container-fluid">
           <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="pferd-edit.php?id_pferd=0">Hinzufügen</a>
+          <a class="btn btn-success" role="button" href="person-edit.php?id_person=0">Hinzufügen</a>
           </div>
           </div>
-          
+
           <p>
           <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Geschlecht</th>
-              <th>Besitzer</th>
-              <th>Boxentyp</th>
+           <thead>
+            <tr >
+              <th >Vorname</th>
+              <th >Name</th>
+              <th >Beziehung</th>
               <th>Aktion</th>
             </tr>
-          </thead>
-
+            </thead>
+                          
             <?php
-
               $servername = "localhost";
               $username = "root";
               $password = "";
@@ -126,67 +124,53 @@
 
               // Create connection
               $conn = new mysqli($servername, $username, $password, $dbname);
-              $mysqli = new mysqli($servername, $username, $password, $dbname);
               // Check connection
               if ($conn->connect_error) {
                   die("Connection failed: " . $conn->connect_error);
               } 
-                        
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $pferd = "SELECT * FROM pferd";
-              
-              $query = $conn->query($pferd) or die(mysql_error());
+
+              $person = "SELECT * FROM person";
+              $query = $conn ->query($person);
+
+
 
               while($fetch = mysqli_fetch_assoc($query)){
+                $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
+                $query1 = $conn->query($funktion) ;
                 echo '<tr>';
-                  echo '<td>' . $fetch['pferdename'] . '</td>';
-                  echo '<td>' ;
-                    if( $fetch['geschlecht'] =='s')
-                      {
-                        echo "Stute";
-                      }
-                    else if( $fetch['geschlecht'] =='w')
-                      {
-                        echo "Wallach";
-                      }
-                    else
-                      {
-                        echo "Hengst";
-                      }
-              
+                  echo'<td>' . $fetch['vorname'] .  '</td>';
+                  echo'<td>' . $fetch['nachname'] . '</td>';
+                 
+                  echo '<td>';
+
+                  while($fetch1 = mysqli_fetch_assoc($query1)){
+                    echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
+                  }
                   echo '</td>';
 
-                  $besitzer = 'SELECT person.vorname, person.nachname From person, beziehung  WHERE beziehung.id_pferd = '.$fetch['id_pferd'].' AND beziehung.id_funktion = 1 AND beziehung.id_person=person.id_person';
-                    $query1 = $conn->query($besitzer) or die (mysql_error());
-                    while($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
-                  
-                  $boxentyp = 'SELECT boxentyp.boxenbez From box, boxentyp WHERE box.id_pferd = '.$fetch['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp' ;
-                    $query2 = $conn->query($boxentyp) or die (mysql_error());
-                    while($fetch2 = mysqli_fetch_assoc($query2)){
-                      echo '<td>' . $fetch2['boxenbez'] . '</td>'  ;
-                    }
-
                   echo '<td> 
-                    <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
-                    <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delet.php?id_pferd=' . $fetch["id_pferd"] . '" >Löschen</a> <br>
-                  </td>';
+                    <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
+                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
+                  //echo $funktion;
+                  if($query1->num_rows==0){ 
+                    echo'<a href="person-delete.php?id_person=' . $fetch["id_person"] . '&id_delete=1" >Löschen</a> <br></td>';
+                  }
+                  else{
+                    echo 'Löschen nicht möglich';
+                    //echo '<div></div>';
+                  }
 
                 echo '</tr>';
               }
 
-              ?>
-                          
 
+              ?>
           </table>
             </div>
-            </p>
-      
+        </p>
+
 
         </div>
-        
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->

@@ -100,8 +100,10 @@ if ($conn->connect_error) {
                   <!-- Page Content -->
 
         <?php
-          $personsql = "SELECT * FROM person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+          $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
+
+         // echo $personsql;
 
           while($row_p = $person->fetch_assoc()){
             echo "<ol class=\"breadcrumb\">
@@ -142,6 +144,8 @@ if ($conn->connect_error) {
                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{
+                echo "<h5> Dieser Person ist mindestens ein Pferd zugeordnet </h5>
+                <a class=\"btn btn-secondary\" href=\"person-pferde.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
