@@ -10,8 +10,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
-$personloeschen_result = $conn->query($personloeschen_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +67,7 @@ $personloeschen_result = $conn->query($personloeschen_sql);
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -87,7 +85,7 @@ $personloeschen_result = $conn->query($personloeschen_sql);
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -109,11 +107,46 @@ $personloeschen_result = $conn->query($personloeschen_sql);
               <a href="person.php">Personen</a>
             </li>
             <li class="breadcrumb-item active">
-              Person löschen
-            </li>
+              Pferde zur Person
           </ol>
+          <tr>
+
           <?php  
-            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+            $id_person = $_GET['id_person'];
+            $person_sql = "SELECT vorname, nachname FROM person WHERE id_person = $id_person";
+            $person = $conn->query($person_sql);
+//            echo $person_sql;
+
+            while ($fetch1 = mysqli_fetch_assoc($person)){
+              echo "<h1> Pferde zu " . $fetch1['vorname'] . " " . $fetch1['nachname'] . "</h1>";
+              $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
+              $pferd_bez = $conn->query($pferd_sql);
+
+              echo "
+                <p>
+                <div class='table-responsive'>
+                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                <thead>
+                  <tr >
+                    <th >Pferdename</th>
+                    <th >Beziehung</th>
+                    <th>Aktion</th>
+                  </tr>
+                  </thead>";
+
+              while($fetch = mysqli_fetch_assoc($pferd_bez)){
+                echo '<tr>';
+                echo'<td>' . $fetch['pferdename'] .  '</td>';
+                echo'<td>' . $fetch['funktionsbez'] . '</td>';
+
+                echo '<td> 
+                  <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '" >Anzeigen</a> <br>
+                  <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>';
+                echo '</tr>';
+                } 
+            }
+
+
 
           ?>
 
