@@ -119,7 +119,7 @@ if ($conn->connect_error) {
 
             if($id_delete==1){
 
-              echo '<div class="alert alert-danger" role="alert"> Diese Person kann gelöscht werden!</div><hr>';
+              echo '<div class="alert alert-success" role="alert"> Diese Person kann gelöscht werden!</div><hr>';
 
               while($row_p = $person->fetch_assoc()){
 
@@ -150,7 +150,7 @@ if ($conn->connect_error) {
 
             }
             else{
-              echo '<div class="alert alert-success" role="alert"> Diese Person kann nicht gelöscht werden, da ihr Pferde oder Lieferungen zugeordnet sind!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert"> Diese Person kann nicht gelöscht werden, da ihr Pferde oder Lieferungen zugeordnet sind!</div><hr>';
     
               while($row_p = $person->fetch_assoc()){
 
