@@ -127,15 +127,27 @@ if ($conn->connect_error) {
             echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
             echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
             echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-            echo "<p>Land: " . $row_p['land'] . "</p>";  
+            echo "<p>Land: " . $row_p['land'] . "</p>"; 
             
-            echo "<div class=\"form-group\"></div>
-            <div class=\"form-group\">
-              <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-              <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
-            </div>";
+            echo "<hr>";
 
-            
+            $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $_GET['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
+            $query1 = $conn->query($funktion) ; 
+
+              if($query1->num_rows==0){ 
+               echo "<div class=\"form-group\"></div>
+               <div class=\"form-group\">
+               <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+               <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
+               <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+              }
+              else{
+                echo "<div class=\"form-group\"></div>
+                <div class=\"form-group\">
+                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+                <a class=\"btn btn-secondary\" href=\"person-delete.php?id_person=0\" >Löschen nicht möglich</a>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+              }           
 
           
             }
