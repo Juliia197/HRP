@@ -153,7 +153,7 @@
                     <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
                   //echo $funktion;
                   if($query1->num_rows==0){ 
-                    echo'<a href="person-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br></td>';
+                    echo'<a href="person-delete.php?id_person=' . $fetch["id_person"] . '&id_delete=1" >Löschen</a> <br></td>';
                   }
                   else{
                     echo 'Löschen nicht möglich';

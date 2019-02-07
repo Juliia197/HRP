@@ -9,7 +9,9 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-} 
+}
+$personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
+$personloeschen_result = $conn->query($personloeschen_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,30 +100,23 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Box löschen</h1>
-          <hr>
-          <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <td>Boxentyp</td>
-              <td>Boxenpreis</td>
-              <td>Aktion</td>
-            </tr>
-          </thead>
-          <tbody>
-          <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=1 AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
-            $boxfrei_result = $conn->query($boxfrei_sql);
-            if($boxfrei_result->num_rows > 0){
-              while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf["id_box"] . "\">Box löschen</a></td></tr>";
-              }
-            }
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="person.php">Personen</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Person löschen
+            </li>
+          </ol>
+          <?php  
+            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+
           ?>
-          </tbody>
-          </table>
-          </div>
+
 
         </div>
         <!-- /.container-fluid -->

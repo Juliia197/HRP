@@ -100,7 +100,7 @@ if ($conn->connect_error) {
                   <!-- Page Content -->
 
         <?php
-          $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+          $personsql = "SELECT * FROM person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
 
           while($row_p = $person->fetch_assoc()){
@@ -138,14 +138,14 @@ if ($conn->connect_error) {
                echo "<div class=\"form-group\"></div>
                <div class=\"form-group\">
                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-               <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
+               <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=1\" >Löschen</a>
                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-delete.php?id_person=0\" >Löschen nicht möglich</a>
+                <a class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=0\" >Löschen nicht möglich</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }           
 
