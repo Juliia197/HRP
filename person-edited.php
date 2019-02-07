@@ -119,40 +119,6 @@ if ($conn->connect_error) {
 
   	        if($schonvorhanden->num_rows==0){
 
-                $id_adresse_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
-                $id_adresse_result = $conn->query($id_adresse_sql);
-
-                  if($id_adresse_result->num_rows>0){
-                    while($row_i = $id_adresse_result->fetch_assoc()){
-
-                      $id_adresse_übergabe = $row_i['id_adresse'];
-                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresse_übergabe')";
-                      $personnew_result = $conn->query($personnew_sql);
-                      $erfolg = 2;
-                    }
-                  }
-                
-
-                  else{    
-                    $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
-                    $adressenew_result = $conn->query($adressenew_sql);
-
-                    $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
-                    $id_adresse_result1 = $conn->query($id_adresse_sql1);
-
-                    while($row_a = $id_adresse_result1->fetch_assoc()){   
-                      $id_adresseh = $row_a['id_adresse'];
-                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
-                      $personnew_result = $conn->query($personnew_sql);
-                    }
-                    $erfolg = 2;
-                  }
-                
-              
-               
-
-            }
-            else{
 
               if ($update > 0){
 
@@ -170,10 +136,44 @@ if ($conn->connect_error) {
                 }
                 $erfolg = 1;
               }
-              else{
               
-              $erfolg = 3;
+              else {
+
+                $id_adresse_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
+                $id_adresse_result = $conn->query($id_adresse_sql);
+
+                  if($id_adresse_result->num_rows>0){
+                    while($row_i = $id_adresse_result->fetch_assoc()){
+
+                      $id_adresse_übergabe = $row_i['id_adresse'];
+                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresse_übergabe')";
+                      $personnew_result = $conn->query($personnew_sql);
+                      $erfolg = 2;
+                    }
+                  }
+
+
+                  else{    
+                    $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
+                    $adressenew_result = $conn->query($adressenew_sql);
+
+                    $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
+                    $id_adresse_result1 = $conn->query($id_adresse_sql1);
+
+                    while($row_a = $id_adresse_result1->fetch_assoc()){   
+                      $id_adresseh = $row_a['id_adresse'];
+                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
+                      $personnew_result = $conn->query($personnew_sql);
+                    }
+                    $erfolg = 2;
+                  }
+                
               }
+               
+
+            }
+            else{
+              $erfolg = 3;
               }
 //echo $erfolg;
 
