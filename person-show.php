@@ -145,7 +145,7 @@ if ($conn->connect_error) {
               }
               else{
                 echo "<h5> Dieser Person ist mindestens ein Pferd zugeordnet </h5>
-                <a class=\"btn btn-secondary\" href=\"person-pferde.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
+                <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
