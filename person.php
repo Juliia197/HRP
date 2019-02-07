@@ -95,7 +95,7 @@
             </li>
           </ol>
 
-          <h1>Übersicht Personen</h1>
+          <h1>bersicht Personen</h1>
           <hr>
 
           <div class="container-fluid">
@@ -130,16 +130,19 @@
               } 
 
               $person = "SELECT * FROM person";
-              $query = $conn ->query($person) or die(mysql_error());
+              $query = $conn ->query($person)
+
+
 
               while($fetch = mysqli_fetch_assoc($query)){
+                $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
+                $query1 = $conn->query($funktion) ;
                 echo '<tr>';
                   echo'<td>' . $fetch['vorname'] .  '</td>';
                   echo'<td>' . $fetch['nachname'] . '</td>';
                  
                   echo '<td>';
-                 $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
-                  $query1 = $conn->query($funktion) or die (mysql_error());
+
                   while($fetch1 = mysqli_fetch_assoc($query1)){
                     echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
                   }
@@ -147,9 +150,14 @@
 
                   echo '<td> 
                     <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
-                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>
-                    <a href="person-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br>
-                  </td>';
+                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
+                  echo $funktion;
+                  if($query1->num_rows==0){ 
+                    echo'<a href="person-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br></td>';
+                  }
+                  else{
+                    echo 'kann aufgrund der Beziehung nicht gelöscht werden';
+                  }
 
                 echo '</tr>';
               }
