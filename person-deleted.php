@@ -1,3 +1,18 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$boxloeschen_sql = "DELETE FROM box WHERE id_box=" . $_GET["id_box"];
+$boxloeschen_result = $conn->query($boxloeschen_sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,7 +69,7 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -72,7 +87,7 @@
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -85,90 +100,31 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Personen
-            </li>
-          </ol>
-
-          <h1>Übersicht Personen</h1>
+          <h1>Box löschen</h1>
           <hr>
-
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="person-edit.php?id_person=0">Hinzufügen</a>
-          </div>
-          </div>
-
-          <p>
+          <div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div>
           <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-           <thead>
-            <tr >
-              <th >Vorname</th>
-              <th >Name</th>
-              <th >Beziehung</th>
-              <th>Aktion</th>
+          <thead>
+            <tr>
+              <td>Boxentyp</td>
+              <td>Boxenpreis</td>
+              <td>Aktion</td>
             </tr>
-            </thead>
-                          
-            <?php
-              $servername = "localhost";
-              $username = "root";
-              $password = "";
-              $dbname = "hrppr_db1";
-
-              // Create connection
-              $conn = new mysqli($servername, $username, $password, $dbname);
-              // Check connection
-              if ($conn->connect_error) {
-                  die("Connection failed: " . $conn->connect_error);
-              } 
-
-              $person = "SELECT * FROM person";
-              $query = $conn ->query($person);
-
-
-
-              while($fetch = mysqli_fetch_assoc($query)){
-                $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
-                $query1 = $conn->query($funktion) ;
-                echo '<tr>';
-                  echo'<td>' . $fetch['vorname'] .  '</td>';
-                  echo'<td>' . $fetch['nachname'] . '</td>';
-                 
-                  echo '<td>';
-
-                  while($fetch1 = mysqli_fetch_assoc($query1)){
-                    echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
-                  }
-                  echo '</td>';
-
-                  echo '<td> 
-                    <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
-                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
-                  //echo $funktion;
-                  if($query1->num_rows==0){ 
-                    echo'<a href="person-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br></td>';
-                  }
-                  else{
-                    echo 'Löschen nicht möglich';
-                    //echo '<div></div>';
-                  }
-
-                echo '</tr>';
+          </thead>
+          <tbody>
+          <?php
+            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=1 AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
+            $boxfrei_result = $conn->query($boxfrei_sql);
+            if($boxfrei_result->num_rows > 0){
+              while ($row_bf = $boxfrei_result->fetch_assoc()){
+                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf["id_box"] . "\">Box löschen</a></td></tr>";
               }
-
-
-              ?>
+            }
+          ?>
+          </tbody>
           </table>
-            </div>
-        </p>
-
+          </div>
 
         </div>
         <!-- /.container-fluid -->
@@ -219,15 +175,11 @@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
   <script src="js/demo/datatables-demo.js"></script>
 
   </body>

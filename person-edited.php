@@ -308,6 +308,8 @@ if ($conn->connect_error) {
             echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
             echo "<input class=\"form-control\" type=\"text\"  name=\"land\">";
           
+            echo "<hr>";
+
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
