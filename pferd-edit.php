@@ -4,12 +4,14 @@ $username = "root";
 $password = "";
 $dbname = "hrppr_db1";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(PDOException $e)
+{
+    echo "Connection failed: " . $e->getMessage();
+}
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +83,7 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
@@ -99,9 +101,206 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Pferd editieren</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
+
+            <?php
+                $pferdId = !isset($_GET['id_pferd']) ? 0 : (int) $_GET['id_pferd'];
+
+                if (isset($_POST['pferdename'])) {
+                    $pferdename = !isset($_POST['pferdename']) ? '' : $_POST['pferdename'];
+                    $geschlecht = !isset($_POST['geschlecht']) ? '' : $_POST['geschlecht'];
+                    $gewicht = !isset($_POST['gewicht']) ? '' : $_POST['gewicht'];
+                    $groesse = !isset($_POST['groesse']) ? '' : $_POST['groesse'];
+                    $passnr = !isset($_POST['passnr']) ? '' : $_POST['passnr'];
+                    $gebursdatum = !isset($_POST['geburtsdatum_pferd']) ? '' : $_POST['geburtsdatum_pferd'];
+                    $ankunft = !isset($_POST['ankunft']) ? '' : $_POST['ankunft'];
+
+                    if ($pferdId === 0) {
+                        $prepare = $conn->prepare('
+                        INSERT INTO 
+                            pferd 
+                          ( 
+                            pferdename,
+                            geschlecht,
+                            gewicht,
+                            groesse,
+                            passnr,
+                            geburtsdatum_pferd,
+                            ankunft
+                          ) VALUES (
+                            ?,?,?,?,?,?,?
+                          )');
+                        $bind = [$pferdename, $geschlecht, $gewicht, $groesse, $passnr, $gebursdatum, $ankunft];
+                    } else {
+                        $prepare = $conn->prepare(
+                          "UPDATE
+                            pferd
+                          SET
+                            pferdename ='$pferdename',
+                            geschlecht = '$geschlecht',
+                            gewicht='$gewicht',
+                            groesse='$groesse',
+                            passnr='$passnr',
+                            geburtsdatum_pferd='$gebursdatum',
+                            ankunft='$ankunft'
+                          WHERE
+                           id_pferd = ?"
+                          );
+                        $bind = [$pferdId];
+                    }
+
+                    if ($pferdId !== 0) {
+                        foreach ($_POST as $key => $post) {
+                            if (strpos($key, 'userId-') === 0) {
+                                $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
+                                $userId = $_POST['userId-'.$connId];
+                                $functionId = $_POST['functionId-'.$connId];
+                                $prepareCon = $conn->prepare(
+                                    "UPDATE
+                                        beziehung
+                                      SET
+                                        id_person ='$userId',
+                                        id_funktion = '$functionId',
+                                        id_pferd='$pferdId'
+                                      WHERE
+                                       id_beziehung = ?"
+                                        );
+                                $bindCon = [$connId];
+                                $prepareCon->execute($bindCon);
+                            }
+                            if (strpos($key, 'userIdNew-') === 0) {
+                                $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
+                                $userId = $_POST['userIdNew-'.$connId];
+                                $functionId = $_POST['functionIdNew-'.$connId];
+                                $prepareCon = $conn->prepare('
+                                    INSERT INTO 
+                                        beziehung 
+                                      ( 
+                                        id_person,
+                                        id_funktion,
+                                        id_pferd
+                                      ) VALUES (?,?,?)'
+                                );
+                                $bindCon = [(int) $userId, (int) $functionId, $pferdId];
+                                $prepareCon->execute($bindCon);
+                            }
+                        }
+                    }
+
+                    if ($pferdId === 0 && $prepare->execute($bind)) {
+                        $pferdId = $conn->lastInsertId();
+                        foreach ($_POST as $key => $post) {
+                            if (strpos($key, 'userIdNew-') === 0) {
+                                $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
+                                $userId = $_POST['userIdNew-'.$connId];
+                                $functionId = $_POST['functionIdNew-'.$connId];
+                                $prepareCon = $conn->prepare('
+                                INSERT INTO 
+                                    beziehung 
+                                  ( 
+                                    id_person,
+                                    id_funktion,
+                                    id_pferd
+                                  ) VALUES (?,?,?)'
+                                );
+                                $bindCon = [(int) $userId, (int) $functionId, $conn->lastInsertId()];
+                                $prepareCon->execute($bindCon);
+                            }
+                        }
+                        header('Location: pferd-edit.php?id_pferd=' . $pferdId);
+                        exit();
+                    }
+
+
+                } else {
+                    $sql = 'SELECT * FROM pferd WHERE id_pferd = ' . $_GET['id_pferd'];
+                    $pferd = $conn->query($sql);
+
+                    $pferd = $pferd->fetch(MYSQLI_ASSOC);
+
+                    $pferdename = !isset($pferd['pferdename']) ? '' : $pferd['pferdename'];
+                    $geschlecht = !isset($pferd['geschlecht']) ? '' : $pferd['geschlecht'];
+                    $gewicht = !isset($pferd['gewicht']) ? '' : $pferd['gewicht'];
+                    $groesse = !isset($pferd['groesse']) ? '' : $pferd['groesse'];
+                    $passnr = !isset($pferd['passnr']) ? '' : $pferd['passnr'];
+                    $gebursdatum = !isset($pferd['geburtsdatum_pferd']) ? '' : $pferd['geburtsdatum_pferd'];
+                    $ankunft = !isset($pferd['ankunft']) ? '' : $pferd['ankunft'];
+                }
+
+                $connections = [];
+
+                if ($pferdId !== 0) {
+                    $sql = 'SELECT * FROM beziehung WHERE id_pferd = ' . $pferdId;
+                    $connections = $conn->query($sql);
+                    $connections = $connections->fetchAll();
+                }
+
+                $sql = 'SELECT id_person, vorname, nachname FROM person';
+                $users = $conn->query($sql);
+                $users = $users->fetchAll();
+
+                $sql = 'SELECT * FROM funktion';
+                $functions = $conn->query($sql);
+                $functions = $functions->fetchAll();
+            ?>
+
+            <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
+                <label>Pferdname:</label>
+                <input class="form-control" type="text" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
+                <label>Geschlecht:</label>
+                <select name="geschlecht">
+                    <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">s</option>
+                    <option <?php if ($geschlecht === 'h') {echo 'selected';} ?> value="h">h</option>
+                    <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">w</option>
+                </select><br /><br />
+                <label>Gewicht (in kg):</label>
+                <input class="form-control" type="number" value="<?php echo $gewicht ?>" name="gewicht" required><br />
+                <label>Größe (in cm):</label>
+                <input class="form-control" type="number" value="<?php echo $groesse ?>" name="groesse" required><br />
+                <label>Passnummer:</label>
+                <input class="form-control" type="number" value="<?php echo $passnr ?>" name="passnr" required><br />
+                <label>Geburtsdatum:</label>
+                <input class="form-control" type="date" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
+                <label>Ankunft des Pferdes am Hof:</label>
+                <input class="form-control" type="date" value="<?php echo $ankunft ?>" name="ankunft" required><br />
+
+                <br />
+
+                <?php
+                    foreach ($connections as $connection) {
+                ?>
+                       <select name="userId-<?php echo $connection['id_beziehung'];?>" id="userId-<?php echo $connection['id_beziehung'];?>">
+                           <?php
+                                foreach ($users as $user) {
+                           ?>
+                                    <option <?php if ($connection['id_person'] === $user['id_person']) {echo 'selected';} ?> value="<?php echo $user['id_person']; ?>"><?php echo $user['vorname'] . ' ' . $user['nachname']; ?></option>
+                           <?php
+                                }
+                           ?>
+                        </select>
+                        <select name="functionId-<?php echo $connection['id_beziehung'];?>" id="functionId-<?php echo $connection['id_beziehung'];?>">
+                            <?php
+                            foreach ($functions as $function) {
+                                ?>
+                                <option <?php if ($connection['id_funktion'] === $function['id_funktion']) {echo 'selected';} ?> value="<?php echo $function['id_funktion']; ?>"><?php echo $function['funktionsbez']; ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+
+                        <span class="delete btn btn-danger btn-sm" id="delete-<?php echo $connection['id_beziehung'];?>" data-connid="<?php echo $connection['id_beziehung'];?>">Löschen</span>
+
+                        <br />
+                <?php
+                    }
+                ?>
+
+                <span id="addNewConnection">Dem Pferd eine neue Person zuweisen...</span> <br /><br />
+
+                <button type="submit" class="btn btn-success" id="sendButton">Speichern!</button>
+            </form>
 
         </div>
         <!-- /.container-fluid -->
@@ -154,6 +353,49 @@ if ($conn->connect_error) {
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script>
+        let i = 0;
+        $('#addNewConnection').click(function(){
+            i++;
+            $('#addNewConnection').before('<select name="userIdNew-'+i+'" id="userIdNew-'+i+'">' +
+                <?php
+                foreach ($users as $user) {
+                ?>
+                '<option value="<?php echo $user['id_person']; ?>"><?php echo $user['vorname'] . ' ' . $user['nachname']; ?></option>' +
+                <?php
+                }
+                ?>
+                '</select>' +
+                '<select name="functionIdNew-'+i+'" id="functionIdNew-'+i+'">' +
+                <?php
+                foreach ($functions as $function) {
+                ?>
+                '<option value="<?php echo $function['id_funktion']; ?>"><?php echo $function['funktionsbez']; ?></option>' +
+                <?php
+                }
+                ?>
+                '</select>' +
+                '<span class="deleteNew btn btn-danger btn-sm" data-connid='+i+' id="deleteNew-'+i+'"> Löschen</span>'+
+                '<br />'
+                );
+        });
+
+        $('.delete').click(function(){
+            let connId = $(this).data('connid');
+            $.post( "pferd-delete.php", { connId: connId } );
+            $('#userId-'+connId).remove();
+            $('#functionId-'+connId).remove();
+            $('#delete-'+connId).remove();
+        });
+
+        $("body").on("click", ".deleteNew", function(){
+            let connId = $(this).data('connid');
+            $('#userIdNew-'+connId).remove();
+            $('#functionIdNew-'+connId).remove();
+            $(this).remove();
+        });
+    </script>
 
   </body>
 
