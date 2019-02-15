@@ -204,8 +204,8 @@ if ($conn->connect_error) {
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-  <script src="js/demo/datatables-demo.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 

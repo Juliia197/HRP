@@ -10,11 +10,17 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$pferdloeschen_sql = "DELETE FROM pferd, pferd_frisst_verbrauchsguttyp, beziehung  WHERE id_pferd=" . $_GET["id_pferd"];
+$pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
 $pferdloeschen_result = $conn->query($pferdloeschen_sql);
 
-//$pferdloeschen2_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
-//$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
+$pferdloeschen3_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
+
+$pferdloeschen4_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
+$pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
+
+$pferdloeschen2_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -174,8 +180,8 @@ $pferdloeschen_result = $conn->query($pferdloeschen_sql);
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-  <script src="js/demo/datatables-demo.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 

@@ -157,13 +157,17 @@ if ($conn->connect_error) {
             $bedarf = $conn->query($bedarfsql) or die (mysql_error());
 
             
-            echo "<table><th>Verbrauchsgut</th><th>Bedarf</th>";
+            echo "<div class = 'table-responsive'>
+            <table class = 'table table-bordered' id = 'dataTable' width='100%' cellspacing='0'>
+            <th>Verbrauchsgut</th>
+            <th>Bedarf</th>";
             while($fetch2 = mysqli_fetch_assoc($verbrauchstyp) and $fetch3 = mysqli_fetch_assoc($bedarf)){
               echo "<tr><td>" . $fetch2['verbrauchsguttypbez'] . "</td><td>" . $fetch3['bedarf'] . "</td></tr>";
             
             }
             
-            echo "</table>";
+            echo "</table>
+            </div>";
 
             
             echo "<hr>";
@@ -248,6 +252,10 @@ if ($conn->connect_error) {
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
