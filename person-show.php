@@ -103,8 +103,6 @@ if ($conn->connect_error) {
           $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
 
-         // echo $personsql;
-
           while($row_p = $person->fetch_assoc()){
             echo "<ol class=\"breadcrumb\">
                   <li class=\"breadcrumb-item\">

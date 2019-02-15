@@ -100,7 +100,6 @@
           $personid = $_GET["id_person"];
           $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
-            //echo $person;
 
           if($person->num_rows>0){
             while($row_p = $person->fetch_assoc()){

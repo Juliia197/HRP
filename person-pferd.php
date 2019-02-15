@@ -115,7 +115,6 @@ if ($conn->connect_error) {
             $id_person = $_GET['id_person'];
             $person_sql = "SELECT vorname, nachname FROM person WHERE id_person = $id_person";
             $person = $conn->query($person_sql);
-//            echo $person_sql;
 
             while ($fetch1 = mysqli_fetch_assoc($person)){
               echo "<h1> Pferde zu " . $fetch1['vorname'] . " " . $fetch1['nachname'] . "</h1>";
