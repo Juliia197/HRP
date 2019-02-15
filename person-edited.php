@@ -117,13 +117,6 @@ if ($conn->connect_error) {
             $schonvorhanden_sql = "SELECT * FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum' ";
             $schonvorhanden = $conn->query($schonvorhanden_sql);
 
-            // $updatea_sql = "SELECT id_adresse FROM adresse WHERE strasse='$strasse' AND hausnr = '$hausnr' AND plz = '$plz' AND ort = '$ort' AND land = '$land' ";
-            // $updatea = $conn->query($updatea_sql);
-
-              // echo "<br>";
-              // echo "z121";
-              // echo "<br>";
-
               if ($update > 0){
 
                 $update_sql = "SELECT * FROM person, adresse WHERE id_person=" . $_GET["id_person"] . " AND person.id_adresse = adresse.id_adresse AND person.id_adresse=".  $_GET["id_adresse"];
@@ -132,12 +125,8 @@ if ($conn->connect_error) {
                 while($row_u = $update_result->fetch_assoc()){
                   $adressevergeben_sql ="SELECT id_person FROM person WHERE id_adresse = ". $row_u['id_adresse'];
                   $adressevergeben = $conn->query($adressevergeben_sql);
-                  echo "<br> z.135<br>";
-                  echo $adressevergeben_sql;
-                 // if($adressevergeben->num_rows==1){ eigentlich
+
                   if($adressevergeben->num_rows==0){
-                    echo "<br> z.137<br>";
-                    echo $adressevergeben_sql;
 
                     $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
                     $adresseupdate_result = $conn->query($adresseupdate_sql);
@@ -150,13 +139,9 @@ if ($conn->connect_error) {
                   else{
                     $adresseschonda_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr = '$hausnr' AND plz = '$plz' AND ort='$ort' AND land='$land'";
                     $adresseschonda = $conn->query($adresseschonda_sql);
-                    echo "<br>z.151 <br>";
-                    echo $adresseschonda_sql;
-                    echo "unter schonda";
 
                     if($adresseschonda->num_rows==1){
-                      echo "<br>im if";
-                      //echo $adresseschonda_sql;
+
                       while($row_x = $adresseschonda->fetch_assoc()){   
                         $id_adresseh = $row_x['id_adresse'];
                         $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' , id_adresse = '$id_adresseh' WHERE id_person=$update";
@@ -169,15 +154,10 @@ if ($conn->connect_error) {
                     else{
 
                       $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
-                      $adressenew_result = $conn->query($adressenew_sql);
-                      echo "<br> z.171<br>";
-                      echo $adressenew_sql;
-                      
+                      $adressenew_result = $conn->query($adressenew_sql);                      
 
                       $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
                       $id_adresse_result1 = $conn->query($id_adresse_sql1);
-                      echo "<br>z.177 <br>";
-                      echo $id_adresse_sql1 ;
 
                       while($row_a = $id_adresse_result1->fetch_assoc()){   
                         $id_adresseh = $row_a['id_adresse'];
@@ -187,15 +167,7 @@ if ($conn->connect_error) {
                       }
                     }
                   }
-
-
-
                 }
-                
-
-                // echo "<br>";
-                // echo "z139";
-                // echo "<br>";
               }
               
               else {
@@ -213,12 +185,7 @@ if ($conn->connect_error) {
                       $personnew_result = $conn->query($personnew_sql);
                       $erfolg = 2;
                     }
-
-                    // echo "<br>";
-                    // echo "z155";
-                    // echo "<br>";
                   }
-
 
                   else{    
                     $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
@@ -234,9 +201,6 @@ if ($conn->connect_error) {
                       $erfolg = 2;
 
                     }
-                    // echo "<br>";
-                    // echo "z172";
-                    // echo "<br>";
                   }
                   }
                 else{
@@ -244,15 +208,7 @@ if ($conn->connect_error) {
 
                 }
               }
-               
 
-
-
-            //   // echo "<br>";
-            //   // echo "z181";
-            //   // echo "<br>";
-
-echo $erfolg;
 
 
 //wiederanzeige der Hinzufügenseite
@@ -261,10 +217,6 @@ echo $erfolg;
         
         $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = $update";
         $person = $conn->query($personsql);
-
-        // echo "<br>";
-        // echo "z192";
-        // echo "<br>";
 
         while($row_p = $person->fetch_assoc()){
           echo "<ol class=\"breadcrumb\">
@@ -321,13 +273,8 @@ echo $erfolg;
                 <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">Abbrechen</button>
               </div>";
               echo "</form>";
-              
-              // echo "<br>";
-              // echo "250";
-              // echo "<br>";
 
             }
-
         }
 
         else if($erfolg==3){
@@ -342,9 +289,6 @@ echo $erfolg;
             <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
             </div>";
           }
-          // echo "<br>";
-          // echo "268";
-          // echo "<br>";
         }
 
         else{
@@ -403,16 +347,10 @@ echo $erfolg;
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
               <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">Abbrechen</button>
             </div>";
-            
-
-            // echo "<br>";
-            // echo "328";
-            // echo "<br>";
-
         }
 
-        // }
-          ?>
+        ?>
+
         </div>
         <!-- /.container-fluid -->
 
