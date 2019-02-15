@@ -1,3 +1,43 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$anzahl_stuten_sql = "SELECT COUNT(id_pferd) FROM pferd WHERE geschlecht = 's'";
+$anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
+
+$anzahl_wallach_sql = "SELECT COUNT(id_pferd) FROM pferd WHERE geschlecht='w'";
+$anzahl_wallach_result = $conn->query($anzahl_wallach_sql);
+
+$anzahl_hengste_sql = "SELECT COUNT(id_pferd) FROM pferd WHERE geschlecht='h'";
+$anzahl_hengste_result = $conn->query($anzahl_hengste_sql);
+
+$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) FROM box WHERE id_pferd IS NULL";
+$anzahl_boxenfrei_result = $conn->query($anzahl_boxenfrei_sql);
+
+$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) FROM box WHERE id_pferd IS NOT NULL";
+$anzahl_boxenbelegt_result = $conn->query($anzahl_boxenbelegt_sql);
+
+$bestand_hafer_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=1";
+$bestand_hafer_result = $conn->query($bestand_hafer_sql);
+
+$bestand_heu_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=2";
+$bestand_heu_result = $conn->query($bestand_heu_sql);
+
+$bestand_stroh_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=3";
+$bestand_stroh_result = $conn->query($bestand_stroh_sql);
+
+$bestand_saegespaene_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=4";
+$bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,7 +87,7 @@
     <div id="wrapper">
 
       <!-- Sidebar -->
-      <ul class="sidebar navbar-nav">
+      <ul class="sidebar navbar-nav active">
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -67,13 +107,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -83,11 +123,42 @@
       <div id="content-wrapper">
 
         <div class="container-fluid">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item active">
+              Dashboard
+            </li>
+          </ol>
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Dashboard</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-chart-pie"></i>
+              Pferd
+            </div>
+            <div class="card-body">
+              <p>TEST</p>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-chart-pie"></i>
+              Boxen
+            </div>
+            <div class="card-body">
+              <p>TEST</p>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-chart-pie"></i>
+              Verbrauchsgüter
+            </div>
+            <div class="card-body">
+              <p>TEST</p>
+            </div>
+          </div>
 
         </div>
         <!-- /.container-fluid -->
