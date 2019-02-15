@@ -112,13 +112,13 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -152,6 +152,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
               <th>Typ</th>
               <th>Bestand</th>
               <th>Durchschnittspreis je kg</th>
+              <th>Aktion</th>
             </tr>
             </thead>          
             <tbody>
@@ -183,6 +184,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
                         echo $preis_verbrauchsguttyp4;
                       }
                   echo '</td>';
+                  echo '<td> <a href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
                   }
             ?>
             </tbody>                
