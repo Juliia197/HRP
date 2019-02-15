@@ -132,8 +132,11 @@ if ($conn->connect_error) {
                 while($row_u = $update_result->fetch_assoc()){
                   $adressevergeben_sql ="SELECT id_person FROM person WHERE id_adresse = ". $row_u['id_adresse'];
                   $adressevergeben = $conn->query($adressevergeben_sql);
+                  echo "<br> z.135<br>";
                   echo $adressevergeben_sql;
-                  if($adressevergeben->num_rows==1){
+                 // if($adressevergeben->num_rows==1){ eigentlich
+                  if($adressevergeben->num_rows==0){
+                    echo "<br> z.137<br>";
                     echo $adressevergeben_sql;
 
                     $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
@@ -147,6 +150,7 @@ if ($conn->connect_error) {
                   else{
                     $adresseschonda_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr = '$hausnr' AND plz = '$plz' AND ort='$ort' AND land='$land'";
                     $adresseschonda = $conn->query($adresseschonda_sql);
+                    echo "<br>z.151 <br>";
                     echo $adresseschonda_sql;
                     echo "unter schonda";
 
@@ -166,9 +170,14 @@ if ($conn->connect_error) {
 
                       $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
                       $adressenew_result = $conn->query($adressenew_sql);
+                      echo "<br> z.171<br>";
+                      echo $adressenew_sql;
+                      
 
                       $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
                       $id_adresse_result1 = $conn->query($id_adresse_sql1);
+                      echo "<br>z.177 <br>";
+                      echo $id_adresse_sql1 ;
 
                       while($row_a = $id_adresse_result1->fetch_assoc()){   
                         $id_adresseh = $row_a['id_adresse'];
@@ -258,17 +267,17 @@ echo $erfolg;
         // echo "<br>";
 
         while($row_p = $person->fetch_assoc()){
-        echo "<ol class=\"breadcrumb\">
-          <li class=\"breadcrumb-item\">
-            <a href=\"dashboard.php\">Dashboard</a>
-          </li>
-          <li class=\"breadcrumb-item\"
-            <a href=\"person.php\">Personen</a>
-          </li>
-          <li class=\"breadcrumb-item active\">
-            Person bearbeiten
-          </li>
-          </ol>";
+          echo "<ol class=\"breadcrumb\">
+                <li class=\"breadcrumb-item\">
+                  <a href=\"dashboard.php\">Dashboard</a>
+                </li>
+                <li class=\"breadcrumb-item\">
+                  <a href=\"person.php\">Personen</a>
+                </li>
+                <li class=\"breadcrumb-item active\">
+                  Person ändern
+                </li>
+              </ol>";
           echo "<div class=\"alert alert-success\" role=\"alert\">Diese Person wurde geändert!</div>";
               echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
               echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
