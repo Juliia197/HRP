@@ -74,7 +74,7 @@ if ($conn->connect_error) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -131,9 +131,11 @@ if ($conn->connect_error) {
             <tbody>
             <?php  
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsguttyp, verbrauchsgut WHERE verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp" . $_GET['id_verbrauchsguttyp'];
+              $verbrauchsgut = "SELECT * FROM verbrauchsguttyp, verbrauchsgut WHERE verbrauchsguttyp.id_verbrauchsguttyp =" . $_GET['id_verbrauchsguttyp'];
               
-              $query = $conn->query($verbrauchsgut) or die(mysql_error());
+              $query = $conn->query($verbrauchsgut); //or die(mysql_error());
+
+              echo $verbrauchsgut;
 
               while($fetch = mysqli_fetch_assoc($query)){
                 echo '<tr>';
