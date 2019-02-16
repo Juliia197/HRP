@@ -105,7 +105,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -152,6 +152,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
               <th>Typ</th>
               <th>Bestand</th>
               <th>Durchschnittspreis je kg</th>
+              <th>Aktion</th>
             </tr>
             </thead>          
             <tbody>
@@ -183,6 +184,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
                         echo $preis_verbrauchsguttyp4;
                       }
                   echo '</td>';
+                  echo '<td> <a href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
                   }
             ?>
             </tbody>                
