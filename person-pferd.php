@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -9,8 +10,9 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
+} 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -99,6 +101,7 @@ if ($conn->connect_error) {
 
           <!-- Page Content -->
 
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -110,18 +113,24 @@ if ($conn->connect_error) {
               Pferde zur Person
             </li>
           </ol>
-          <!-- <tr> -->
 
           <?php  
+            //Übergebene Daten werden in Variablen gespeichert
             $id_person = $_GET['id_person'];
+
+            //Vorname und Nachname zur Id der Person abfragen
             $person_sql = "SELECT vorname, nachname FROM person WHERE id_person = $id_person";
             $person = $conn->query($person_sql);
 
             while ($fetch1 = mysqli_fetch_assoc($person)){
+              //Überschrift
               echo "<h1> Pferde zu " . $fetch1['vorname'] . " " . $fetch1['nachname'] . "</h1><hr>";
+
+              //Abfragen aller anderen benötigten Informationen
               $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
               $pferd_bez = $conn->query($pferd_sql);
 
+              //Tabelle wird erzeugt
               echo "
                 <p>
                 <div class='table-responsive'>
@@ -134,11 +143,12 @@ if ($conn->connect_error) {
                   </tr>
                   </thead>";
 
-              while($fetch = mysqli_fetch_assoc($pferd_bez)){
+              while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
                 echo '<tr>';
                 echo'<td>' . $fetch['pferdename'] .  '</td>';
                 echo'<td>' . $fetch['funktionsbez'] . '</td>';
 
+                //Links mit welchen die Id des Pferdes übergeben wird
                 echo '<td> 
                   <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '" >Anzeigen</a> <br>
                   <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>';

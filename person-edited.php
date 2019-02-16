@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -6,11 +7,13 @@ $dbname = "hrppr_db1";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -117,87 +120,155 @@ if ($conn->connect_error) {
             $schonvorhanden_sql = "SELECT * FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum' ";
             $schonvorhanden = $conn->query($schonvorhanden_sql);
 
-              if ($update > 0){
+            echo "<br>Zeile 120";
+            echo $schonvorhanden_sql;
+            echo "<br>";
+
+              if ($update > 0){ //wird ausgeführt wenn die Person geändert wird
 
                 $update_sql = "SELECT * FROM person, adresse WHERE id_person=" . $_GET["id_person"] . " AND person.id_adresse = adresse.id_adresse AND person.id_adresse=".  $_GET["id_adresse"];
                 $update_result = $conn->query($update_sql);
+                echo "<br>Zeile 128";
+                echo $update_sql;
+                echo "<br>";
+    
 
                 while($row_u = $update_result->fetch_assoc()){
                   $adressevergeben_sql ="SELECT id_person FROM person WHERE id_adresse = ". $row_u['id_adresse'];
                   $adressevergeben = $conn->query($adressevergeben_sql);
 
-                  if($adressevergeben->num_rows==0){
+                  echo "<br>Zeile 137";
+                  echo $adressevergeben_sql;
+                  echo "<br>";     
+
+                  if($adressevergeben->num_rows==1){ //wird ausgeführt wenn die id der Adresse keiner anderen Person zugeordnet ist
 
                     $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
                     $adresseupdate_result = $conn->query($adresseupdate_sql);
+
+                    echo "<br>Zeile 146";
+                    echo $adresseupdate_sql;
+                    echo "<br>";
+        
   
                     $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update";
                     $personupdate_result = $conn->query($personupdate_sql);
+
+                    echo "<br>Zeile 154";
+                    echo $personupdate_sql;
+                    echo "<br>";
+
                     $erfolg = 1;
                   }
 
-                  else{
+                  else{ //wird ausgeführt wenn die Adresse neben der Person einer weiteren Person zugeordnet ist
                     $adresseschonda_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr = '$hausnr' AND plz = '$plz' AND ort='$ort' AND land='$land'";
                     $adresseschonda = $conn->query($adresseschonda_sql);
 
-                    if($adresseschonda->num_rows==1){
+                    echo "<br>Zeile 165";
+                    echo $adresseschonda_sql;
+                    echo "<br>";
+
+                    if($adresseschonda->num_rows<2){ //wird ausgeführt wenn die Adresse nur einmal oder keinmal in der Datenbank ist
 
                       while($row_x = $adresseschonda->fetch_assoc()){   
                         $id_adresseh = $row_x['id_adresse'];
                         $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' , id_adresse = '$id_adresseh' WHERE id_person=$update";
                         $personupdate_result = $conn->query($personupdate_sql);
-                        $erfolg = 1;
+
+                        echo "<br>Zeile 176";
+                        echo $personupdate_sql;
+                        echo "<br>";
+
+                        
 
                       }
+                      $erfolg = 1;
                     } 
 
                     else{
 
                       $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
-                      $adressenew_result = $conn->query($adressenew_sql);                      
+                      $adressenew_result = $conn->query($adressenew_sql);       
+                      
+                      echo "<br>Zeile 190";
+                      echo $adressenew_sql;
+                      echo "<br>";
 
                       $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
                       $id_adresse_result1 = $conn->query($id_adresse_sql1);
+
+                      echo "<br>Zeile 197";
+                      echo $id_adresse_sql1;
+                      echo "<br>";
 
                       while($row_a = $id_adresse_result1->fetch_assoc()){   
                         $id_adresseh = $row_a['id_adresse'];
                         $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' , id_adresse = '$id_adresseh' WHERE id_person=$update";
                         $personupdate_result = $conn->query($personupdate_sql);
-                        $erfolg = 1;
+
+                        echo "<br>Zeile 206";
+                        echo $personupdate_sql;
+                        echo "<br>";
+
+                       
                       }
+                      $erfolg = 1;
                     }
                   }
                 }
               }
               
-              else {
+              else { //wird bei hinzufügen einer Person ausgeführt
 
                 if($schonvorhanden->num_rows==0){
 
                 $id_adresse_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
                 $id_adresse_result = $conn->query($id_adresse_sql);
 
-                  if($id_adresse_result->num_rows==1){
+                echo "<br>Zeile 224";
+                echo $id_adresse_sql;
+                echo "<br>";
+
+                  if($id_adresse_result->num_rows==1){ //Adresse ist bereits vorhanden
                     while($row_i = $id_adresse_result->fetch_assoc()){
 
                       $id_adresse_übergabe = $row_i['id_adresse'];
                       $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresse_übergabe')";
                       $personnew_result = $conn->query($personnew_sql);
+
+                      echo "<br>Zeile 235";
+                      echo $personnew_sql;
+                      echo "<br>";
+
                       $erfolg = 2;
                     }
                   }
 
-                  else{    
+                  else{    //Adresse muss hinzugefühgt werden
                     $adressenew_sql = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, '$strasse', '$hausnr', $plz, '$ort', '$land')";
                     $adressenew_result = $conn->query($adressenew_sql);
 
+                    echo "<br>Zeile 247";
+                    echo $adressenew_sql;
+                    echo "<br>";
+
                     $id_adresse_sql1 = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr='$hausnr' AND plz='$plz' AND ort='$ort' AND land='$land'";
                     $id_adresse_result1 = $conn->query($id_adresse_sql1);
+
+                    echo "<br>Zeile 254";
+                    echo $id_adresse_sql1;
+                    echo "<br>";
 
                     while($row_a = $id_adresse_result1->fetch_assoc()){   
                       $id_adresseh = $row_a['id_adresse'];
                       $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
                       $personnew_result = $conn->query($personnew_sql);
+
+                      echo "<br>Zeile 163";
+                      echo $personnew_sql;
+                      echo "<br>";
+
                       $erfolg = 2;
 
                     }

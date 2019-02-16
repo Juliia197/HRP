@@ -1,3 +1,18 @@
+<?php
+//Logindaten
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,25 +99,19 @@
 
         <div class="container-fluid">
 
-          <!-- Page Content -->
-          <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbname = "hrppr_db1";
-
-            // Create connection
-            $conn = new mysqli($servername, $username, $password, $dbname);
-            // Check connection
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            } 
+        <!-- Page Content -->
+        <?php
+          //Übergebene Daten werden in Variablen gespeichert
           $personid = $_GET["id_person"];
-          $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-          $person = $conn->query($personsql);
 
-          if($person->num_rows>0){
+          if($personid>0){ //wird ausgeführt wenn eine Person bearbeitet werden will
+            
+            //Daten der Person mit der übergebenen ID werden abgerufen
+            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+            $person = $conn->query($personsql);
+
             while($row_p = $person->fetch_assoc()){
+              // Leiste zur Darstellung der aktuellen Position auf der Seite
               echo "<ol class=\"breadcrumb\">
                     <li class=\"breadcrumb-item\">
                       <a href=\"dashboard.php\">Dashboard</a>
@@ -114,7 +123,11 @@
                       Person bearbeiten
                     </li>
                   </ol>";
+
+              //Überschrift
               echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+
+              //Formular
               echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
 
 
@@ -152,6 +165,7 @@
 
               echo "<hr>";
 
+              //Buttons
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
                 <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
@@ -161,7 +175,8 @@
 
             }
           }
-          else{
+          else{ //wird ausgeführt wenn die Person hinzugefügt werden soll
+            // Leiste zur Darstellung der aktuellen Position auf der Seite
             echo "<ol class=\"breadcrumb\">
                 <li class=\"breadcrumb-item\">
                   <a href=\"dashboard.php\">Dashboard</a>
@@ -173,9 +188,12 @@
                   Person hinzufügen
                 </li>
               </ol>";
+
+            //Überschrift
             echo "<h1>Person hinzufügen </h1><hr>";
+
+            //Formular
             echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
-            
             
             echo "<label>Vorname</label>";
             echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\">";
@@ -211,6 +229,7 @@
           
             echo "<hr>";
 
+            //Buttons
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
