@@ -138,6 +138,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
               Güter
             </li>            
           </ol>
+          
           <div class="container-fluid">
           <div class="row justify-content-end">
           <a class="btn btn-success" role="button" href="lieferung.php?id_verbrauchsgut=0">Lieferungen</a>

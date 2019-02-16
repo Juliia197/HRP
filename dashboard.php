@@ -48,7 +48,7 @@
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="dashboard.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
@@ -85,6 +85,13 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+          </ol>
+
           <h1>Überschrift</h1>
           <hr>
           <p>Hier könnte Ihre Werbung stehen.</p>

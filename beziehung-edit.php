@@ -66,7 +66,7 @@
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
@@ -85,6 +85,19 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="pferd.php">Pferde</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Beziehung bearbeiten
+            </li>
+          </ol>
+
+
           <h1>Überschrift</h1>
           <hr>
           <p>Hier könnte Ihre Werbung stehen.</p>

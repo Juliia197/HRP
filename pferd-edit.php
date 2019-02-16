@@ -82,7 +82,7 @@ catch(PDOException $e)
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
@@ -101,6 +101,18 @@ catch(PDOException $e)
         <div class="container-fluid">
 
           <!-- Page Content -->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="pferd.php">Pferde</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Pferd bearbeiten
+            </li>
+          </ol>
+
           <h1>Pferd editieren</h1>
           <hr>
           <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
