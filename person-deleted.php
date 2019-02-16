@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -9,10 +10,13 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
+} 
+
+//Löschen der Person aus der Datenbank
 $personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
 $personloeschen_result = $conn->query($personloeschen_sql);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -101,6 +105,7 @@ $personloeschen_result = $conn->query($personloeschen_sql);
 
           <!-- Page Content -->
 
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -113,6 +118,7 @@ $personloeschen_result = $conn->query($personloeschen_sql);
             </li>
           </ol>
           <?php  
+            //Success Balken
             echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
 
           ?>

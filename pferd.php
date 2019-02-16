@@ -1,3 +1,18 @@
+<?php
+//Logindaten
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,7 +100,8 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
-
+          
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -94,16 +110,19 @@
               Pferde
             </li>
           </ol>
-
+          
+          <!-- Überschrift -->
           <h1>Übersicht Pferde</h1>
           <hr>
 
+          <!-- Hinzufügebutton -->
           <div class="container-fluid">
           <div class="row justify-content-end">
           <a class="btn btn-success" role="button" href="pferd-edit.php?id_pferd=0">Hinzufügen</a>
           </div>
           </div>
-          
+
+          <!-- Tabelle mit den Pferden in der Datenbank -->
           <p>
           <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -117,30 +136,15 @@
             </tr>
           </thead>
 
-            <?php
-
-              $servername = "localhost";
-              $username = "root";
-              $password = "";
-              $dbname = "hrppr_db1";
-
-              // Create connection
-              $conn = new mysqli($servername, $username, $password, $dbname);
-              $mysqli = new mysqli($servername, $username, $password, $dbname);
-              // Check connection
-              if ($conn->connect_error) {
-                  die("Connection failed: " . $conn->connect_error);
-              } 
-                        
+            <?php    
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
               $pferd = "SELECT * FROM pferd";
-              
               $query = $conn->query($pferd) or die(mysql_error());
 
-              while($fetch = mysqli_fetch_assoc($query)){
+              while($fetch = mysqli_fetch_assoc($query)){ //jede Zeile der Datenbank ergibt eine Zeile der Tabelle
                 echo '<tr>';
                   echo '<td>' . $fetch['pferdename'] . '</td>';
-                  echo '<td>' ;
+                  echo '<td>' ; //geschlecht wird in der Datenbank als ein Buchstabe eingeplegt, daher hier umgeändert
                     if( $fetch['geschlecht'] =='s')
                       {
                         echo "Stute";
@@ -155,20 +159,23 @@
                       }
               
                   echo '</td>';
-
+                  
+                  //zusammenfügen von Vor und Nachname des Besitzers
                   $besitzer = 'SELECT person.vorname, person.nachname From person, beziehung  WHERE beziehung.id_pferd = '.$fetch['id_pferd'].' AND beziehung.id_funktion = 1 AND beziehung.id_person=person.id_person';
                     $query1 = $conn->query($besitzer) or die (mysql_error());
                     while($fetch1 = mysqli_fetch_assoc($query1)){
                       echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
                     }
                   
+                  //abfragen der Bezeichnung zur Box des Pferdes
                   $boxentyp = 'SELECT boxentyp.boxenbez From box, boxentyp WHERE box.id_pferd = '.$fetch['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp' ;
                     $query2 = $conn->query($boxentyp) or die (mysql_error());
                     while($fetch2 = mysqli_fetch_assoc($query2)){
                       echo '<td>' . $fetch2['boxenbez'] . '</td>'  ;
                     }
 
-                  echo '<td> 
+                  //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
+                  echo '<td>  
                     <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
                     <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
                     <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" >Löschen</a> <br>

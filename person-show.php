@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -97,13 +98,15 @@ if ($conn->connect_error) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
-                  <!-- Page Content -->
+          <!-- Page Content -->
 
         <?php
+          //Daten zur Person werden abgerufen
           $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
 
           while($row_p = $person->fetch_assoc()){
+            //Leiste zur Darstellung der aktuellen Position auf der Seite
             echo "<ol class=\"breadcrumb\">
                   <li class=\"breadcrumb-item\">
                     <a href=\"dashboard.php\">Dashboard</a>
@@ -115,8 +118,10 @@ if ($conn->connect_error) {
                     Person anzeigen
                   </li>
                 </ol>";
+            //Überschrift
             echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-            
+
+            //Darstellung der Person            
             echo "<p>E-Mail: " . $row_p['email'] . "</p>";
             echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
             echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
@@ -130,18 +135,19 @@ if ($conn->connect_error) {
             echo "<p>Land: " . $row_p['land'] . "</p>"; 
             
             echo "<hr>";
-
+            
+            //Abfrage, ob diese Person Beziehungen hat
             $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $_GET['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
             $query1 = $conn->query($funktion) ; 
 
-              if($query1->num_rows==0){ 
+              if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
                echo "<div class=\"form-group\"></div>
                <div class=\"form-group\">
                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
                <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=1\" >Löschen</a>
                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
-              else{
+              else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
                 echo "<h5> Dieser Person ist mindestens ein Pferd zugeordnet </h5>
                 <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
                 echo "<div class=\"form-group\"></div>

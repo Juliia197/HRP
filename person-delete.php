@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -9,8 +10,9 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
+} 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -99,6 +101,7 @@ if ($conn->connect_error) {
 
           <!-- Page Content -->
 
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -110,27 +113,29 @@ if ($conn->connect_error) {
               Person löschen
             </li>
           </ol>
+
           <?php  
+            //Übergebene Daten werden in Variablen gespeichert
             $id_person = $_GET['id_person'];
             $id_delete = $_GET['id_delete'];
-          
+
+            //Daten zur Person werden aufgerufen          
             $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
             $person = $conn->query($personsql);
 
-            if($id_delete==1){
+            if($id_delete==1){ //wird ausgeführt wenn die Person gelöscht werden kann
 
+              //success Balken 
               echo '<div class="alert alert-success" role="alert"> Diese Person kann gelöscht werden!</div><hr>';
 
               while($row_p = $person->fetch_assoc()){
-
                 echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
                 
                 echo "<p>E-Mail: " . $row_p['email'] . "</p>";
                 echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
                 echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
     
-                echo "<br><h3> Adresse </h3>";
-    
+                echo "<br><h3> Adresse </h3>";    
                 echo "<p>Straße: " . $row_p['strasse'] . "</p>";
                 echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
                 echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
@@ -149,7 +154,8 @@ if ($conn->connect_error) {
 
 
             }
-            else{
+            else{ //wird ausgeführt wenn die Person nicht gelöscht werden kann (wegen Beziehungen zu Pferden oder Lieferungen)
+              //Fehlermeldung
               echo '<div class="alert alert-danger" role="alert"> Diese Person kann nicht gelöscht werden, da ihr Pferde oder Lieferungen zugeordnet sind!</div><hr>';
     
               while($row_p = $person->fetch_assoc()){
