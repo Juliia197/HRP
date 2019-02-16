@@ -98,6 +98,19 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gehoeft.php">Gehöfft</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Box löschen
+            </li>
+          </ol>
+
           <h1>Box löschen</h1>
           <hr>
           <div class="table-responsive">

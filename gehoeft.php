@@ -222,6 +222,16 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         </ol>
 
           <!-- Page Content -->
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Gehöft
+            </li>
+          </ol>
+
           <h1>Gehöft: 
             <?php if ($gehoeft_name_result->num_rows > 0) {
                 // output data of each row

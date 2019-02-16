@@ -73,7 +73,7 @@ if ($conn->connect_error) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -107,7 +107,7 @@ if ($conn->connect_error) {
               <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Güter Anzeigen
+              Güter anzeigen
             </li>
           </ol>
 
