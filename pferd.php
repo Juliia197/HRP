@@ -171,7 +171,7 @@
                   echo '<td> 
                     <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
                     <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delet.php?id_pferd=' . $fetch["id_pferd"] . '" >Löschen</a> <br>
+                    <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" >Löschen</a> <br>
                   </td>';
 
                 echo '</tr>';
