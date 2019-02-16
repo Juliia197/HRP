@@ -108,8 +108,9 @@ if ($conn->connect_error) {
             </li>
             <li class="breadcrumb-item active">
               Pferde zur Person
+            </li>
           </ol>
-          <tr>
+          <!-- <tr> -->
 
           <?php  
             $id_person = $_GET['id_person'];
@@ -117,7 +118,7 @@ if ($conn->connect_error) {
             $person = $conn->query($person_sql);
 
             while ($fetch1 = mysqli_fetch_assoc($person)){
-              echo "<h1> Pferde zu " . $fetch1['vorname'] . " " . $fetch1['nachname'] . "</h1>";
+              echo "<h1> Pferde zu " . $fetch1['vorname'] . " " . $fetch1['nachname'] . "</h1><hr>";
               $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
               $pferd_bez = $conn->query($pferd_sql);
 
