@@ -11,32 +11,77 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$anzahl_stuten_sql = "SELECT COUNT(id_pferd) FROM pferd WHERE geschlecht = 's'";
+$anzahl_stuten_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht = 's'";
 $anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
+if ($anzahl_stuten_result->num_rows > 0){
+  while($row_as = $anzahl_stuten_result->fetch_assoc()){
+    $anzahl_stuten = $row_as["anzahl"]; 
+  }
+}
 
-$anzahl_wallach_sql = "SELECT COUNT(id_pferd) FROM pferd WHERE geschlecht='w'";
+$anzahl_wallach_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht='w'";
 $anzahl_wallach_result = $conn->query($anzahl_wallach_sql);
+if ($anzahl_wallach_result->num_rows > 0){
+  while($row_aw = $anzahl_wallach_result->fetch_assoc()){
+    $anzahl_wallache = $row_aw["anzahl"]; 
+  }
+}
 
-$anzahl_hengste_sql = "SELECT COUNT(id_pferd) FROM pferd WHERE geschlecht='h'";
+$anzahl_hengste_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht='h'";
 $anzahl_hengste_result = $conn->query($anzahl_hengste_sql);
+if ($anzahl_hengste_result->num_rows > 0){
+  while($row_ah = $anzahl_hengste_result->fetch_assoc()){
+    $anzahl_hengste = $row_ah["anzahl"]; 
+  }
+}
 
-$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) FROM box WHERE id_pferd IS NULL";
+$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL";
 $anzahl_boxenfrei_result = $conn->query($anzahl_boxenfrei_sql);
+if ($anzahl_boxenfrei_result->num_rows > 0){
+  while($row_abf = $anzahl_boxenfrei_result->fetch_assoc()){
+    $anzahl_boxenfrei = $row_abf["anzahl"];
+  }
+}
 
-$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) FROM box WHERE id_pferd IS NOT NULL";
+$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL";
 $anzahl_boxenbelegt_result = $conn->query($anzahl_boxenbelegt_sql);
+if ($anzahl_boxenbelegt_result->num_rows > 0){
+  while($row_abb = $anzahl_boxenbelegt_result->fetch_assoc()){
+    $anzahl_boxenbelegt = $row_abb["anzahl"];
+  }
+}
 
 $bestand_hafer_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=1";
 $bestand_hafer_result = $conn->query($bestand_hafer_sql);
+if ($bestand_hafer_result->num_rows > 0){
+  while($row_bh = $bestand_hafer_result->fetch_assoc()){
+    $bestand_hafer = $row_bh["bestand"];
+  }
+}
 
 $bestand_heu_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=2";
 $bestand_heu_result = $conn->query($bestand_heu_sql);
+if ($bestand_heu_result->num_rows > 0){
+  while($row_bheu = $bestand_heu_result->fetch_assoc()){
+    $bestand_heu = $row_bheu["bestand"];
+  }
+}
 
 $bestand_stroh_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=3";
 $bestand_stroh_result = $conn->query($bestand_stroh_sql);
+if ($bestand_stroh_result->num_rows > 0){
+  while($row_bs = $bestand_stroh_result->fetch_assoc()){
+    $bestand_stroh = $row_bs["bestand"];
+  }
+}
 
 $bestand_saegespaene_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=4";
 $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
+if ($bestand_saegespaene_result->num_rows > 0){
+  while($row_bss = $bestand_saegespaene_result->fetch_assoc()){
+    $bestand_saegespaene = $row_bss["bestand"];
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,6 +107,90 @@ $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
+    <script>
+      window.onload = function () {
+        var boxen_belegt = <?php echo $anzahl_boxenbelegt ?>;
+        var boxen_frei = <?php echo $anzahl_boxenfrei ?>;
+        var stuten = <?php echo $anzahl_stuten ?>;
+        var wallache = <?php echo $anzahl_wallache ?>;
+        var hengste = <?php echo $anzahl_hengste ?>;
+        var hafer = <?php echo $bestand_hafer ?>;
+        var heu = <?php echo $bestand_heu ?>;
+        var stroh = <?php echo $bestand_stroh ?>;
+        var saegespaene = <?php echo $bestand_saegespaene ?>;
+        
+        var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
+          animationEnabled: true,
+          title: {
+            fontFamily: "Segoe UI",
+            fontWeight: "bold",
+            text: "Belegung der Boxen"
+          },
+          data: [{
+            type: "pie",
+            startAngle: 240,
+            yValueFormatString: "##0",
+            indexLabel: "{label} {y}",
+            dataPoints: [
+              {y: boxen_belegt, label: "Belegte Boxen"},
+              {y: boxen_frei, label: "Freie Boxen"}
+            ]
+          }]
+        });
+        boxen_belegt_frei.render();
+
+        var anzahl_hws = new CanvasJS.Chart("anzahl_hws", {
+          animationEnabled: true,
+          
+          title:{
+            text:"Anzahl der Pferde",
+            fontFamily: "Segoe UI",
+            fontWeight: "bold"
+          },
+          axisX:{
+            interval: 1
+          },
+          data: [{
+            type: "bar",
+            name: "Pferdegeschlecht",
+            axisYType: "secondary",
+            color: "#014D65",
+            dataPoints: [
+              { y: stuten, label: "Stuten" },
+              { y: wallache, label: "Wallache" },
+              { y: hengste, label: "Hengste" }
+            ]
+          }]
+        });
+        anzahl_hws.render();
+
+        var verbrauchsguttypen_bestand = new CanvasJS.Chart("verbrauchsguttypen_bestand", {
+          animationEnabled: true,
+          
+          title:{
+            text:"Bestände der Verbrauchsgüter",
+            fontFamily: "Segoe UI",
+            fontWeight: "bold"
+          },
+          axisX:{
+            interval: 1
+          },
+          data: [{
+            type: "bar",
+            name: "Pferdegeschlecht",
+            axisYType: "secondary",
+            color: "#014D65",
+            dataPoints: [
+              { y: heu, label: "Heu" },
+              { y: hafer, label: "Hafer" },
+              { y: stroh, label: "Stroh" },
+              { y: saegespaene, label: "Sägespäne"}
+            ]
+          }]
+        });
+        verbrauchsguttypen_bestand.render();
+      }
+    </script>
 
   </head>
 
@@ -87,8 +216,8 @@ $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
     <div id="wrapper">
 
       <!-- Sidebar -->
-      <ul class="sidebar navbar-nav active">
-        <li class="nav-item">
+      <ul class="sidebar navbar-nav">
+        <li class="nav-item active">
           <a class="nav-link" href="dashboard.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
@@ -132,23 +261,29 @@ $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
           <!-- Page Content -->
           <h1>Dashboard</h1>
           <hr>
+          <div class="row">
+          <div class="col">
           <div class="card mb-3">
             <div class="card-header">
               <i class="fas fa-chart-pie"></i>
               Pferd
             </div>
             <div class="card-body">
-              <p>TEST</p>
+              <div id="anzahl_hws" style="height: 300px; width: 100%;"></div>
             </div>
           </div>
+          </div>
+          <div class="col">
           <div class="card mb-3">
             <div class="card-header">
               <i class="fas fa-chart-pie"></i>
               Boxen
             </div>
             <div class="card-body">
-              <p>TEST</p>
+              <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
             </div>
+          </div>
+          </div>
           </div>
           <div class="card mb-3">
             <div class="card-header">
@@ -156,7 +291,7 @@ $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
               Verbrauchsgüter
             </div>
             <div class="card-body">
-              <p>TEST</p>
+              <div id="verbrauchsguttypen_bestand" style="height: 300px; width: 100%;"></div>
             </div>
           </div>
 
@@ -211,6 +346,8 @@ $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
   </body>
 
