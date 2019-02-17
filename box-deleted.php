@@ -100,6 +100,18 @@ $boxloeschen_result = $conn->query($boxloeschen_sql);
         <div class="container-fluid">
 
           <!-- Page Content -->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gehoeft">Gehöft</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Box löschen
+            </li>
+          </ol>
+          
           <h1>Box löschen</h1>
           <hr>
           <div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div>

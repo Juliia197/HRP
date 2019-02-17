@@ -90,7 +90,7 @@
             <li class="breadcrumb-item">
               <a href="gehoeft.php">Gehöft</a>
             </li>
-            <li class="breadcrumb-item">
+            <li class="breadcrumb-item active">
               Box hinzufügen
             </li>
           </ol>

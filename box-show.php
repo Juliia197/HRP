@@ -54,7 +54,7 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -67,13 +67,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -85,6 +85,17 @@
         <div class="container-fluid">
 
           <!-- Page Content -->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gehoeft">Gehöft</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Box anzeigen
+            </li>
+          </ol>
           <h1>Überschrift</h1>
           <hr>
           <p>Hier könnte Ihre Werbung stehen.</p>

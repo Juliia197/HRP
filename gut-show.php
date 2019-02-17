@@ -2,14 +2,14 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "dhbw";
+$dbname = "hrppr_db1";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-} 
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,20 +73,20 @@ if ($conn->connect_error) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+        <li class="nav-item active">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -98,9 +98,64 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gueter.php">Güter</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Güter anzeigen
+            </li>
+          </ol>
+
+          <?php  
+            $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
+            $verbrauchsgut_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp " ;
+            $verbrauchsgut = $conn->query($verbrauchsgut_sql);
+
+            //echo $verbrauchsgut_sql;
+
+            while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
+              echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
+              $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp " ;
+              $verbrauchsgut = $conn->query($verbrauchsgut_sql);
+
+              echo "
+                <p>
+                <div class='table-responsive'>
+                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                <thead>
+                  <tr >
+                    <th>Lieferung</th>
+                    <th>Lieferdatum</th>
+                    <th>Menge in kg</th>
+                    <th>Einkaufpreis je kg</th>
+                    <th>Lieferant</th>
+                  </tr>
+                  </thead>";
+
+              while($fetch = mysqli_fetch_assoc($verbrauchsgut)){
+                echo '<tr>';
+                echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
+                echo '<td>' . $fetch['lieferdatum'] . '</td>';
+                echo '<td>' . $fetch['menge'] . '</td>';
+                echo '<td>' . $fetch['einkaufspreis'] . '</td>';
+                $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+                $query1 = $conn->query($lieferant) or die (mysql_error());
+                  while($fetch1 = mysqli_fetch_assoc($query1)){
+                    echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
+                  }
+              echo "</tr>";
+                } 
+            }
+
+
+
+          ?>
+
 
         </div>
         <!-- /.container-fluid -->
@@ -153,6 +208,10 @@ if ($conn->connect_error) {
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 

@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -81,13 +82,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+        <li class="nav-item active">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -98,11 +99,146 @@ if ($conn->connect_error) {
 
         <div class="container-fluid">
 
-          <!-- Page Content -->
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+        <!-- Page Content -->
+        <?php
+          //Übergebene Daten werden in Variablen gespeichert
+          $personid = $_GET["id_person"];
 
+          if($personid>0){ //wird ausgeführt wenn eine Person bearbeitet werden will
+            
+            //Daten der Person mit der übergebenen ID werden abgerufen
+            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
+            $person = $conn->query($personsql);
+
+            while($row_p = $person->fetch_assoc()){
+              // Leiste zur Darstellung der aktuellen Position auf der Seite
+              echo "<ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"dashboard.php\">Dashboard</a>
+                    </li>
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"person.php\">Personen</a>
+                    </li>
+                    <li class=\"breadcrumb-item active\">
+                      Person bearbeiten
+                    </li>
+                  </ol>";
+
+              //Überschrift
+              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+
+              //Formular
+              echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
+
+
+              echo "<label>Vorname</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
+              
+              echo "<label>Nachname</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\">";
+              
+              echo "<label>E-Mail</label>";
+              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\">";
+              
+              echo "<label>Telefonnummer</label>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\">";
+              
+              echo "<label>Geburtsdatum</label>";
+              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\">";
+
+              echo "<br><h3> Adresse </h3>";
+
+              echo "<label>Straße</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\">";
+
+              echo "<label>Hausnummer</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\">";
+
+              echo "<label>Postleitzahl</label>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\">";
+
+              echo "<label>Ortschaft</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\">";
+
+              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\">";
+
+              echo "<hr>";
+
+              //Buttons
+              echo "<div class=\"form-group\"></div>
+              <div class=\"form-group\">
+                <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+                <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+              </div>";
+              echo "</form>";
+
+            }
+          }
+          else{ //wird ausgeführt wenn die Person hinzugefügt werden soll
+            // Leiste zur Darstellung der aktuellen Position auf der Seite
+            echo "<ol class=\"breadcrumb\">
+                <li class=\"breadcrumb-item\">
+                  <a href=\"dashboard.php\">Dashboard</a>
+                </li>
+                <li class=\"breadcrumb-item\">
+                  <a href=\"person.php\">Personen</a>
+                </li>
+                <li class=\"breadcrumb-item active\">
+                  Person hinzufügen
+                </li>
+              </ol>";
+
+            //Überschrift
+            echo "<h1>Person hinzufügen </h1><hr>";
+
+            //Formular
+            echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
+            
+            echo "<label>Vorname</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\">";
+            
+            echo "<label>Nachname</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\">";
+            
+            echo "<label>E-Mail</label>";
+            echo "<input class=\"form-control\" type=\"email\" name=\"email\">";
+            
+            echo "<label>Telefonnummer</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\">";
+            
+            echo "<label>Geburtsdatum</label>";
+            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\">";
+
+            echo "<br><h3> Adresse </h3>";
+
+            echo "<label>Straße</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\">";
+
+            echo "<label>Hausnummer</label>";
+            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\">";
+
+            echo "<label>Postleitzahl</label>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"plz\">";
+
+            echo "<label>Ortschaft</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\">";
+
+            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"land\">";
+          
+            echo "<hr>";
+
+            //Buttons
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+              <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
+              <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+            </div>";
+          }
+          ?>
+          
+          </form>
         </div>
         <!-- /.container-fluid -->
 

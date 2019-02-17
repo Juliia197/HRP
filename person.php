@@ -1,3 +1,19 @@
+<?php
+//Logindaten
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+$mysqli = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,13 +83,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -86,6 +102,7 @@
 
           <!-- Page Content -->
 
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -94,13 +111,19 @@
               Personen
             </li>
           </ol>
+          
+          <!-- Überschrift -->
+          <h1>Übersicht Personen</h1>
+          <hr>
 
+          <!-- Hinzufügen Button -->
           <div class="container-fluid">
           <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="pferd-edit.php?id_pferd=0">Hinzufügen</a>
+          <a class="btn btn-success" role="button" href="person-edit.php?id_person=0">Hinzufügen</a>
           </div>
           </div>
 
+          <!-- Tabelle mit den Personen in der Datenbank -->
           <p>
           <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -114,39 +137,36 @@
             </thead>
                           
             <?php
-              $servername = "localhost";
-              $username = "root";
-              $password = "";
-              $dbname = "hrppr_db1";
-
-              // Create connection
-              $conn = new mysqli($servername, $username, $password, $dbname);
-              // Check connection
-              if ($conn->connect_error) {
-                  die("Connection failed: " . $conn->connect_error);
-              } 
-
+              //Abrufen aller Personen
               $person = "SELECT * FROM person";
-              $query = $conn ->query($person) or die(mysql_error());
-
+              $query = $conn ->query($person);
+              
+              //While erzeugt für jede Zeile der Datenbank eine Tabellenzeile
               while($fetch = mysqli_fetch_assoc($query)){
                 echo '<tr>';
                   echo'<td>' . $fetch['vorname'] .  '</td>';
                   echo'<td>' . $fetch['nachname'] . '</td>';
-                 
                   echo '<td>';
-                 $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
-                  $query1 = $conn->query($funktion) or die (mysql_error());
+                  
+                  //Abrufen der verschiedenen Beziehungen die die Person mit einem oder mehreren Pferden hat
+                  $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
+                  $query1 = $conn->query($funktion) ;
                   while($fetch1 = mysqli_fetch_assoc($query1)){
                     echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
                   }
                   echo '</td>';
 
+                  //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
                   echo '<td> 
-                    <a href="pferd-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
-                    <a href="pferd-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delet.php?id_person=' . $fetch["id_person"] . '" >Löschen</a> <br>
-                  </td>';
+                    <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
+                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
+                  if($query1->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
+                    echo'<a href="person-delete.php?id_person=' . $fetch["id_person"] . '&id_delete=1" >Löschen</a> <br></td>';
+                  }
+                  else{
+                    echo 'Löschen nicht möglich';
+                    //echo '<div></div>';
+                  }
 
                 echo '</tr>';
               }
