@@ -1,5 +1,4 @@
 <?php
-//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -10,31 +9,19 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-} 
-
-//id_adresse der Person herausfinden
-$id_adresse_sql = "SELECT id_adresse FROM person WHERE id_person=" . $_GET["id_person"];
-$id_adresse = $conn->query($id_adresse_sql);
-
-//Löschen der Person aus der Datenbank
-$personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
-$personloeschen_result = $conn->query($personloeschen_sql);
-
-while($row_x = $id_adresse->fetch_assoc()){   
-  $wieoftda_sql = "SELECT id_person FROM person WHERE id_adresse = " . $row_x["id_adresse"];
-  $wieoftda= $conn->query($wieoftda_sql);
-
-  if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
-    $adresseloeschen_sql = "DELETE FROM adresse WHERE id_adresse=" . $row_x["id_adresse"];
-    $adresseloeschen_result = $conn->query($adresseloeschen_sql);
-
-  }
-  else{
-    echo "Adresse bleibt in der Datenbank da sie nicht nur dieser Person zugeordnet war";
-  }
 }
-?>
+$pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen_result = $conn->query($pferdloeschen_sql);
 
+$pferdloeschen3_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
+
+$pferdloeschen4_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
+$pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
+
+$pferdloeschen2_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -103,13 +90,13 @@ while($row_x = $id_adresse->fetch_assoc()){
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -123,21 +110,19 @@ while($row_x = $id_adresse->fetch_assoc()){
 
           <!-- Page Content -->
 
-          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item">
-              <a href="person.php">Personen</a>
+              <a href="pferd.php">Pferde</a>
             </li>
             <li class="breadcrumb-item active">
-              Person löschen
+              Pferd löschen
             </li>
           </ol>
           <?php  
-            //Success Balken
-            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+            echo '<div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr>';
 
           ?>
 
@@ -195,8 +180,8 @@ while($row_x = $id_adresse->fetch_assoc()){
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-  <script src="js/demo/datatables-demo.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
