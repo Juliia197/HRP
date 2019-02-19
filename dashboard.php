@@ -262,14 +262,6 @@ if ($bestand_saegespaene_result->num_rows > 0){
 
           <h1>Dashboard</h1>
 
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-          </ol>
-
-          <h1>Überschrift</h1>
-
           <hr>
           <div class="row">
           <div class="col">
