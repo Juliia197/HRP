@@ -12,9 +12,27 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+//id_adresse der Person herausfinden
+$id_adresse_sql = "SELECT id_adresse FROM person WHERE id_person=" . $_GET["id_person"];
+$id_adresse = $conn->query($id_adresse_sql);
+
 //Löschen der Person aus der Datenbank
 $personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
 $personloeschen_result = $conn->query($personloeschen_sql);
+
+while($row_x = $id_adresse->fetch_assoc()){   
+  $wieoftda_sql = "SELECT id_person FROM person WHERE id_adresse = " . $row_x["id_adresse"];
+  $wieoftda= $conn->query($wieoftda_sql);
+
+  if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
+    $adresseloeschen_sql = "DELETE FROM adresse WHERE id_adresse=" . $row_x["id_adresse"];
+    $adresseloeschen_result = $conn->query($adresseloeschen_sql);
+
+  }
+  else{
+    echo "Adresse bleibt in der Datenbank da sie nicht nur dieser Person zugeordnet war";
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -73,7 +91,7 @@ $personloeschen_result = $conn->query($personloeschen_sql);
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
