@@ -1,3 +1,11 @@
+<?php
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -149,7 +157,7 @@
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>
@@ -168,3 +176,14 @@
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>

@@ -1,5 +1,59 @@
+<?php
+session_start();
+
+if (isset($_SESSION['logged']) && $_SESSION['logged']) {
+    header('location:dashboard.php');
+    exit();
+}
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hrppr_db1";
+$error = false;
+$mail = '';
+
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(PDOException $e)
+{
+    echo "Connection failed: " . $e->getMessage();
+}
+
+if (isset($_POST['email'], $_POST['password'])) {
+    $mail = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    $sql = "SELECT 
+              benutzer.passwort 
+            FROM
+              benutzer 
+            LEFT JOIN 
+              person
+            ON 
+              benutzer.id_person = person.id_person
+            WHERE 
+              person.email = '".$mail."'";
+
+    $user = $conn->query($sql);
+    $user = $user->fetch();
+
+    if (isset($user['passwort']) && $user['passwort'] === $password) {
+        $_SESSION['logged'] = true;
+        header('location:dashboard.php');
+        exit();
+    } else {
+        $error = true;
+    }
+
+}
+
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
   <head>
 
@@ -28,32 +82,27 @@
       <div class="card card-login mx-auto mt-5">
         <div class="card-header">Login</div>
         <div class="card-body">
-          <form>
+            <?php if ($error) { ?>
+            <p>Ungültige Anmeldedaten. Versuchen Sie es noch einmal!</p>
+            <?php } ?>
+          <form action="login.php" method="post">
             <div class="form-group">
               <div class="form-label-group">
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
+                <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
                 <label for="inputEmail">Email address</label>
               </div>
             </div>
             <div class="form-group">
               <div class="form-label-group">
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required">
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="required">
                 <label for="inputPassword">Password</label>
               </div>
             </div>
-            <div class="form-group">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" value="remember-me">
-                  Remember Password
-                </label>
-              </div>
-            </div>
-            <a class="btn btn-primary btn-block" href="index.html">Login</a>
+            <button class="btn btn-primary btn-block">Login</button>
           </form>
           <div class="text-center">
-            <a class="d-block small mt-3" href="register.html">Register an Account</a>
-            <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
+            <a class="d-block small mt-3" href="register.html">Registrieren</a>
+            <a class="d-block small" href="forgot-password.html">Passwort vergessen?</a>
           </div>
         </div>
       </div>
