@@ -127,24 +127,16 @@ if($_SESSION["logged"] == true) {
             $schonvorhanden = $conn->query($schonvorhanden_sql);
 
               if ($update > 0){ //wird ausgeführt wenn die Person geändert wird
-
-                //erst: ist eine Adresse = Zieladresse scon in der DB :
-                //Dann: ist die alte adresse schon von mehr als null personen mit der adresse im system ?
-                  //ja -> nichts tun
-                  //nein -> alte adresse löschen
-
+                $erfolg = 1;
                 $adresseschonda_sql = "SELECT id_adresse FROM adresse WHERE strasse = '$strasse' AND hausnr = '$hausnr' AND plz = '$plz' AND ort='$ort' AND land='$land'";
                 $adresseschonda = $conn->query($adresseschonda_sql);
 
-                while($row_x = $adresseschonda->fetch_assoc()){
+                //while($row_x = $adresseschonda->fetch_assoc()){
                   $adressevergeben_sql ="SELECT id_person FROM person WHERE id_adresse = $update2";
                   $adressevergeben = $conn->query($adressevergeben_sql);
 
-                  echo $adressevergeben_sql;
-
                   if($adresseschonda->num_rows==0){//wird ausgeführt die neue Adresse nicht vorhanden ist
                     if($adressevergeben->num_rows==1){ //wird ausgeführt wenn die alte Adresse nur einer Person zugeordnet ist
-
                       //adresse wird geändert
                       $adresseupdate_sql = "UPDATE adresse SET strasse ='$strasse', hausnr = '$hausnr', plz='$plz', ort='$ort', land='$land' WHERE id_adresse=$update2 ";
                       $adresseupdate_result = $conn->query($adresseupdate_sql);
@@ -152,9 +144,8 @@ if($_SESSION["logged"] == true) {
                       //person wird geändert
                       $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' WHERE id_person=$update";
                       $personupdate_result = $conn->query($personupdate_sql);
-
-                      $erfolg = 1;
                     }
+
                     else{//wird durchgeführt wenn die Adresse mehr als einer Person zugeordnet ist
 
                       //adresse wird neu hinzugefügt
@@ -171,8 +162,6 @@ if($_SESSION["logged"] == true) {
                         //Person wird geändert (mit neuer id_adresse)
                         $personupdate_sql = "UPDATE person SET vorname = '$vorname', nachname = '$nachname', email ='$email', telefonnr = '$telefonnr', geburtsdatum = '$geburtsdatum' , id_adresse = '$id_adresseh' WHERE id_person=$update";
                         $personupdate_result = $conn->query($personupdate_sql);
-                        $erfolg = 1;
-                       
                       }
                     }
                   }
@@ -187,16 +176,13 @@ if($_SESSION["logged"] == true) {
                       //alte Adresse wird gelöscht
                       $adresseloeschen_sql = "DELETE FROM adresse WHERE id_adresse= $update2";
                       $adresseloeschen_result = $conn->query($adresseloeschen_sql);
-                      $erfolg = 1;
-
                     }
+
                     else{//wird durchgeführt wenn die alte Adresse mehr als einer Person zugeordnet ist
                       echo "Adresse bleibt im System da sie nicht nur dieser Person zugeorndet war";
-                      $erfolg = 1;
                     }
 
                   }
-                }        
               }
               
               else { //wird bei hinzufügen einer Person ausgeführt
@@ -298,7 +284,7 @@ if($_SESSION["logged"] == true) {
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
                 <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">Abbrechen</button>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
               </div>";
               echo "</form>";
 
@@ -373,7 +359,7 @@ if($_SESSION["logged"] == true) {
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-              <button class=\"btn btn-secondary\" href=\"person.php\" role=\"button\">Abbrechen</button>
+              <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
             </div>";
         }
 
