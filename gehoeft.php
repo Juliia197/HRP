@@ -69,6 +69,10 @@ if ($anzahl_boxbelegt_innen_result->num_rows > 0){
 
 $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
 
+session_start();
+
+if($_SESSION["logged"] == true) {
+
 ?>
 
 <!DOCTYPE html>
@@ -223,15 +227,6 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
 
           <!-- Page Content -->
 
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Gehöft
-            </li>
-          </ol>
-
           <h1>Gehöft: 
             <?php if ($gehoeft_name_result->num_rows > 0) {
                 // output data of each row
@@ -316,7 +311,7 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>
@@ -337,3 +332,14 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>
