@@ -116,6 +116,13 @@ if($_SESSION["logged"] == true) {
               Güter anzeigen
             </li>
           </ol>
+          <div class="container-fluid">
+          <div class="row justify-content-end">
+          <?php
+          echo '<a class="btn btn-success" role="button" href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Hinzufügen</a> <br>';
+          ?>
+          </div>
+          </div>          
 
           <?php  
             $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
