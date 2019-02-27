@@ -17,6 +17,16 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+if (isset($_POST['id_box'])){
+  
+    $boxbelegen_sql = "UPDATE box SET id_pferd = " . $_GET['id_pferd'] . " WHERE id_box = " . $_POST['id_box'];
+    $boxbelgen_result = $conn->query($boxbelegen_sql);
+    if ($_GET['id_pferd'] > 0){
+    $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = " . $_GET['id_pferd'] . " AND id_box != " . $_POST['id_box'];
+    $boxleeren_result = $conn->query($boxleeren_sql);
+  }
+}
+
   
 ?>
 
@@ -95,7 +105,7 @@ if($_SESSION["logged"] == true) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -115,11 +125,21 @@ if($_SESSION["logged"] == true) {
               <a href="pferd.php">Pferde</a>
             </li>
             <li class="breadcrumb-item active">
-              Pferd bearbeiten
+              <?php if ($_GET['id_pferd'] == 0){
+                echo "Pferd erstellen";
+              } else {
+                echo "Pferd bearbeiten";
+              }?>
             </li>
           </ol>
 
-          <h1>Pferd editieren</h1>
+          <h1>
+          <?php if ($_GET['id_pferd'] == 0){
+            echo "Pferd erstellen";
+          } else {
+            echo "Pferd bearbeiten";
+          }?>
+          </h1>
           <hr>
           <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
 
@@ -225,9 +245,10 @@ if($_SESSION["logged"] == true) {
                                 );
                                 $bindCon = [(int) $userId, (int) $functionId, $conn->lastInsertId()];
                                 $prepareCon->execute($bindCon);
+                                
                             }
                         }
-                        header('Location: pferd-edit.php?id_pferd=' . $pferdId);
+                        header('Location: pferd-edit.php?id_pferd=' . $pferdId);                        
                         exit();
                     }
 
@@ -265,31 +286,42 @@ if($_SESSION["logged"] == true) {
             ?>
 
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
-                <label>Pferdname:</label>
+                <label>Pferdename</label>
                 <input class="form-control" type="text" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
-                <label>Geschlecht:</label>
+                <label>Geschlecht</label>
                 <select name="geschlecht">
-                    <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">s</option>
-                    <option <?php if ($geschlecht === 'h') {echo 'selected';} ?> value="h">h</option>
-                    <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">w</option>
+                    <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">Stute</option>
+                    <option <?php if ($geschlecht === 'h') {echo 'selected';} ?> value="h">Hengst</option>
+                    <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">Wallach</option>
                 </select><br /><br />
-                <label>Gewicht (in kg):</label>
+                <label>Gewicht (in kg)</label>
                 <input class="form-control" type="number" value="<?php echo $gewicht ?>" name="gewicht" required><br />
-                <label>Größe (in cm):</label>
+                <label>Größe (in cm)</label>
                 <input class="form-control" type="number" value="<?php echo $groesse ?>" name="groesse" required><br />
-                <label>Passnummer:</label>
+                <label>Passnummer</label>
                 <input class="form-control" type="number" value="<?php echo $passnr ?>" name="passnr" required><br />
-                <label>Geburtsdatum:</label>
+                <label>Geburtsdatum</label>
                 <input class="form-control" type="date" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
-                <label>Ankunft des Pferdes am Hof:</label>
+                <label>Ankunft des Pferdes am Hof</label>
                 <input class="form-control" type="date" value="<?php echo $ankunft ?>" name="ankunft" required><br />
 
                 <br />
-
+                <hr>
+                <h2>Personen zuweisen</h2>
+                <table class="table">
+                <thead>
+                <tr>
+                <th>Person</th>
+                <th>Beziehung</th>
+                <th>Aktion</th>
+                </tr>
+                </thead>
+                <tbody>
                 <?php
                     foreach ($connections as $connection) {
                 ?>
-                       <select name="userId-<?php echo $connection['id_beziehung'];?>" id="userId-<?php echo $connection['id_beziehung'];?>">
+                      <tr>
+                       <td><select name="userId-<?php echo $connection['id_beziehung'];?>" id="userId-<?php echo $connection['id_beziehung'];?>">
                            <?php
                                 foreach ($users as $user) {
                            ?>
@@ -297,8 +329,8 @@ if($_SESSION["logged"] == true) {
                            <?php
                                 }
                            ?>
-                        </select>
-                        <select name="functionId-<?php echo $connection['id_beziehung'];?>" id="functionId-<?php echo $connection['id_beziehung'];?>">
+                        </select></td>
+                        <td><select name="functionId-<?php echo $connection['id_beziehung'];?>" id="functionId-<?php echo $connection['id_beziehung'];?>">
                             <?php
                             foreach ($functions as $function) {
                                 ?>
@@ -306,18 +338,46 @@ if($_SESSION["logged"] == true) {
                                 <?php
                             }
                             ?>
-                        </select>
+                        </select></td>
 
-                        <span class="delete btn btn-danger btn-sm" id="delete-<?php echo $connection['id_beziehung'];?>" data-connid="<?php echo $connection['id_beziehung'];?>">Löschen</span>
-
-                        <br />
+                        <td><span class="delete btn btn-danger btn-sm" id="delete-<?php echo $connection['id_beziehung'];?>" data-connid="<?php echo $connection['id_beziehung'];?>">Löschen</span></td>
+                        </tr>
                 <?php
                     }
                 ?>
-
-                <span id="addNewConnection">Dem Pferd eine neue Person zuweisen...</span> <br /><br />
-
-                <button type="submit" class="btn btn-success" id="sendButton">Speichern!</button>
+                </tbody>
+                </table>
+                <button class="btn btn-success" id="addNewConnection">Dem Pferd eine neue Person zuweisen...</button> <br /><br />
+                <hr>
+                <h2>Box zuweisen</h2>
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Auswahl</th>
+                      <th>Boxentyp</th>
+                      <th>Boxenpreis</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  
+                  <?php
+                  $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp)";
+                  $boxenfrei_result = $conn->query($boxenfrei_sql);
+                  $boxenfrei_result = $boxenfrei_result->fetchAll();
+                  foreach ($boxenfrei_result as $boxfrei){
+                    if ($boxfrei['id_pferd'] == $_GET['id_pferd']){
+                      echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                    } else {
+                    echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\"></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                    }
+                  }
+                  ?>
+                  </tbody>
+                  </table>
+                </div>
+                <button type="submit" class="btn btn-success" id="sendButton">Speichern</button>
+                <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
             </form>
 
         </div>
