@@ -277,7 +277,6 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
 
           <h1>Dashboard</h1>
-
           <hr>
           <div class="row">
           <div class="col">

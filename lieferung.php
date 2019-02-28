@@ -131,6 +131,7 @@ if($_SESSION["logged"] == true) {
               <th>Menge in kg</th>
               <th>Einkaufspreis je kg</th>
               <th>Lieferant</th>
+              <th>Aktion</th>
             </tr>
             </thead>          
             <tbody>
@@ -151,6 +152,9 @@ if($_SESSION["logged"] == true) {
                     if($fetch1 = mysqli_fetch_assoc($query1)){
                       echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
                     }
+                  echo '<td> 
+                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
+                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';                    
               }
 
             ?>
