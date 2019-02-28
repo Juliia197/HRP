@@ -151,6 +151,11 @@ if($_SESSION["logged"] == true) {
                 echo '</tr>';
                 } 
             }
+            ?>
+          
+          </table>
+          </p>
+            
 
 
 
