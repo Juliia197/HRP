@@ -135,11 +135,9 @@ if($_SESSION["logged"] == true) {
 
             echo "<br><h3> Adresse </h3>";
 
-            echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-            echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-            echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-            echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-            echo "<p>Land: " . $row_p['land'] . "</p>"; 
+            echo "<p>" . $row_p['strasse'] . " " . $row_p['hausnr'] . "</p>";
+            echo "<p>" . $row_p['plz'] . " " . $row_p['ort'] . "</p>";
+            echo "<p>" . $row_p['land'] . "</p>"; 
             
             echo "<hr>";
 
