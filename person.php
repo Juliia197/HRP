@@ -243,6 +243,7 @@ if($_SESSION["logged"] == true) {
 
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
+  <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   </body>
 

@@ -255,6 +255,9 @@ if($_SESSION["logged"] == true) {
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
+    <!-- For this Page -->
+    <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
+
   </body>
 
 </html>
