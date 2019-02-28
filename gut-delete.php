@@ -132,7 +132,7 @@ if($_SESSION["logged"] == true) {
             $verbrauchsgutsql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_verbrauchsgut = " . $_GET['id_verbrauchsgut'];
             $verbrauchsgut = $conn->query($verbrauchsgutsql);
 
-            while($row_p = $verbrauchsgut->fetch_assoc()){
+            /*while($row_p = $verbrauchsgut->fetch_assoc()){
               echo '<p>Gut:' . $fetch['verbrauchsgutbez'] . '</p>';
               echo '<p>Lieferdatum:' . $fetch['lieferdatum'] . '</p>';
               echo '<p>Menge' . $fetch['menge'] . '</p>';
@@ -142,7 +142,7 @@ if($_SESSION["logged"] == true) {
                 while($fetch1 = mysqli_fetch_assoc($query1)){
                   echo '<p>Lieferant:' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</p>'  ;
                 echo "<hr>";
-
+*/
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"gut-deleted.php?id_verbrauchsgut=" . $row_p['id_verbrauchsgut'] . "\" >Löschen</a>
