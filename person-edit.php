@@ -175,7 +175,7 @@ if($_SESSION["logged"] == true) {
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
                 <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
               </div>";
               echo "</form>";
 
@@ -239,7 +239,7 @@ if($_SESSION["logged"] == true) {
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-              <button class=\"btn btn-secondary\" href=\"person-edited.php?id_person=0\" role=\"button\">Abbrechen</button>
+              <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
             </div>";
           }
           ?>

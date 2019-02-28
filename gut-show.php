@@ -195,6 +195,8 @@ chart.render();
                 </table>"; 
             }
           echo "<p><br><a class=\"btn btn-secondary\" href=\"gueter.php\" >zurück zur Übersicht</a></div>";
+
+
           ?>
 
 

@@ -13,14 +13,14 @@ if ($conn->connect_error) {
 $pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
 $pferdloeschen_result = $conn->query($pferdloeschen_sql);
 
-$pferdloeschen3_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen2_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
+
+$pferdloeschen3_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
 $pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
 
-$pferdloeschen4_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
+$pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
 $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
-
-$pferdloeschen2_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
-$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
 
 session_start();
 
