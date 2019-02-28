@@ -104,6 +104,7 @@ if($_SESSION["logged"] == true) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
+
           <!-- Page Content -->
 
         <?php
@@ -141,6 +142,8 @@ if($_SESSION["logged"] == true) {
             echo "<p>Land: " . $row_p['land'] . "</p>"; 
             
             echo "<hr>";
+
+            
             
             //Abfrage, ob diese Person Beziehungen hat
             $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $_GET['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
@@ -154,8 +157,37 @@ if($_SESSION["logged"] == true) {
                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
-                echo "<h5> Dieser Person ist mindestens ein Pferd zugeordnet </h5>
-                <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
+                // echo "<hr>";
+
+
+                $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
+                $pferd_bez = $conn->query($pferd_sql);
+  
+                //Tabelle wird erzeugt
+                echo "
+                  <p>
+                  <div class='table-responsive'>
+                  <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                  <thead>
+                    <tr >
+                      <th >Pferdename</th>
+                      <th >Beziehung</th>
+                      <th>Aktion</th>
+                    </tr>
+                    </thead>";
+  
+                while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
+                  echo '<tr>';
+                  echo'<td>' . $fetch['pferdename'] .  '</td>';
+                  echo'<td>' . $fetch['funktionsbez'] . '</td>';
+  
+                  //Links mit welchen die Id des Pferdes übergeben wird
+                  echo '<td> 
+                    <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '" >Anzeigen</a> <br>
+                    <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>';
+                  echo '</tr></table></div></p><hr>';
+                  } 
+
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
