@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -11,44 +12,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1";
-$preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
-if ($preis_verbrauchsguttyp1_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp1_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp1 = $row["preis_verbrauchsguttyp2"];
-  }
-}
-
-$preis_verbrauchsguttyp2_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=2";
-$preis_verbrauchsguttyp2_result = $conn->query($preis_verbrauchsguttyp2_sql);
-if ($preis_verbrauchsguttyp2_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp2_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp2 = $row["preis_verbrauchsguttyp2"];
-  }
-}
-
-$preis_verbrauchsguttyp3_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp3 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=3";
-$preis_verbrauchsguttyp3_result = $conn->query($preis_verbrauchsguttyp3_sql);
-if ($preis_verbrauchsguttyp3_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp3_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp3 = $row["preis_verbrauchsguttyp3"];
-  }
-}
-
-$preis_verbrauchsguttyp4_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp4 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=4";
-$preis_verbrauchsguttyp4_result = $conn->query($preis_verbrauchsguttyp4_sql);
-if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp4_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp4 = $row["preis_verbrauchsguttyp4"];
-  }
-}
-
 session_start();
 
 if($_SESSION["logged"] == true) {
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -111,7 +81,7 @@ if($_SESSION["logged"] == true) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -136,67 +106,50 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
+
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
             </li>
-            <li class="breadcrumb-item active">
-              Güter
+            <li class="breadcrumb-item">
+              <a href="gueter.php">Güter</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="lieferung.php">Lieferungen</a>
             </li>            
+            <li class="breadcrumb-item active">
+              Lieferung löschen
+            </li>
           </ol>
-          
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Lieferungen</a>
-          </div>
-          </div>
-          
-          <p>
-          <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Typ</th>
-              <th>Bestand</th>
-              <th>Durchschnittspreis je kg</th>
-              <th>Aktion</th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsguttyp = "SELECT * FROM verbrauchsguttyp";
-              
-              $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
 
-              while($fetch = mysqli_fetch_assoc($query)){
-                echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
-                  echo '<td>' . $fetch['bestand'] . '</td>';
-                  echo '<td>' ;
-                    if( $fetch['id_verbrauchsguttyp'] == 1)
-                      {
-                        echo $preis_verbrauchsguttyp1;
-                      }
-                    else if( $fetch['id_verbrauchsguttyp'] == 2)
-                      {
-                        echo $preis_verbrauchsguttyp2;
-                      }
-                    else if( $fetch['id_verbrauchsguttyp'] == 3)
-                      {
-                        echo $preis_verbrauchsguttyp3;
-                      }
-                    else
-                      {
-                        echo $preis_verbrauchsguttyp4;
-                      }
-                  echo '</td>';
-                  echo '<td> <a href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
-                  }
-            ?>
-            </tbody>                
-          </table>
-          </div>  
+          <?php  
+            //Übergebene Daten werden in Variablen gespeichert
+            $id_verbrauchsgut = $_GET['id_verbrauchsgut'];
+            $id_delete = $_GET['id_delete'];
+
+            //Daten zur Lieferung werden aufgerufen          
+            $verbrauchsgutsql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_verbrauchsgut = " . $_GET['id_verbrauchsgut'];
+            $verbrauchsgut = $conn->query($verbrauchsgutsql);
+
+            while($row_p = $verbrauchsgut->fetch_assoc()){
+              echo '<p>Gut:' . $fetch['verbrauchsgutbez'] . '</p>';
+              echo '<p>Lieferdatum:' . $fetch['lieferdatum'] . '</p>';
+              echo '<p>Menge' . $fetch['menge'] . '</p>';
+              echo '<p>Einkaufspreis' . $fetch['einkaufspreis'] . '</p>';
+              $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+              $query1 = $conn->query($lieferant) or die (mysql_error());
+                while($fetch1 = mysqli_fetch_assoc($query1)){
+                  echo '<p>Lieferant:' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</p>'  ;
+                echo "<hr>";
+
+                echo "<div class=\"form-group\"></div>
+                <div class=\"form-group\">
+                <a class=\"btn btn-secondary\" href=\"gut-deleted.php?id_verbrauchsgut=" . $row_p['id_verbrauchsgut'] . "\" >Löschen</a>
+                <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
+              }       
+            }
+          ?>
         </div>
         <!-- /.container-fluid -->
 
@@ -246,18 +199,15 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
-  <script src="js/demo/datatables-demo.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
+
 </html>
 
 <?php

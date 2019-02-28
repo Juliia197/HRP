@@ -10,12 +10,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
-
-session_start();
-
-if($_SESSION["logged"] == true) {
-
-  
 ?>
 
 <!DOCTYPE html>
@@ -181,24 +175,14 @@ if($_SESSION["logged"] == true) {
             $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_pferd = ' . $_GET['id_pferd'] . ' AND beziehung.id_funktion = funktion.id_funktion';
             $query1 = $conn->query($funktion) ; 
 
-            //  if($query1->num_rows==0){ 
-            //   echo "<div class=\"form-group\"></div>
-            //   <div class=\"form-group\">
-            //   <a class=\"btn btn-secondary\" href=\"pferd-edit.php?id_pferd=" . $row_p['id_pferd'] . "\" >Bearbeiten</a>
-            //   <a class=\"btn btn-secondary\" href=\"pferd-delete.php?id_pferd=" . $row_p['id_pferd'] . "&id_delete=1\" >Löschen</a>
-            //   <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a> </div>";
-            //  }
-            //  else{
-                echo "<h5> Diesem Pferd ist mindestens eine Person zugeordnet </h5>
-                <a class=\"btn btn-secondary\" href=\"pferd-person.php?id_pferd=" . $row_p['id_pferd'] . "\" >Personen anzeigen</a><hr>";
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"pferd-edit.php?id_pferd=" . $row_p['id_pferd'] . "\" >Bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"pferd-deleted.php?id_pferd=" . $row_p['id_pferd'] . "&id_delete=1\" >Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a> </div>";
-            //  }           
-            //  <a class=\"btn btn-secondary\" href=\"pferd-delete.php?id_pferd=" . $row_p['id_pferd'] . "&id_delete=0\" >Löschen nicht möglich</a>
-          
+            echo "<h5> Diesem Pferd ist mindestens eine Person zugeordnet </h5>
+            <a class=\"btn btn-secondary\" href=\"pferd-person.php?id_pferd=" . $row_p['id_pferd'] . "\" >Personen anzeigen</a><hr>";
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+            <a class=\"btn btn-secondary\" href=\"pferd-edit.php?id_pferd=" . $row_p['id_pferd'] . "\" >Bearbeiten</a>
+            <a class=\"btn btn-secondary\" href=\"pferd-deleted.php?id_pferd=" . $row_p['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
+            <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
+       
             }
 
 
@@ -243,7 +227,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="logout.php">Ja</a>
+            <a class="btn btn-primary" href="login.html">Ja</a>
           </div>
         </div>
       </div>
@@ -263,17 +247,12 @@ if($_SESSION["logged"] == true) {
     <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
     <script src="js/demo/datatables-demo.js"></script>
 
+    <script>
+      function checkDelete(){
+        return confirm('Pferd endgültig löschen?')
+      }
+    </script>
+
   </body>
 
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>
