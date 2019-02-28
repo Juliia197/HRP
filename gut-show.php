@@ -3,19 +3,14 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "hrppr_db1";
-
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
-
+} 
 session_start();
-
 if($_SESSION["logged"] == true) {
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,6 +37,41 @@ if($_SESSION["logged"] == true) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <?php
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'];
+      $lieferungen_result = $conn->query($lieferungen_sql);
+      $dataPoints = '';
+      if ($lieferungen_result->num_rows > 0){
+        while ($row_l = $lieferungen_result->fetch_assoc()){
+          $dataPoints = $dataPoints . '{label: "' . $row_l["lieferdatum"] . '" , y: ' . $row_l["einkaufspreis"] . '},';
+        }
+      }
+      $dataPoints = "[" . $dataPoints . "]";
+
+    ?>
+        <script>
+        window.onload = function () {
+          var dataPoints_verbrauchsgut = <?php echo $dataPoints ?>;
+var chart = new CanvasJS.Chart("preisentwicklung", {
+	animationEnabled: true,
+	theme: "light2",
+	title:{
+		text: "Preisentwicklung",
+    fontWeight: "bold",
+    fontFamily: "Segoe UI"
+	},
+	axisY:{
+		includeZero: false
+	},
+	data: [{        
+		type: "line",       
+		dataPoints: dataPoints_verbrauchsgut
+	}]
+});
+chart.render();
+
+}
+          </script>
   </head>
 
   <body id="page-top">
@@ -91,7 +121,7 @@ if($_SESSION["logged"] == true) {
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -104,7 +134,6 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -113,22 +142,23 @@ if($_SESSION["logged"] == true) {
               <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Güter anzeigen
-            </li>
+              Lieferungen
+            </li>            
           </ol>
-
-          <?php  
-            $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
-            $verbrauchsgut_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp " ;
-            $verbrauchsgut = $conn->query($verbrauchsgut_sql);
-
-            //echo $verbrauchsgut_sql;
-
+          <div class="container-fluid">
+          <div class="row justify-content-end">
+          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
+          </div>
+          </div>
+          
+          <?php
+          $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
+          $verbrauchsgut_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp " ;
+          $verbrauchsgut = $conn->query($verbrauchsgut_sql);
             while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
               echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
               $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp " ;
               $verbrauchsgut = $conn->query($verbrauchsgut_sql);
-
               echo "
                 <p>
                 <div class='table-responsive'>
@@ -140,10 +170,11 @@ if($_SESSION["logged"] == true) {
                     <th>Menge in kg</th>
                     <th>Einkaufpreis je kg</th>
                     <th>Lieferant</th>
+                    <th>Aktion</th>
                   </tr>
                   </thead>";
-
               while($fetch = mysqli_fetch_assoc($verbrauchsgut)){
+                echo '<tbody>';
                 echo '<tr>';
                 echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
                 echo '<td>' . $fetch['lieferdatum'] . '</td>';
@@ -154,16 +185,25 @@ if($_SESSION["logged"] == true) {
                   while($fetch1 = mysqli_fetch_assoc($query1)){
                     echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
                   }
-              echo "</tr>";
-                } 
+                  echo '<td> 
+                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
+                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
+                echo "</tr>";
+              }
+              echo "
+                </tbody>
+                </table>"; 
             }
-
-
-
+          echo "<p><br><a class=\"btn btn-secondary\" href=\"gueter.php\" >zurück zur Übersicht</a></div>";
           ?>
 
 
         </div>
+        
+          </head>
+          <body>
+          <div id="preisentwicklung" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+        <script src="../../canvasjs.min.js"></script>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -212,24 +252,25 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+      <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
 
-  </body>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
+  </body>
 </html>
 
 <?php
 }
-
 else {
-
   header('location:login.php');
-
 }
-
 ?>
