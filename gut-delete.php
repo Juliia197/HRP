@@ -133,65 +133,23 @@ if($_SESSION["logged"] == true) {
             $verbrauchsgut = $conn->query($verbrauchsgutsql);
 
             while($row_p = $verbrauchsgut->fetch_assoc()){
-                echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-                
-                echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-                echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-                echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
-    
-                echo "<br><h3> Adresse </h3>";    
-                echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-                echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-                echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-                echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-                echo "<p>Land: " . $row_p['land'] . "</p>"; 
-                
+              echo '<p>Gut:' . $fetch['verbrauchsgutbez'] . '</p>';
+              echo '<p>Lieferdatum:' . $fetch['lieferdatum'] . '</p>';
+              echo '<p>Menge' . $fetch['menge'] . '</p>';
+              echo '<p>Einkaufspreis' . $fetch['einkaufspreis'] . '</p>';
+              $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+              $query1 = $conn->query($lieferant) or die (mysql_error());
+                while($fetch1 = mysqli_fetch_assoc($query1)){
+                  echo '<p>Lieferant:' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</p>'  ;
                 echo "<hr>";
 
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
+                <a class=\"btn btn-secondary\" href=\"gut-deleted.php?id_verbrauchsgut=" . $row_p['id_verbrauchsgut'] . "\" >Löschen</a>
+                <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
               }       
-              
-
-
             }
-            else{ //wird ausgeführt wenn die Person nicht gelöscht werden kann (wegen Beziehungen zu Pferden oder Lieferungen)
-              //Fehlermeldung
-              echo '<div class="alert alert-danger" role="alert"> Diese Person kann nicht gelöscht werden, da ihr Pferde oder Lieferungen zugeordnet sind!</div><hr>';
-    
-              while($row_p = $person->fetch_assoc()){
-
-                echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-                
-                echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-                echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-                echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
-    
-                echo "<br><h3> Adresse </h3>";
-    
-                echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-                echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-                echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-                echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-                echo "<p>Land: " . $row_p['land'] . "</p>"; 
-                
-                echo "<hr>";
-
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferde anzeigen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
-
-              }
-            }
-
           ?>
-
-
         </div>
         <!-- /.container-fluid -->
 
@@ -245,8 +203,8 @@ if($_SESSION["logged"] == true) {
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-  <script src="js/demo/datatables-demo.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
