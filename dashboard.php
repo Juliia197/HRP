@@ -110,6 +110,9 @@ if($_SESSION["logged"] == true) {
     <!-- Page level plugin CSS-->
     <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
+    <!-- Jan Custom styles for this template-->
+    <link href="css/jan.css" rel="stylesheet">
+
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
     <script>
@@ -262,6 +265,14 @@ if($_SESSION["logged"] == true) {
               Dashboard
             </li>
           </ol>
+
+            <?php
+            if (isset($_GET['registered'])) {
+             echo '<div id="myAlert" class="alert alert-success collapse">
+                    <strong>Erfolgreich registriert!</strong>
+                </div>';
+            }
+            ?>
 
           <!-- Page Content -->
 

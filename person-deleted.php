@@ -30,7 +30,6 @@ while($row_x = $id_adresse->fetch_assoc()){
 
   }
   else{
-    echo "Adresse bleibt in der Datenbank da sie nicht nur dieser Person zugeordnet war";
   }
 }
 
@@ -144,6 +143,11 @@ if($_SESSION["logged"] == true) {
           <?php  
             //Success Balken
             echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+            <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>
+            </div";
 
           ?>
 

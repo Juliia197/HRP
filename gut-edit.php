@@ -117,6 +117,9 @@ if($_SESSION["logged"] == true) {
                           <li class=\"breadcrumb-item\">
                             <a href=\"gueter.php\">Güter</a>
                           </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"lieferung.php\">Lieferungen</a>
+                          </li>
                           <li class=\"breadcrumb-item active\">
                             Lieferung bearbeiten
                           </li>
@@ -180,6 +183,9 @@ if($_SESSION["logged"] == true) {
                           </li>
                           <li class=\"breadcrumb-item\">
                             <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"lieferung.php\">Lieferungen</a>
                           </li>
                           <li class=\"breadcrumb-item active\">
                             Lieferung erstellen
