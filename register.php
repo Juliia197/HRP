@@ -7,8 +7,8 @@ if (isset($_SESSION['logged']) && $_SESSION['logged']) {
 }
 
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 $error = false;
 $mail = '';
@@ -146,19 +146,19 @@ if (isset($_POST['email'], $_POST['password'], $_POST['confirm_password'], $_POS
             <form action="register.php" method="post">
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
-                        <label for="inputEmail">Email address</label>
+                        <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control" placeholder="Ihre E-Mail Adresse..." required="required" autofocus="autofocus">
+                        <label for="inputEmail">Ihre E-Mail Adresse...</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required="required">
-                        <label for="inputPassword">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Ihr Passwort..." required="required">
+                        <label for="inputPassword">Ihr Passwort...</label>
                     </div>
                 </div><div class="form-group">
                     <div class="form-label-group">
-                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm password" required="required">
-                        <label for="inputPassword">Confirm password</label>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Passwort wiederholen..." required="required">
+                        <label for="inputPassword">Passwort wiederholen...</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -173,11 +173,10 @@ if (isset($_POST['email'], $_POST['password'], $_POST['confirm_password'], $_POS
                         <label for="inputEmail">Nachname</label>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-block">Register</button>
+                <button class="btn btn-primary btn-block">Registrierung abschließen!</button>
             </form>
             <div class="text-center">
-                <a class="d-block small mt-3" href="login.php">Login</a>
-                <a class="d-block small" href="forgot-password.html">Passwort vergessen?</a>
+                <a class="d-block small mt-3" href="login.php">Schon ein Benutzerkonto? Hier einloggen!</a>
             </div>
         </div>
     </div>
@@ -196,7 +195,7 @@ if (isset($_POST['email'], $_POST['password'], $_POST['confirm_password'], $_POS
 
     function validatePassword(){
         if(password.value !== confirm_password.value) {
-            confirm_password.setCustomValidity("Passwords Don't Match");
+            confirm_password.setCustomValidity("Passwörter stimmen nicht überein!");
         } else {
             confirm_password.setCustomValidity('');
         }
