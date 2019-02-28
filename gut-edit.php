@@ -13,6 +13,12 @@ if ($conn->connect_error) {
 
 $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
 $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,6 +117,9 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                           <li class=\"breadcrumb-item\">
                             <a href=\"gueter.php\">Güter</a>
                           </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"lieferung.php\">Lieferungen</a>
+                          </li>
                           <li class=\"breadcrumb-item active\">
                             Lieferung bearbeiten
                           </li>
@@ -174,6 +183,9 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
                           </li>
                           <li class=\"breadcrumb-item\">
                             <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"lieferung.php\">Lieferungen</a>
                           </li>
                           <li class=\"breadcrumb-item active\">
                             Lieferung erstellen
@@ -254,7 +266,7 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>
@@ -273,3 +285,14 @@ $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>

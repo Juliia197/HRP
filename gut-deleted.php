@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -11,12 +12,35 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+//id_adresse der Person herausfinden
+$id_verbrauchsguttyp_sql = "SELECT id_verbrauchsguttyp FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
+$id_verbrauchsguttyp = $conn->query($id_verbrauchsguttyp_sql);
+
+//Löschen der Person aus der Datenbank
+$verbrauchsgutloeschen_sql = "DELETE FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
+$verbrauchsgutloeschen_result = $conn->query($verbrauchsgutloeschen_sql);
+
+while($row_x = $id_verbrauchsguttyp->fetch_assoc()){   
+  $wieoftda_sql = "SELECT id_verbrauchsgut FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $row_x["id_verbrauchsguttyp"];
+  $wieoftda= $conn->query($wieoftda_sql);
+
+  if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
+    $verbrauchsguttyploeschen_sql = "DELETE FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_x["id_verbrauchsguttyp"];
+    $verbrauchsguttyploeschen_result = $conn->query($verbrauchsguttyploeschen_sql);
+
+  }
+  else{
+    echo "Adresse bleibt in der Datenbank da sie nicht nur dieser Person zugeordnet war";
+  }
+}
+
 session_start();
 
 if($_SESSION["logged"] == true) {
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,7 +103,7 @@ if($_SESSION["logged"] == true) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -104,6 +128,8 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
+
+          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -111,58 +137,19 @@ if($_SESSION["logged"] == true) {
             <li class="breadcrumb-item">
               <a href="gueter.php">Güter</a>
             </li>
-            <li class="breadcrumb-item active">
-              Lieferungen
+            <li class="breadcrumb-item">
+              <a href="lieferung.php">Lieferungen</a>
             </li>            
+            <li class="breadcrumb-item active">
+              Lieferung löschen
+            </li>
           </ol>
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
-          </div>
-          </div>
-          
-          <p>
-          <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Lieferung</th>  
-              <th>Lieferdatum</th>
-              <th>Menge in kg</th>
-              <th>Einkaufspreis je kg</th>
-              <th>Lieferant</th>
-              <th>Aktion</th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsgut";
-              
-              $query = $conn->query($verbrauchsgut) or die(mysql_error());
+          <?php  
+            //Success Balken
+            echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr>';
 
-              while($fetch = mysqli_fetch_assoc($query)){
-                echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
-                  echo '<td>' . $fetch['lieferdatum'] . '</td>';
-                  echo '<td>' . $fetch['menge'] . '</td>';
-                  echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                  $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-                  $query1 = $conn->query($lieferant) or die (mysql_error());
-                    if($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
-                  echo '<td> 
-                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
-                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';                    
-              }
+          ?>
 
-            ?>
-            </tbody>                
-
-          </table>
-          </div>          
-        
 
         </div>
         <!-- /.container-fluid -->
@@ -213,18 +200,15 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
   <script src="js/demo/datatables-demo.js"></script>
 
   </body>
+
 </html>
 
 <?php

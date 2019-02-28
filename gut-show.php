@@ -11,6 +11,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+session_start();
+
+if($_SESSION["logged"] == true) {
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -104,58 +109,122 @@ if ($conn->connect_error) {
               <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item">
-              <a href ="gueter.php">Güter</a>
+              <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Güter anzeigen
+              Lieferungen
             </li>            
           </ol>
           <div class="container-fluid">
-            <div class="row justify-content-end">
-            <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
-            </div>
+          <div class="row justify-content-end">
+          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
           </div>
-        </div>
-          <p>
-          <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Lieferung</th>  
-              <th>Lieferdatum</th>
-              <th>Menge in kg</th>
-              <th>Einkaufspreis je kg</th>
-              <th>Lieferant</th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsguttyp, verbrauchsgut WHERE verbrauchsguttyp.id_verbrauchsguttyp =" . $_GET['id_verbrauchsguttyp'];
-              
-              $query = $conn->query($verbrauchsgut); //or die(mysql_error());
+          </div>
+          
+          <?php
+          $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
+          $verbrauchsgut_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp " ;
+          $verbrauchsgut = $conn->query($verbrauchsgut_sql);
 
-              echo $verbrauchsgut;
+            while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
+              echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
+              $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp " ;
+              $verbrauchsgut = $conn->query($verbrauchsgut_sql);
 
-              while($fetch = mysqli_fetch_assoc($query)){
+              echo "
+                <p>
+                <div class='table-responsive'>
+                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                <thead>
+                  <tr >
+                    <th>Lieferung</th>
+                    <th>Lieferdatum</th>
+                    <th>Menge in kg</th>
+                    <th>Einkaufpreis je kg</th>
+                    <th>Lieferant</th>
+                    <th>Aktion</th>
+                  </tr>
+                  </thead>";
+
+              while($fetch = mysqli_fetch_assoc($verbrauchsgut)){
+                echo '<tbody>';
                 echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
-                  echo '<td>' . $fetch['lieferdatum'] . '</td>';
-                  echo '<td>' . $fetch['menge'] . '</td>';
-                  echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                  $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-                  $query1 = $conn->query($lieferant) or die (mysql_error());
-                    if($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
+                echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
+                echo '<td>' . $fetch['lieferdatum'] . '</td>';
+                echo '<td>' . $fetch['menge'] . '</td>';
+                echo '<td>' . $fetch['einkaufspreis'] . '</td>';
+                $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+                $query1 = $conn->query($lieferant) or die (mysql_error());
+                  while($fetch1 = mysqli_fetch_assoc($query1)){
+                    echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
+                  }
+                  echo '<td> 
+                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
+                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
+                echo "</tr>";
               }
+              echo "
+                </tbody>
+                </table>"; 
+            }
+          echo "<p><br><a class=\"btn btn-secondary\" href=\"gueter.php\" >zurück zur Übersicht</a></div>";
 
-            ?>
-            </tbody>                
 
-          </table>
-          </div>          
+          ?>
 
+
+        </div>
+        <script>
+        window.onload = function () {
+          // var test = ;
+
+          var chart = new CanvasJS.Chart("chartContainer", {
+	          animationEnabled: true,
+          	exportEnabled: true,
+	          title:{
+		          text: "Preisentwicklung"             
+	          }, 
+	          axisY:{
+		          title: "Einkaufspreis"
+	          },
+	          toolTip: {
+		          shared: true
+	          },
+	          legend:{
+		          cursor:"pointer",
+		          itemclick: toggleDataSeries
+	          },
+	          data: [{        
+		          type: "spline",  
+		          name: "Lieferung",        
+		          showInLegend: true,
+		          dataPoints: [ 
+			          { label: "09.07.2018" , y: 4 },     
+			          { label: "01.10.2018", y: 3 },     
+		          ]
+	          }, 
+	          {        
+	          }]
+          });
+
+          chart.render();
+
+          function toggleDataSeries(e) {
+	          if(typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		          e.dataSeries.visible = false;
+	          }
+	          else {
+		          e.dataSeries.visible = true;            
+	          }
+	          chart.render();
+          }
+
+          }
+          </script>
+          </head>
+          <body>
+          <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+        <script src="../../canvasjs.min.js"></script>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -191,7 +260,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>
@@ -204,9 +273,27 @@ if ($conn->connect_error) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-  </body>
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
+  </body>
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>

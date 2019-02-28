@@ -10,6 +10,12 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,13 +86,13 @@ if ($conn->connect_error) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pferde.php">
+          <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -135,6 +141,9 @@ if ($conn->connect_error) {
                           </li>
                           <li class=\"breadcrumb-item\">
                             <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"lieferung.php\">Lieferungen</a>
                           </li>
                           <li class=\"breadcrumb-item active\">
                             Lieferung bearbeiten
@@ -202,6 +211,9 @@ if ($conn->connect_error) {
                           </li>
                           <li class=\"breadcrumb-item\">
                             <a href=\"gueter.php\">Güter</a>
+                          </li>
+                          <li class=\"breadcrumb-item\">
+                            <a href=\"lieferung.php\">Lieferungen</a>
                           </li>
                           <li class=\"breadcrumb-item active\">
                             Lieferung erstellen
@@ -284,7 +296,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>
@@ -303,3 +315,14 @@ if ($conn->connect_error) {
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>
