@@ -30,7 +30,6 @@ while($row_x = $id_adresse->fetch_assoc()){
 
   }
   else{
-    echo "Adresse bleibt in der Datenbank da sie nicht nur dieser Person zugeordnet war";
   }
 }
 

@@ -167,7 +167,7 @@ if($_SESSION["logged"] == true) {
                     <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
                     <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
                   if($query1->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
-                    echo'<a href="person-delete.php?id_person=' . $fetch["id_person"] . '&id_delete=1" >Löschen</a> <br></td>';
+                    echo"<a href=\"person-deleted.php?id_person=" . $fetch['id_person'] . "\" onclick='return checkDelete()'>Löschen</a><br></td>";
                   }
                   else{
                     echo 'Löschen nicht möglich';
@@ -243,6 +243,7 @@ if($_SESSION["logged"] == true) {
 
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
+  <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   </body>
 
