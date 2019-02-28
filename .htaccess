@@ -1,0 +1,7 @@
+DirectoryIndex login.php
+
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^www\.hrp-projekt\.de$ [NC]
+
+RewriteRule ^(.*)$ http://www.hrp-projekt.de/$1 [L,R=301]
