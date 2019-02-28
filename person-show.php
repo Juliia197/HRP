@@ -190,10 +190,11 @@ if($_SESSION["logged"] == true) {
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=0\" >Löschen nicht möglich</a>
+                <a class=\"btn btn-secondary\" &id_delete=0\" >Löschen nicht möglich*</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+                echo "<br>Löschen nicht möglich, da dieser Person Pferde zugeordnet sind.";
               }           
-
+              // href=\"person-delete.php?id_person=" . $row_p['id_person'] . "
           
             }
 
