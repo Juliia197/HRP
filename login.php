@@ -24,7 +24,7 @@ catch(PDOException $e)
 
 if (isset($_POST['email'], $_POST['password'])) {
     $mail = trim($_POST['email']);
-    $password = $_POST['password'];
+    $password = md5($_POST['password']);
 
     $sql = "SELECT 
               benutzer.passwort 
@@ -101,7 +101,7 @@ if (isset($_POST['email'], $_POST['password'])) {
             <button class="btn btn-primary btn-block">Login</button>
           </form>
           <div class="text-center">
-            <a class="d-block small mt-3" href="register.html">Registrieren</a>
+            <a class="d-block small mt-3" href="register.php">Registrieren</a>
             <a class="d-block small" href="forgot-password.html">Passwort vergessen?</a>
           </div>
         </div>

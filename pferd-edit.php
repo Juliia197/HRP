@@ -45,6 +45,9 @@ if($_SESSION["logged"] == true) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <!-- Jan Custom styles for this template-->
+    <link href="css/jan.css" rel="stylesheet">
+
   </head>
 
   <body id="page-top">
@@ -95,7 +98,7 @@ if($_SESSION["logged"] == true) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="personen.php">
+          <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
@@ -119,11 +122,10 @@ if($_SESSION["logged"] == true) {
             </li>
           </ol>
 
-          <h1>Pferd editieren</h1>
-          <hr>
-          <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
-
+         	<h1>Pferd hinzufügen oder bearbeiten</h1>
+          	<hr>
             <?php
+                $saved = !isset($_GET['saved']) ? false : true;
                 $pferdId = !isset($_GET['id_pferd']) ? 0 : (int) $_GET['id_pferd'];
 
                 if (isset($_POST['pferdename'])) {
@@ -186,7 +188,9 @@ if($_SESSION["logged"] == true) {
                                        id_beziehung = ?"
                                         );
                                 $bindCon = [$connId];
-                                $prepareCon->execute($bindCon);
+                                if($prepareCon->execute($bindCon)){
+                                    $saved = true;
+                                }
                             }
                             if (strpos($key, 'userIdNew-') === 0) {
                                 $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
@@ -202,7 +206,9 @@ if($_SESSION["logged"] == true) {
                                       ) VALUES (?,?,?)'
                                 );
                                 $bindCon = [(int) $userId, (int) $functionId, $pferdId];
-                                $prepareCon->execute($bindCon);
+                                if($prepareCon->execute($bindCon)){
+                                    $saved = true;
+                                }
                             }
                         }
                     }
@@ -227,7 +233,8 @@ if($_SESSION["logged"] == true) {
                                 $prepareCon->execute($bindCon);
                             }
                         }
-                        header('Location: pferd-edit.php?id_pferd=' . $pferdId);
+
+                        header('Location: pferd-edit.php?id_pferd=' . $pferdId . '&saved=true');
                         exit();
                     }
 
@@ -262,6 +269,13 @@ if($_SESSION["logged"] == true) {
                 $sql = 'SELECT * FROM funktion';
                 $functions = $conn->query($sql);
                 $functions = $functions->fetchAll();
+
+
+                if ($saved) {
+                    echo '<div id="myAlert" class="alert alert-success collapse">
+                            <strong> Pferd erfolgreich bearbeitet!</strong>
+                        </div>';
+                }
             ?>
 
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
@@ -315,9 +329,9 @@ if($_SESSION["logged"] == true) {
                     }
                 ?>
 
-                <span id="addNewConnection">Dem Pferd eine neue Person zuweisen...</span> <br /><br />
+                <button class="btn btn-primary btn-sm" id="addNewConnection">Dem Pferd eine neue Person zuweisen...</button> <br /><br />
 
-                <button type="submit" class="btn btn-success" id="sendButton">Speichern!</button>
+                <button type="submit" class="btn btn-success" id="sendButton btnmysubmit">Abschicken</button> <a href="pferd.php" class="btn btn-secondary">Abbrechen</a>
             </form>
 
         </div>
@@ -414,7 +428,6 @@ if($_SESSION["logged"] == true) {
             $(this).remove();
         });
     </script>
-
   </body>
 
 </html>
