@@ -134,7 +134,7 @@ if($_SESSION["logged"] == true) {
             $boxfrei_result = $conn->query($boxfrei_sql);
             if($boxfrei_result->num_rows > 0){
               while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf["id_box"] . "\">Box löschen</a></td></tr>";
+                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
               }
             }
           ?>
@@ -197,6 +197,7 @@ if($_SESSION["logged"] == true) {
     <script src="vendor/datatables/jquery.dataTables.js"></script>
   <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
   <script src="js/demo/datatables-demo.js"></script>
+<script> function checkDelete(){ return confirm('Box endgültig löschen?') } </script>
 
   </body>
 
