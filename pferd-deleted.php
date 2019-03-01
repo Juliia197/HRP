@@ -10,6 +10,11 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
 $pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
 $pferdloeschen_result = $conn->query($pferdloeschen_sql);
 
@@ -21,11 +26,6 @@ $pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
 
 $pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
 $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
-
-session_start();
-
-if($_SESSION["logged"] == true) {
-
 
 ?>
 <!DOCTYPE html>
