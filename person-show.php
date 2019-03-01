@@ -1,8 +1,8 @@
 <?php
 //Logindaten
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -180,8 +180,8 @@ if($_SESSION["logged"] == true) {
   
                   //Links mit welchen die Id des Pferdes übergeben wird
                   echo '<td> 
-                    <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '" >Anzeigen</a> <br>
-                    <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>';
+                    <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '>Anzeigen</a> <br>
+                    <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '>Bearbeiten</a> <br>';
                   echo '</tr></table></div></p><hr>';
                   } 
 

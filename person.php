@@ -1,8 +1,8 @@
 <?php
 //Logindaten
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -170,7 +170,7 @@ if($_SESSION["logged"] == true) {
                     echo"<a href=\"person-deleted.php?id_person=" . $fetch['id_person'] . "\" onclick='return checkDelete()'>Löschen</a><br></td>";
                   }
                   else{
-                    echo 'Löschen nicht möglich';
+                    echo 'Löschen nicht möglich*';
                     //echo '<div></div>';
                   }
 
@@ -182,6 +182,7 @@ if($_SESSION["logged"] == true) {
           </table>
             </div>
         </p>
+        *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.
 
 
         </div>

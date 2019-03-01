@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -42,6 +42,41 @@ if($_SESSION["logged"] == true) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <?php
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'];
+      $lieferungen_result = $conn->query($lieferungen_sql);
+      $dataPoints = '';
+      if ($lieferungen_result->num_rows > 0){
+        while ($row_l = $lieferungen_result->fetch_assoc()){
+          $dataPoints = $dataPoints . '{label: "' . $row_l["lieferdatum"] . '" , y: ' . $row_l["einkaufspreis"] . '},';
+        }
+      }
+      $dataPoints = "[" . $dataPoints . "]";
+
+    ?>
+        <script>
+        window.onload = function () {
+          var dataPoints_verbrauchsgut = <?php echo $dataPoints ?>;
+var chart = new CanvasJS.Chart("preisentwicklung", {
+	animationEnabled: true,
+	theme: "light2",
+	title:{
+		text: "Preisentwicklung",
+    fontWeight: "bold",
+    fontFamily: "Segoe UI"
+	},
+	axisY:{
+		includeZero: false
+	},
+	data: [{        
+		type: "line",       
+		dataPoints: dataPoints_verbrauchsgut
+	}]
+});
+chart.render();
+
+}
+          </script>
   </head>
 
   <body id="page-top">
@@ -125,12 +160,10 @@ if($_SESSION["logged"] == true) {
           $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
           $verbrauchsgut_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp " ;
           $verbrauchsgut = $conn->query($verbrauchsgut_sql);
-
             while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
               echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
               $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp " ;
               $verbrauchsgut = $conn->query($verbrauchsgut_sql);
-
               echo "
                 <p>
                 <div class='table-responsive'>
@@ -145,7 +178,6 @@ if($_SESSION["logged"] == true) {
                     <th>Aktion</th>
                   </tr>
                   </thead>";
-
               while($fetch = mysqli_fetch_assoc($verbrauchsgut)){
                 echo '<tbody>';
                 echo '<tr>';
@@ -174,56 +206,10 @@ if($_SESSION["logged"] == true) {
 
 
         </div>
-        <script>
-        window.onload = function () {
-          // var test = ;
-
-          var chart = new CanvasJS.Chart("chartContainer", {
-	          animationEnabled: true,
-          	exportEnabled: true,
-	          title:{
-		          text: "Preisentwicklung"             
-	          }, 
-	          axisY:{
-		          title: "Einkaufspreis"
-	          },
-	          toolTip: {
-		          shared: true
-	          },
-	          legend:{
-		          cursor:"pointer",
-		          itemclick: toggleDataSeries
-	          },
-	          data: [{        
-		          type: "spline",  
-		          name: "Lieferung",        
-		          showInLegend: true,
-		          dataPoints: [ 
-			          { label: "09.07.2018" , y: 4 },     
-			          { label: "01.10.2018", y: 3 },     
-		          ]
-	          }, 
-	          {        
-	          }]
-          });
-
-          chart.render();
-
-          function toggleDataSeries(e) {
-	          if(typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		          e.dataSeries.visible = false;
-	          }
-	          else {
-		          e.dataSeries.visible = true;            
-	          }
-	          chart.render();
-          }
-
-          }
-          </script>
+        
           </head>
           <body>
-          <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+          <div id="preisentwicklung" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
         <script src="../../canvasjs.min.js"></script>
         <!-- /.container-fluid -->
 
@@ -283,6 +269,8 @@ if($_SESSION["logged"] == true) {
 
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
+
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
   </body>
 </html>
