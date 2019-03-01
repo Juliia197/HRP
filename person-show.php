@@ -1,8 +1,8 @@
 <?php
 //Logindaten
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -104,6 +104,7 @@ if($_SESSION["logged"] == true) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
+
           <!-- Page Content -->
 
         <?php
@@ -134,13 +135,13 @@ if($_SESSION["logged"] == true) {
 
             echo "<br><h3> Adresse </h3>";
 
-            echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-            echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-            echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-            echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-            echo "<p>Land: " . $row_p['land'] . "</p>"; 
+            echo "<p>" . $row_p['strasse'] . " " . $row_p['hausnr'] . "</p>";
+            echo "<p>" . $row_p['plz'] . " " . $row_p['ort'] . "</p>";
+            echo "<p>" . $row_p['land'] . "</p>"; 
             
             echo "<hr>";
+
+            
             
             //Abfrage, ob diese Person Beziehungen hat
             $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $_GET['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
@@ -150,19 +151,48 @@ if($_SESSION["logged"] == true) {
                echo "<div class=\"form-group\"></div>
                <div class=\"form-group\">
                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-               <a  class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=1\" >Löschen</a>
+               <a class=\"btn btn-secondary\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" onclick='return checkDelete()'>Löschen</a>
                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
-                echo "<h5> Dieser Person ist mindestens ein Pferd zugeordnet </h5>
-                <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferd anzeigen</a><hr>";
+                // echo "<hr>";
+  
+                //Tabelle wird erzeugt
+                echo "
+                  <p>
+                  <div class='table-responsive'>
+                  <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                  <thead>
+                    <tr >
+                      <th >Pferdename</th>
+                      <th >Beziehung</th>
+                      <th>Aktion</th>
+                    </tr>
+                    </thead>";
+
+                $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
+                $pferd_bez = $conn->query($pferd_sql);
+  
+                while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
+                  echo '<tr>';
+                  echo'<td>' . $fetch['pferdename'] .  '</td>';
+                  echo'<td>' . $fetch['funktionsbez'] . '</td>';
+  
+                  //Links mit welchen die Id des Pferdes übergeben wird
+                  echo '<td> 
+                    <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '>Anzeigen</a> <br>
+                    <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '>Bearbeiten</a> <br>';
+                  echo '</tr></table></div></p><hr>';
+                  } 
+
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
                 <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-delete.php?id_person=" . $row_p['id_person'] . "&id_delete=0\" >Löschen nicht möglich</a>
+                <a class=\"btn btn-secondary\" &id_delete=0\" >Löschen nicht möglich*</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+                echo "<br>*Löschen nicht möglich, da dieser Person Pferde zugeordnet sind.";
               }           
-
+              // href=\"person-delete.php?id_person=" . $row_p['id_person'] . "
           
             }
 
@@ -223,6 +253,9 @@ if($_SESSION["logged"] == true) {
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <!-- For this Page -->
+    <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   </body>
 

@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -10,6 +10,11 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
 ?>
 
 <!DOCTYPE html>
@@ -140,6 +145,7 @@ if ($conn->connect_error) {
             echo "<p>Geburtsdatum: " . $row_p['geburtsdatum_pferd'] . "</p>";
             echo "<p>Ankunft: " . $row_p['ankunft'] . "</p>";
           
+          }
 
             $boxsql = "SELECT boxentyp.boxenbez FROM box, boxentyp WHERE box.id_pferd = " . $_GET['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp';
             $box = $conn->query($boxsql) or die (mysql_error());
@@ -147,7 +153,9 @@ if ($conn->connect_error) {
               echo "<p>Boxentyp: " . $fetch1['boxenbez'] . "</p>";
             }
             
-            echo "<br><h3>Verbrauch</h3>";
+            echo "
+            <hr>
+            <h3>Verbrauch</h3>";
 
 
             $verbrauchstypsql = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = " . $_GET['id_pferd']. " AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
@@ -157,38 +165,73 @@ if ($conn->connect_error) {
             $bedarf = $conn->query($bedarfsql) or die (mysql_error());
 
             
-            echo "<div class = 'table-responsive'>
-            <table class = 'table table-bordered' id = 'dataTable' width='100%' cellspacing='0'>
-            <th>Verbrauchsgut</th>
-            <th>Bedarf</th>";
+            echo "
+            <div class='table-responsive'>
+            <table class='table table-bordered table-hover' id='dataTable1' width='100%' cellspacing='0'>
+            <thead>
+              <tr>
+                <th>Verbrauchsgut</th>
+                <th>Bedarf</th>
+              </tr>
+            </thead>
+            
+            <tbody>";
             while($fetch2 = mysqli_fetch_assoc($verbrauchstyp) and $fetch3 = mysqli_fetch_assoc($bedarf)){
               echo "<tr><td>" . $fetch2['verbrauchsguttypbez'] . "</td><td>" . $fetch3['bedarf'] . "</td></tr>";
             
             }
             
-            echo "</table>
-            </div>";
+            echo "
+            </tbody>
+            </table>
+            </div>
+            
+            <hr>
+            <h3>Personen</h3>"; 
+            
+            $personsql = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = " . $_GET['id_pferd'] . " AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
+            $personbez = $conn->query($personsql);
 
+            echo "
+            <div class='table-responsive'>
+            <table class='table table-bordered table-hover' id='dataTable2' width='100%' cellspacing='0'>
+            <thead>
+              <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Funktion</th>
+                <th>Aktion</th>
+              </tr>
+            </thead>
+            
+            <tbody>";
+
+              while($fetch = mysqli_fetch_assoc($personbez)){
+                echo "<tr>";
+                echo "<td>" . $fetch['vorname'] .  "</td>";
+                echo "<td>" . $fetch['nachname'] .  "</td>";
+                echo "<td>" . $fetch['funktionsbez'] . "</td>";
+
+                echo '<td> 
+                  <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a><br>
+                  <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a></td></tr>';              
+              }
+                
+            echo "
+            </tbody>
+            </table>
+            </div>";
+            
             
             echo "<hr>";
 
-            $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_pferd = ' . $_GET['id_pferd'] . ' AND beziehung.id_funktion = funktion.id_funktion';
-            $query1 = $conn->query($funktion) ; 
-
-            echo "<h5> Diesem Pferd ist mindestens eine Person zugeordnet </h5>
-            <a class=\"btn btn-secondary\" href=\"pferd-person.php?id_pferd=" . $row_p['id_pferd'] . "\" >Personen anzeigen</a><hr>";
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
-            <a class=\"btn btn-secondary\" href=\"pferd-edit.php?id_pferd=" . $row_p['id_pferd'] . "\" >Bearbeiten</a>
-            <a class=\"btn btn-secondary\" href=\"pferd-deleted.php?id_pferd=" . $row_p['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
+            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $_GET['id_pferd'] . "\" >Bearbeiten</a>
+            <a class=\"btn btn-danger\" href=\"pferd-deleted.php?id_pferd=" . $_GET['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
             <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
-       
-            }
-
 
         ?>
-
-
 
 
         </div>
@@ -247,6 +290,7 @@ if ($conn->connect_error) {
     <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
     <script src="js/demo/datatables-demo.js"></script>
 
+    <!-- JavaScript for Delete-Confirmation -->
     <script>
       function checkDelete(){
         return confirm('Pferd endgültig löschen?')
@@ -256,3 +300,14 @@ if ($conn->connect_error) {
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>

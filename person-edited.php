@@ -1,8 +1,8 @@
 <?php
 //Logindaten
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -250,36 +250,36 @@ if($_SESSION["logged"] == true) {
 
 
               echo "<label>Vorname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\">";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\"><br>";
               
               echo "<label>Nachname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\">";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\"><br>";
               
               echo "<label>E-Mail</label>";
-              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\">";
+              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\"><br>";
               
               echo "<label>Telefonnummer</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\">";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\"><br>";
               
               echo "<label>Geburtsdatum</label>";
-              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\">";
+              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\"><br>";
 
               echo "<br><h3> Adresse </h3>";
 
               echo "<label>Straße</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\">";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\"><br>";
 
               echo "<label>Hausnummer</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\">";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\"><br>";
 
               echo "<label>Postleitzahl</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\">";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\"><br>";
 
               echo "<label>Ortschaft</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\">";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\"><br>";
 
               echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\">";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\"><br>";
 
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
@@ -323,36 +323,36 @@ if($_SESSION["logged"] == true) {
             
             
             echo "<label>Vorname</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\">";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\"><br>";
             
             echo "<label>Nachname</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\">";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\"><br>";
             
             echo "<label>E-Mail</label>";
-            echo "<input class=\"form-control\" type=\"email\" name=\"email\">";
+            echo "<input class=\"form-control\" type=\"email\" name=\"email\"><br>";
             
             echo "<label>Telefonnummer</label>";
-            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\">";
+            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\"><br>";
             
             echo "<label>Geburtsdatum</label>";
-            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\">";
+            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\"><br>";
 
             echo "<br><h3> Adresse </h3>";
 
             echo "<label>Straße</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\">";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\"><br>";
 
             echo "<label>Hausnummer</label>";
-            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\">";
+            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\"><br>";
 
             echo "<label>Postleitzahl</label>";
-            echo "<input class=\"form-control\" type=\"number\" name=\"plz\">";
+            echo "<input class=\"form-control\" type=\"number\" name=\"plz\"><br>";
 
             echo "<label>Ortschaft</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\">";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\"><br>";
 
             echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"land\">";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"land\"><br>";
           
             echo "<hr>";
 

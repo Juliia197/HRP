@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 try {
@@ -54,6 +54,9 @@ if (isset($_POST['id_box'])){
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
+
+    <!-- Jan Custom styles for this template-->
+    <link href="css/jan.css" rel="stylesheet">
 
   </head>
 
@@ -144,6 +147,7 @@ if (isset($_POST['id_box'])){
           <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
 
             <?php
+                $saved = !isset($_GET['saved']) ? false : true;
                 $pferdId = !isset($_GET['id_pferd']) ? 0 : (int) $_GET['id_pferd'];
 
                 if (isset($_POST['pferdename'])) {
@@ -206,7 +210,9 @@ if (isset($_POST['id_box'])){
                                        id_beziehung = ?"
                                         );
                                 $bindCon = [$connId];
-                                $prepareCon->execute($bindCon);
+                                if($prepareCon->execute($bindCon)){
+                                    $saved = true;
+                                }
                             }
                             if (strpos($key, 'userIdNew-') === 0) {
                                 $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
@@ -222,7 +228,9 @@ if (isset($_POST['id_box'])){
                                       ) VALUES (?,?,?)'
                                 );
                                 $bindCon = [(int) $userId, (int) $functionId, $pferdId];
-                                $prepareCon->execute($bindCon);
+                                if($prepareCon->execute($bindCon)){
+                                    $saved = true;
+                                }
                             }
                         }
                     }
@@ -248,7 +256,9 @@ if (isset($_POST['id_box'])){
                                 
                             }
                         }
-                        header('Location: pferd-edit.php?id_pferd=' . $pferdId);                        
+
+                        header('Location: pferd-edit.php?id_pferd=' . $pferdId . '&saved=true');
+
                         exit();
                     }
 
@@ -283,6 +293,13 @@ if (isset($_POST['id_box'])){
                 $sql = 'SELECT * FROM funktion';
                 $functions = $conn->query($sql);
                 $functions = $functions->fetchAll();
+
+
+                if ($saved) {
+                    echo '<div id="myAlert" class="alert alert-success collapse">
+                            <strong> Pferd erfolgreich bearbeitet!</strong>
+                        </div>';
+                }
             ?>
 
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
@@ -474,7 +491,6 @@ if (isset($_POST['id_box'])){
             $(this).remove();
         });
     </script>
-
   </body>
 
 </html>

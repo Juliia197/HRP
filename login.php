@@ -7,8 +7,8 @@ if (isset($_SESSION['logged']) && $_SESSION['logged']) {
 }
 
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 $error = false;
 $mail = '';
@@ -24,7 +24,7 @@ catch(PDOException $e)
 
 if (isset($_POST['email'], $_POST['password'])) {
     $mail = trim($_POST['email']);
-    $password = $_POST['password'];
+    $password = md5($_POST['password']);
 
     $sql = "SELECT 
               benutzer.passwort 
@@ -88,21 +88,20 @@ if (isset($_POST['email'], $_POST['password'])) {
           <form action="login.php" method="post">
             <div class="form-group">
               <div class="form-label-group">
-                <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
-                <label for="inputEmail">Email address</label>
+                <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control" placeholder="Ihre E-Mail Adresse..." required="required" autofocus="autofocus">
+                <label for="inputEmail">Ihre E-Mail Adresse...</label>
               </div>
             </div>
             <div class="form-group">
               <div class="form-label-group">
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="required">
-                <label for="inputPassword">Password</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Ihr Passwort..." required="required">
+                <label for="inputPassword">Ihr Passwort...</label>
               </div>
             </div>
-            <button class="btn btn-primary btn-block">Login</button>
+            <button class="btn btn-primary btn-block">Anmelden</button>
           </form>
           <div class="text-center">
-            <a class="d-block small mt-3" href="register.html">Registrieren</a>
-            <a class="d-block small" href="forgot-password.html">Passwort vergessen?</a>
+            <a class="d-block small mt-3" href="register.php">Noch nicht registriert? Jetzt Konto anlegen!</a>
           </div>
         </div>
       </div>
