@@ -10,6 +10,11 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
 ?>
 
 <!DOCTYPE html>
@@ -162,7 +167,7 @@ if ($conn->connect_error) {
             
             echo "
             <div class='table-responsive'>
-            <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+            <table class='table table-bordered table-hover' id='dataTable1' width='100%' cellspacing='0'>
             <thead>
               <tr>
                 <th>Verbrauchsgut</th>
@@ -182,14 +187,14 @@ if ($conn->connect_error) {
             </div>
             
             <hr>
-            <h3>Personen</h3>";
-
+            <h3>Personen</h3>"; 
+            
             $personsql = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = " . $_GET['id_pferd'] . " AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
             $personbez = $conn->query($personsql);
 
             echo "
             <div class='table-responsive'>
-            <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+            <table class='table table-bordered table-hover' id='dataTable2' width='100%' cellspacing='0'>
             <thead>
               <tr>
                 <th>Vorname</th>
@@ -222,8 +227,8 @@ if ($conn->connect_error) {
 
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
-            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $row_p['id_pferd'] . "\" >Bearbeiten</a>
-            <a class=\"btn btn-danger\" href=\"pferd-deleted.php?id_pferd=" . $row_p['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
+            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $_GET['id_pferd'] . "\" >Bearbeiten</a>
+            <a class=\"btn btn-danger\" href=\"pferd-deleted.php?id_pferd=" . $_GET['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
             <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
 
         ?>
@@ -295,3 +300,14 @@ if ($conn->connect_error) {
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>

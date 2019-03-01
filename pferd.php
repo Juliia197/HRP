@@ -184,8 +184,7 @@ if($_SESSION["logged"] == true) {
                   echo '<td>  
                     <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
                     <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-deleted.php?id_pferd=' . $fetch["id_pferd"] . '" >Löschen</a> <br>
-                  </td>';
+                    <a href="pferd-deleted.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
 
                 echo '</tr>';
               }
@@ -259,6 +258,13 @@ if($_SESSION["logged"] == true) {
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
 
+  <!-- JavaScript for Delete-Confirmation -->
+  <script>
+      function checkDelete(){
+        return confirm('Pferd endgültig löschen?')
+      }
+    </script>
+    
   </body>
 
 </html>
