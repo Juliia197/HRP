@@ -42,6 +42,73 @@ if (isset($_POST['email'], $_POST['password'])) {
 
     if (isset($user['passwort']) && $user['passwort'] === $password) {
         $_SESSION['logged'] = true;
+        $bestandsaenderungnoetig_sql = "SELECT letzteaenderung FROM verbrauchsguttypt";
+        $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
+        $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
+        $letzteaenderung_datum = $bestandsaenderungnoetig_result['letzteaenderung'];
+
+        $heute_datum = date("Y-m-d");
+        
+        if ($letzteaenderung_datum != $heute_datum){
+
+          $id_gehoeft = 1;
+          $bestand_veraenderung = 0;
+          $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+          $gewichtpferd_result = $conn->query($gewichtpferd_sql);
+          $gewichtpferd_result = $gewichtpferd_result->fetch();
+          $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
+
+          $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = 1";
+          $anzahlbox_result = $conn->query($anzahlbox_sql);
+          $anzahlbox_result = $anzahlbox_result->fetch();
+          $anzahlboxen = $anzahlbox_result['anzahlbox'];
+
+          $hafer_sql = "SELECT koeffizient, bestand FROM verbrauchsguttypt WHERE id_verbrauchsguttyp = 2";
+          $hafer_result = $conn->query($hafer_sql);
+          $hafer_result = $hafer_result->fetch();
+          $koeffhafer = $hafer_result['koeffizient'];
+          $bestand_hafer = $hafer_result['bestand'];
+
+          $heu_sql = "SELECT koeffizient, bestand FROM verbrauchsguttypt WHERE id_verbrauchsguttyp = 3";
+          $heu_result = $conn->query($heu_sql);
+          $heu_result = $heu_result->fetch();
+          $koeffheu = $heu_result['koeffizient'];
+          $bestand_heu = $heu_result['bestand'];
+
+          $spaene_sql = "SELECT koeffizient, bestand FROM verbrauchsguttypt WHERE id_verbrauchsguttyp = 4";
+          $spaene_result = $conn->query($spaene_sql);
+          $spaene_result = $spaene_result->fetch();
+          $koeffspaene = $spaene_result['koeffizient'];
+          $bestand_spaene = $spaene_result['bestand'];
+
+          $stroh_sql = "SELECT koeffizient, bestand FROM verbrauchsguttypt WHERE id_verbrauchsguttyp = 5";
+          $stroh_result = $conn->query($stroh_sql);
+          $stroh_result = $stroh_result->fetch();
+          $koeffstroh = $stroh_result['koeffizient'];
+          $bestand_stroh = $stroh_result['bestand'];
+
+          $bestand_veraenderung_heu = $koeffheu * ($gesamtgewichtpferd / 100);
+          $bestand_veraenderung_hafer = $koeffhafer * ($gesamtgewichtpferd / 100);
+          $bestand_veraenderung_spaene = $koeffspaene * $anzahlboxen;
+          $bestand_veraenderung_stroh = $koeffstroh * $anzahlboxen;
+          
+          $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
+          $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
+          $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
+          $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
+
+          $bestandneu_hafer_sql = "UPDATE verbrauchsguttypt SET bestand = " . $bestandneu_hafer . " WHERE id_verbrauchsguttyp = 2";
+          $bestandneu_heu_sql = "UPDATE verbrauchsguttypt SET bestand = " . $bestandneu_heu . " WHERE id_verbrauchsguttyp = 3";
+          $bestandneu_spaene_sql = "UPDATE verbrauchsguttypt SET bestand = " . $bestandneu_spaene . " WHERE id_verbrauchsguttyp = 4";
+          $bestandneu_stroh_sql = "UPDATE verbrauchsguttypt SET bestand = " . $bestandneu_stroh . " WHERE id_verbrauchsguttyp = 5";
+
+          $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
+          $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
+          $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
+          $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+
+        }
+
         header('location:dashboard.php');
         exit();
     } else {
