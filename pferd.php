@@ -131,7 +131,7 @@ if($_SESSION["logged"] == true) {
           <!-- Tabelle mit den Pferden in der Datenbank -->
           <p>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
               <th>Name</th>
@@ -184,7 +184,7 @@ if($_SESSION["logged"] == true) {
                   echo '<td>  
                     <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
                     <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-deleted.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
+                    <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
 
                 echo '</tr>';
               }

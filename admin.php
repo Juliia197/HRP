@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -98,9 +98,19 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Admin</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+          <h2>Hinzufügen von Benutzern als Gehöftverwalter</h2><br>
+
+          <form action= "benutzer_added.php" method="post">
+          
+          <label for="id_benutzer">id_benutzer</label>
+          <input class="form-control" id="id_benutzer" type="number" name="id_benutzer" required>
+          <label for="id_gehoeft">id_gehoeft</label>
+          <input class="form-control" id="id_gehoeft" type="number" name="id_gehoeft" required>
+          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
+
+
 
         </div>
         <!-- /.container-fluid -->

@@ -10,6 +10,11 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+session_start();
+
+if($_SESSION["logged"] == true) {
+  
+echo $_SESSION["id_gehoeft"];
 
 $anzahl_stuten_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht = 's'";
 $anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
@@ -82,10 +87,6 @@ if ($bestand_saegespaene_result->num_rows > 0){
     $bestand_saegespaene = $row_bss["bestand"];
   }
 }
-
-session_start();
-
-if($_SESSION["logged"] == true) {
 
 ?>
 <!DOCTYPE html>

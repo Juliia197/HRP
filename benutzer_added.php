@@ -9,23 +9,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
-
-session_start();
-
-if($_SESSION["logged"] == true) {
-
-$pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
-$pferdloeschen_result = $conn->query($pferdloeschen_sql);
-
-$pferdloeschen2_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
-$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
-
-$pferdloeschen3_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
-$pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
-
-$pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
-$pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
+} 
 
 ?>
 <!DOCTYPE html>
@@ -96,7 +80,7 @@ $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
@@ -115,23 +99,31 @@ $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
         <div class="container-fluid">
 
           <!-- Page Content -->
+          <h1>Admin</h1>
+          <hr>
 
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a href="pferd.php">Pferde</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Pferd löschen
-            </li>
-          </ol>
-          <?php  
-            echo '<div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr>';
+          <?php 
+            $id_benutzer = $_POST['id_benutzer'];
+            $id_gehoeft = $_POST["id_gehoeft"];
 
-          ?>
+            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
+            $check = $conn->query($check_sql);
+            $check = $check->fetch_assoc();
 
+            if ($check['count'] > 0) {
+              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
+            }
+            
+            else {
+              $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
+              $insert = $conn->query($insert_sql);
+
+              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
+            }
+
+            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
+
+            ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -169,7 +161,7 @@ $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="logout.php">Ja</a>
+            <a class="btn btn-primary" href="login.html">Ja</a>
           </div>
         </div>
       </div>
@@ -185,21 +177,6 @@ $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-    <script src="js/demo/datatables-demo.js"></script>
-
   </body>
 
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>

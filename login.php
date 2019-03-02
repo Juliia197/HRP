@@ -11,6 +11,7 @@ $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 $error = false;
+$error_gehoeft = false;
 $mail = '';
 
 try {
@@ -27,7 +28,7 @@ if (isset($_POST['email'], $_POST['password'])) {
     $password = md5($_POST['password']);
 
     $sql = "SELECT 
-              benutzer.passwort 
+              benutzer.passwort, benutzer.id_benutzer 
             FROM
               benutzer 
             LEFT JOIN 
@@ -41,9 +42,27 @@ if (isset($_POST['email'], $_POST['password'])) {
     $user = $user->fetch();
 
     if (isset($user['passwort']) && $user['passwort'] === $password) {
+      
+      $id_gehoeft_count_sql = " SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer =  '" . $user['id_benutzer'] . "'";
+      $id_gehoeft_count = $conn->query($id_gehoeft_count_sql);
+      $id_gehoeft_count = $id_gehoeft_count->fetch();
+
+      if ($id_gehoeft_count['count'] == 1) {
+            
+        $id_gehoeft_sql = " SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = '" . $user['id_benutzer'] . "'";
+        $id_gehoeft = $conn->query($id_gehoeft_sql);
+        $id_gehoeft = $id_gehoeft->fetch();
+
+        $_SESSION['id_gehoeft'] = $id_gehoeft['id_gehoeft'];
         $_SESSION['logged'] = true;
         header('location:dashboard.php');
         exit();
+      }
+      
+      else {
+        $error_gehoeft = true;
+      }
+      
     } else {
         $error = true;
     }
@@ -84,6 +103,9 @@ if (isset($_POST['email'], $_POST['password'])) {
         <div class="card-body">
             <?php if ($error) { ?>
             <p>Ungültige Anmeldedaten. Versuchen Sie es noch einmal!</p>
+            <?php } ?>
+            <?php if ($error_gehoeft) { ?>
+            <p>Kein Gehöft zugeordnet!</p>
             <?php } ?>
           <form action="login.php" method="post">
             <div class="form-group">
