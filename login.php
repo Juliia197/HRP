@@ -122,9 +122,6 @@ if (isset($_POST['email'], $_POST['password'])) {
             </div>
             <button class="btn btn-primary btn-block">Anmelden</button>
           </form>
-          <div class="text-center">
-            <a class="d-block small mt-3" href="register.php">Noch nicht registriert? Jetzt Konto anlegen!</a>
-          </div>
         </div>
       </div>
     </div>

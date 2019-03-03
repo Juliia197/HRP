@@ -478,7 +478,7 @@ if (isset($_POST['id_box'])){
 
         $('.delete').click(function(){
             let connId = $(this).data('connid');
-            $.post( "pferd-delete.php", { connId: connId } );
+            $.post( "pferd-delete_alt.php", { connId: connId } );
             $('#userId-'+connId).remove();
             $('#functionId-'+connId).remove();
             $('#delete-'+connId).remove();
