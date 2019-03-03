@@ -52,6 +52,17 @@ if (isset($_POST['email'], $_POST['password'])) {
         if ($letzteaenderung_datum != $heute_datum){
 
           $id_gehoeft = 1;
+
+          $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
+          $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
+          $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
+
+          $heute_datum_jahr = intval(substr($heute_datum,0,4));
+          $heute_datum_monat = intval(substr($letzteaenderung_datum,5,2));
+          $heute_datum_tag = intval(substr($letzteaenderung_datum,8,2));
+
+          $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
+
           $bestand_veraenderung = 0;
           $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
           $gewichtpferd_result = $conn->query($gewichtpferd_sql);
@@ -87,10 +98,10 @@ if (isset($_POST['email'], $_POST['password'])) {
           $koeffstroh = $stroh_result['koeffizient'];
           $bestand_stroh = $stroh_result['bestand'];
 
-          $bestand_veraenderung_heu = $koeffheu * ($gesamtgewichtpferd / 100);
-          $bestand_veraenderung_hafer = $koeffhafer * ($gesamtgewichtpferd / 100);
-          $bestand_veraenderung_spaene = $koeffspaene * $anzahlboxen;
-          $bestand_veraenderung_stroh = $koeffstroh * $anzahlboxen;
+          $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
+          $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
+          $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
+          $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
           
           $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
           $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
