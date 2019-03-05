@@ -82,30 +82,30 @@ if (isset($_POST['email'], $_POST['password'])) {
           $gewichtpferd_result = $gewichtpferd_result->fetch();
           $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
 
-          $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = 1";
+          $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = " . $_SESSION['id_gehoeft'];
           $anzahlbox_result = $conn->query($anzahlbox_sql);
           $anzahlbox_result = $anzahlbox_result->fetch();
           $anzahlboxen = $anzahlbox_result['anzahlbox'];
 
-          $hafer_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
+          $hafer_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
           $hafer_result = $conn->query($hafer_sql);
           $hafer_result = $hafer_result->fetch();
           $koeffhafer = $hafer_result['koeffizient'];
           $bestand_hafer = $hafer_result['bestand'];
 
-          $heu_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
+          $heu_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
           $heu_result = $conn->query($heu_sql);
           $heu_result = $heu_result->fetch();
           $koeffheu = $heu_result['koeffizient'];
           $bestand_heu = $heu_result['bestand'];
 
-          $spaene_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
+          $spaene_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
           $spaene_result = $conn->query($spaene_sql);
           $spaene_result = $spaene_result->fetch();
           $koeffspaene = $spaene_result['koeffizient'];
           $bestand_spaene = $spaene_result['bestand'];
 
-          $stroh_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 5";
+          $stroh_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
           $stroh_result = $conn->query($stroh_sql);
           $stroh_result = $stroh_result->fetch();
           $koeffstroh = $stroh_result['koeffizient'];
@@ -121,10 +121,10 @@ if (isset($_POST['email'], $_POST['password'])) {
           $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
           $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
 
-          $bestandneu_hafer_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_hafer . " WHERE id_verbrauchsguttyp = 2";
-          $bestandneu_heu_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_heu . " WHERE id_verbrauchsguttyp = 3";
-          $bestandneu_spaene_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_spaene . " WHERE id_verbrauchsguttyp = 4";
-          $bestandneu_stroh_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_stroh . " WHERE id_verbrauchsguttyp = 5";
+          $bestandneu_hafer_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_hafer . " WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_heu_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_heu . " WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_spaene_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_spaene . " WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_stroh_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_stroh . " WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
 
           $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
           $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
