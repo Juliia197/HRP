@@ -58,7 +58,7 @@ if (isset($_POST['email'], $_POST['password'])) {
         /*$bestandsaenderungnoetig_sql = "SELECT letzteaenderung FROM verbrauchsguttyp";
         $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
         $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
-        $letzteaenderung_datum = $bestandsaenderungnoetig_result['letzteaenderung'];
+        $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
 
         $heute_datum = date("Y-m-d");
         
@@ -121,10 +121,10 @@ if (isset($_POST['email'], $_POST['password'])) {
           $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
           $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
 
-          $bestandneu_hafer_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_hafer . " WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
-          $bestandneu_heu_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_heu . " WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
-          $bestandneu_spaene_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_spaene . " WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
-          $bestandneu_stroh_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_stroh . " WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_hafer_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = " . $heute_datum . " WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_heu_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = " . $heute_datum . " WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_spaene_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = " . $heute_datum . " WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
+          $bestandneu_stroh_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = " . $heute_datum . " WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = " . $_SESSION['id_gehoeft'];
 
           $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
           $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
