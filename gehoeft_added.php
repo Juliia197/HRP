@@ -11,12 +11,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-session_start();
-$id_gehoeft = $_SESSION["id_gehoeft"];
-
-if($_SESSION["logged"] == true) {
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,7 +74,7 @@ if($_SESSION["logged"] == true) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -105,65 +99,31 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a href="gueter.php">Güter</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Lieferungen
-            </li>            
-          </ol>
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
-          </div>
-          </div>
-          
-          <p>
-          <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Lieferung</th>  
-              <th>Lieferdatum</th>
-              <th>Menge in kg</th>
-              <th>Einkaufspreis je kg</th>
-              <th>Lieferant</th>
-              <th>Aktion</th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsgut WHERE id_gehoeft = $id_gehoeft";
-              
-              $query = $conn->query($verbrauchsgut) or die(mysql_error());
+          <h1>Admin</h1>
+          <hr>
 
-              while($fetch = mysqli_fetch_assoc($query)){
-                echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
-                  echo '<td>' . $fetch['lieferdatum'] . '</td>';
-                  echo '<td>' . $fetch['menge'] . '</td>';
-                  echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                  $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-                  $query1 = $conn->query($lieferant) or die (mysql_error());
-                    if($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
-                  echo '<td> 
-                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
-                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';                    
-              }
+          <?php 
+            $id_adresse = $_POST['id_adresse'];
+            $gehoeftname = $_POST["gehoeftname"];
+
+            $check_sql = "SELECT COUNT(id_adresse) AS count FROM gehoeft WHERE id_adresse =  $id_adresse ";
+            $check = $conn->query($check_sql);
+            $check = $check->fetch_assoc();
+            
+            if ($check['count'] > 0) {
+              echo '<div class="alert alert-danger" role="alert">Zu dieser Adresse gibt es bereits ein Gehöft!</div><hr>';
+            }
+            
+            else {
+              $insert_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
+              $insert = $conn->query($insert_sql);
+
+              echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
+            }
+
+            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
 
             ?>
-            </tbody>                
-
-          </table>
-          </div>          
-        
 
         </div>
         <!-- /.container-fluid -->
@@ -201,7 +161,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="logout.php">Ja</a>
+            <a class="btn btn-primary" href="login.html">Ja</a>
           </div>
         </div>
       </div>
@@ -214,27 +174,9 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
-  <script src="js/demo/datatables-demo.js"></script>
-
   </body>
+
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>
