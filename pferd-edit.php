@@ -385,9 +385,9 @@ if (isset($_POST['id_box'])){
                   $boxenfrei_result = $boxenfrei_result->fetchAll();
                   foreach ($boxenfrei_result as $boxfrei){
                     if ($boxfrei['id_pferd'] == $_GET['id_pferd']){
-                      echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                      echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
                     } else {
-                    echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                    echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\"></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
                     }
                   }
                   ?>
@@ -479,7 +479,7 @@ if (isset($_POST['id_box'])){
 
         $('.delete').click(function(){
             let connId = $(this).data('connid');
-            $.post( "pferd-delete_alt.php", { connId: connId } );
+            $.post( "pferd-delete.php", { connId: connId } );
             $('#userId-'+connId).remove();
             $('#functionId-'+connId).remove();
             $('#delete-'+connId).remove();

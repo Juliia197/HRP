@@ -15,6 +15,18 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+$id_gehoeft = $_SESSION['id_gehoeft'];
+$auth = false;
+
+$auth_sql = "SELECT id_gehoeft FROM box WHERE id_pferd = " . $_GET['id_pferd'] . "";
+$auth_result =  $conn->query($auth_sql);
+$auth_result = $auth_result->fetch_assoc();
+
+if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+  $auth = true;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -105,6 +117,8 @@ if($_SESSION["logged"] == true) {
                   <!-- Page Content -->
 
         <?php
+
+        if ($auth == true) {
           $pferdsql = "SELECT * FROM pferd WHERE id_pferd = " . $_GET['id_pferd'] . "";
           $pferd = $conn->query($pferdsql) or die (mysql_error());
 
@@ -235,6 +249,10 @@ if($_SESSION["logged"] == true) {
             <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $_GET['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
             <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
 
+          }
+        else {
+          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
+          }
         ?>
 
 
