@@ -42,7 +42,7 @@ if (isset($_POST['email'], $_POST['password'])) {
 
     if (isset($user['passwort']) && $user['passwort'] === $password) {
         $_SESSION['logged'] = true;
-        $bestandsaenderungnoetig_sql = "SELECT letzteaenderung FROM verbrauchsguttyp";
+        /*$bestandsaenderungnoetig_sql = "SELECT letzteaenderung FROM verbrauchsguttyp";
         $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
         $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
         $letzteaenderung_datum = $bestandsaenderungnoetig_result['letzteaenderung'];
@@ -118,7 +118,7 @@ if (isset($_POST['email'], $_POST['password'])) {
           $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
           $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
 
-        }
+        }*/
 
         header('location:dashboard.php');
         exit();
