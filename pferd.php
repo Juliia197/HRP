@@ -16,6 +16,7 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 ?>
 
@@ -131,7 +132,7 @@ if($_SESSION["logged"] == true) {
           <!-- Tabelle mit den Pferden in der Datenbank -->
           <p>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
               <th>Name</th>
@@ -144,7 +145,7 @@ if($_SESSION["logged"] == true) {
 
             <?php    
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $pferd = "SELECT * FROM pferd";
+              $pferd = "SELECT pferd.id_pferd, pferd.pferdename, pferd.geschlecht FROM pferd, box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
               $query = $conn->query($pferd) or die(mysql_error());
 
               while($fetch = mysqli_fetch_assoc($query)){ //jede Zeile der Datenbank ergibt eine Zeile der Tabelle
@@ -184,7 +185,7 @@ if($_SESSION["logged"] == true) {
                   echo '<td>  
                     <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
                     <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-deleted.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
+                    <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
 
                 echo '</tr>';
               }

@@ -15,6 +15,18 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+$id_gehoeft = $_SESSION['id_gehoeft'];
+$auth = false;
+
+$auth_sql = "SELECT id_gehoeft FROM box WHERE id_pferd = " . $_GET['id_pferd'] . "";
+$auth_result =  $conn->query($auth_sql);
+$auth_result = $auth_result->fetch_assoc();
+
+if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+  $auth = true;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -105,8 +117,10 @@ if($_SESSION["logged"] == true) {
                   <!-- Page Content -->
 
         <?php
-          $pferdsql = "SELECT * FROM pferd WHERE id_pferd = " . $_GET['id_pferd'];
-          $pferd = $conn->query($pferdsql);
+
+        if ($auth == true) {
+          $pferdsql = "SELECT * FROM pferd WHERE id_pferd = " . $_GET['id_pferd'] . "";
+          $pferd = $conn->query($pferdsql) or die (mysql_error());
 
          // echo $pferdsql;
 
@@ -139,18 +153,22 @@ if($_SESSION["logged"] == true) {
                 }
             echo "</p>";
             
-            echo "<p>Gewicht: " . $row_p['gewicht'] . " kg</p>";
-            echo "<p>Größe: " . $row_p['groesse'] . " cm</p>";
-            echo "<p>Passnummer: " . $row_p['passnr'] . "</p>";
-            echo "<p>Geburtsdatum: " . $row_p['geburtsdatum_pferd'] . "</p>";
-            echo "<p>Ankunft: " . $row_p['ankunft'] . "</p>";
+            $geburtsdatum_pferd = new DateTime($row_p['geburtsdatum_pferd']);
+            $ankunft = new DateTime($row_p['ankunft']);
+
+            echo "<p>Gewicht: " . $row_p['gewicht'] . " kg</p>
+                  <p>Größe: " . $row_p['groesse'] . " cm</p>
+                  <p>Passnummer: " . $row_p['passnr'] . "</p>
+                  <p>Geburtsdatum: " . $geburtsdatum_pferd->format('d.m.Y') . "</p>
+                  <p>Ankunft: " . $ankunft->format('d.m.Y') . "</p>";
           
           }
 
-            $boxsql = "SELECT boxentyp.boxenbez FROM box, boxentyp WHERE box.id_pferd = " . $_GET['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp';
+            $boxsql = "SELECT boxentyp.boxenbez, box.boxenpreis FROM box, boxentyp WHERE box.id_pferd = " . $_GET['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp';
             $box = $conn->query($boxsql) or die (mysql_error());
             while($fetch1 = mysqli_fetch_assoc($box)){
-              echo "<p>Boxentyp: " . $fetch1['boxenbez'] . "</p>";
+              echo "<p>Boxentyp: " . $fetch1['boxenbez'] . "</p>
+                    <p>Boxenpreis: " . $fetch1['boxenpreis'] .  " €</p>";
             }
             
             echo "
@@ -167,7 +185,7 @@ if($_SESSION["logged"] == true) {
             
             echo "
             <div class='table-responsive'>
-            <table class='table table-bordered table-hover' id='dataTable1' width='100%' cellspacing='0'>
+            <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
             <thead>
               <tr>
                 <th>Verbrauchsgut</th>
@@ -190,11 +208,11 @@ if($_SESSION["logged"] == true) {
             <h3>Personen</h3>"; 
             
             $personsql = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = " . $_GET['id_pferd'] . " AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
-            $personbez = $conn->query($personsql);
+            $personbez = $conn->query($personsql) or die (mysql_error());
 
             echo "
             <div class='table-responsive'>
-            <table class='table table-bordered table-hover' id='dataTable2' width='100%' cellspacing='0'>
+            <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
             <thead>
               <tr>
                 <th>Vorname</th>
@@ -206,16 +224,16 @@ if($_SESSION["logged"] == true) {
             
             <tbody>";
 
-              while($fetch = mysqli_fetch_assoc($personbez)){
+              while($fetch4 = mysqli_fetch_assoc($personbez)){
                 echo "<tr>";
-                echo "<td>" . $fetch['vorname'] .  "</td>";
-                echo "<td>" . $fetch['nachname'] .  "</td>";
-                echo "<td>" . $fetch['funktionsbez'] . "</td>";
+                echo "<td>" . $fetch4['vorname'] .  "</td>";
+                echo "<td>" . $fetch4['nachname'] .  "</td>";
+                echo "<td>" . $fetch4['funktionsbez'] . "</td>";
 
-                echo '<td> 
-                  <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a><br>
-                  <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a></td></tr>';              
-              }
+                echo '<td>
+                  <a class="btn btn-secondary" href="person-show.php?id_person=' . $fetch4["id_person"] . '" >Anzeigen</a>
+                  <a class="btn btn-primary" href="person-edit.php?id_person=' . $fetch4["id_person"] . '" >Bearbeiten</a></td></tr>';
+                }
                 
             echo "
             </tbody>
@@ -225,12 +243,16 @@ if($_SESSION["logged"] == true) {
             
             echo "<hr>";
 
-            echo "<div class=\"form-group\"></div>
+            echo "
             <div class=\"form-group\">
             <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $_GET['id_pferd'] . "\" >Bearbeiten</a>
-            <a class=\"btn btn-danger\" href=\"pferd-deleted.php?id_pferd=" . $_GET['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
+            <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $_GET['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
             <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
 
+          }
+        else {
+          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
+          }
         ?>
 
 
@@ -290,11 +312,17 @@ if($_SESSION["logged"] == true) {
     <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
     <script src="js/demo/datatables-demo.js"></script>
 
-    <!-- JavaScript for Delete-Confirmation -->
+    <!-- JavaScript für Delete-Confirm -->
     <script>
       function checkDelete(){
         return confirm('Pferd endgültig löschen?')
       }
+    </script>
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
+    <script>
+      $(document).ready(function() {
+      $('table.display').DataTable();
+      });
     </script>
 
   </body>

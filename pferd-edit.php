@@ -14,6 +14,7 @@ catch(PDOException $e)
 }
 
 session_start();
+$id_gehoeft = $_SESSION["id_gehoeft"];
 
 if($_SESSION["logged"] == true) {
 

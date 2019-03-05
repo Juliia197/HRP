@@ -10,13 +10,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
-
-session_start();
-$id_gehoeft = $_SESSION["id_gehoeft"];
-
-if($_SESSION["logged"] == true) {
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,7 +73,7 @@ if($_SESSION["logged"] == true) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -105,65 +98,30 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a href="gueter.php">Güter</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Lieferungen
-            </li>            
-          </ol>
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
-          </div>
-          </div>
+          <h1>Admin</h1>
+          <hr>
+          <h2>Hinzufügen von Benutzern als Gehöftverwalter</h2><br>
+
+          <form action= "benutzer_added.php" method="post">
           
-          <p>
-          <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Lieferung</th>  
-              <th>Lieferdatum</th>
-              <th>Menge in kg</th>
-              <th>Einkaufspreis je kg</th>
-              <th>Lieferant</th>
-              <th>Aktion</th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsgut WHERE id_gehoeft = $id_gehoeft";
-              
-              $query = $conn->query($verbrauchsgut) or die(mysql_error());
+          <label for="id_benutzer">id_benutzer</label>
+          <input class="form-control" id="id_benutzer" type="number" name="id_benutzer" required>
+          <label for="id_gehoeft">id_gehoeft</label>
+          <input class="form-control" id="id_gehoeft" type="number" name="id_gehoeft" required>
+          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
+          </form>
+          <br>
 
-              while($fetch = mysqli_fetch_assoc($query)){
-                echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
-                  echo '<td>' . $fetch['lieferdatum'] . '</td>';
-                  echo '<td>' . $fetch['menge'] . '</td>';
-                  echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                  $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-                  $query1 = $conn->query($lieferant) or die (mysql_error());
-                    if($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
-                  echo '<td> 
-                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
-                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';                    
-              }
+          <h2>Hinzufügen von Gehöften</h2>
 
-            ?>
-            </tbody>                
-
-          </table>
-          </div>          
-        
+          <form action= "gehoeft_added.php" method="post">
+          
+          <label for="gehoeftname">Gehöftname</label>
+          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required>
+          <label for="id_adresse">Adresse</label>
+          <input class="form-control" id="id_adresse" type="number" name="id_adresse" required>
+          <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
+          </form>
 
         </div>
         <!-- /.container-fluid -->
@@ -201,7 +159,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="logout.php">Ja</a>
+            <a class="btn btn-primary" href="login.html">Ja</a>
           </div>
         </div>
       </div>
@@ -214,27 +172,9 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
-  <script src="js/demo/datatables-demo.js"></script>
-
   </body>
+
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>

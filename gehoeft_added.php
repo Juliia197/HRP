@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
 // Create connection
@@ -10,6 +10,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,9 +99,31 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Überschrift</h1>
+          <h1>Admin</h1>
           <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+
+          <?php 
+            $id_adresse = $_POST['id_adresse'];
+            $gehoeftname = $_POST["gehoeftname"];
+
+            $check_sql = "SELECT COUNT(id_adresse) AS count FROM gehoeft WHERE id_adresse =  $id_adresse ";
+            $check = $conn->query($check_sql);
+            $check = $check->fetch_assoc();
+            
+            if ($check['count'] > 0) {
+              echo '<div class="alert alert-danger" role="alert">Zu dieser Adresse gibt es bereits ein Gehöft!</div><hr>';
+            }
+            
+            else {
+              $insert_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
+              $insert = $conn->query($insert_sql);
+
+              echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
+            }
+
+            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
+
+            ?>
 
         </div>
         <!-- /.container-fluid -->
