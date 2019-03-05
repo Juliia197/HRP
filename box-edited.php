@@ -117,14 +117,15 @@ if($_SESSION["logged"] == true) {
           <h1>Box hinzufügen</h1>
           <hr>
           <?php
+          $id_gehoeft = $_SESSION['id_gehoeft'];
           $boxenpreis = $_POST["boxenpreis"];
-            if(isset($_POST["innenbox"])){
+            if(isset($_POST["box"]) && $_POST["box"] == "innenbox"){
               $boxentyp=1;
             }
-            else if(isset($_POST["paddockbox"])) {
+            else if(isset($_POST["box"]) && $_POST["box"] == "paddockbox") {
               $boxentyp=2;
             }
-            $boxenadd_sql = "INSERT INTO box (id_box, boxenpreis, id_gehoeft, id_boxentyp, id_pferd) VALUES (NULL, '$boxenpreis',1,$boxentyp,NULL)";
+            $boxenadd_sql = "INSERT INTO box (id_box, boxenpreis, id_gehoeft, id_boxentyp, id_pferd) VALUES (NULL, '$boxenpreis', '$id_gehoeft', '$boxentyp', NULL)";
             $boxenadd_result = $conn->query($boxenadd_sql);
 
           ?>
@@ -132,8 +133,8 @@ if($_SESSION["logged"] == true) {
           <form action="box-edited.php" method="post">
             <div class="form-group">
             <label>Boxentyp:</label>
-            <p><input type="radio" name="innenbox">Innenbox<br>
-            <input type="radio" name="paddockbox">Paddockbox</p>
+            <p><input type="radio" name="box" value="innenbox">Innenbox<br>
+            <input type="radio" name="box" value="paddockbox">Paddockbox</p>
             </div>
             <div class="form-group">
             <label>Boxenpreis:</label><br>
