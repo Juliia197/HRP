@@ -109,19 +109,8 @@ if ($conn->connect_error) {
           <label for="id_gehoeft">id_gehoeft</label>
           <input class="form-control" id="id_gehoeft" type="number" name="id_gehoeft" required>
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
-          </form>
-          <br>
 
-          <h2>Hinzufügen von Gehöften</h2>
 
-          <form action= "gehoeft_added.php" method="post">
-          
-          <label for="gehoeftname">Gehöftname</label>
-          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required>
-          <label for="id_adresse">Adresse</label>
-          <input class="form-control" id="id_adresse" type="number" name="id_adresse" required>
-          <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
-          </form>
 
         </div>
         <!-- /.container-fluid -->

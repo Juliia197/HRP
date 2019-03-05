@@ -16,7 +16,6 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
-  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 ?>
 
@@ -145,7 +144,7 @@ if($_SESSION["logged"] == true) {
 
             <?php    
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $pferd = "SELECT pferd.id_pferd, pferd.pferdename, pferd.geschlecht FROM pferd, box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+              $pferd = "SELECT * FROM pferd";
               $query = $conn->query($pferd) or die(mysql_error());
 
               while($fetch = mysqli_fetch_assoc($query)){ //jede Zeile der Datenbank ergibt eine Zeile der Tabelle
