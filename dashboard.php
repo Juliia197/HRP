@@ -16,7 +16,7 @@ if($_SESSION["logged"] == true) {
 
 $id_gehoeft = $_SESSION["id_gehoeft"];
 
-$anzahl_stuten_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht = 's'";
+$anzahl_stuten_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 's' AND box.id_gehoeft = $id_gehoeft AND box.id_pferd = pferd.id_pferd ";
 $anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
 if ($anzahl_stuten_result->num_rows > 0){
   while($row_as = $anzahl_stuten_result->fetch_assoc()){
