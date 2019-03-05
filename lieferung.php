@@ -12,7 +12,6 @@ if ($conn->connect_error) {
 } 
 
 session_start();
-$id_gehoeft = $_SESSION["id_gehoeft"];
 
 if($_SESSION["logged"] == true) {
 
@@ -138,7 +137,7 @@ if($_SESSION["logged"] == true) {
             <tbody>
             <?php  
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsgut WHERE id_gehoeft = $id_gehoeft";
+              $verbrauchsgut = "SELECT * FROM verbrauchsgut";
               
               $query = $conn->query($verbrauchsgut) or die(mysql_error());
 

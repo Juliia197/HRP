@@ -109,8 +109,8 @@ if($_SESSION["logged"] == true) {
           <form action="box-edited.php" method="post">
             <div class="form-group">
             <label>Boxentyp:</label>
-            <p><input type="radio" name="box" value="innenbox">Innenbox<br>
-            <input type="radio" name="box" value="paddockbox">Paddockbox</p>
+            <p><input type="radio" name="innenbox">Innenbox<br>
+            <input type="radio" name="paddockbox">Paddockbox</p>
             </div>
             <div class="form-group">
             <label>Boxenpreis:</label><br>

@@ -6,6 +6,11 @@ if (isset($_SESSION['logged']) && $_SESSION['logged']) {
     exit();
 }
 
+// Error reporting 
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
+
+// Database connection
 $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
@@ -131,7 +136,7 @@ if (isset($_POST['email'], $_POST['password'])) {
           $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
           $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
 
-        }*/
+        } */
 
         header('location:dashboard.php');
         exit();
@@ -151,66 +156,156 @@ if (isset($_POST['email'], $_POST['password'])) {
 
 <!DOCTYPE html>
 <html lang="de">
-
   <head>
+  <!-- Basic Page Needs
+  ================================================== -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Mobile Specific Metas
+  ================================================== -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- For Search Engine Meta Data  -->
+  <meta name="pferdeverwalter" content="" />
+  <meta name="JanFreymuth" content="hrp-projekt.de" />
+	
+  <title>Admin Login</title>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin - Login</title>
-
-    <!-- Bootstrap core CSS-->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin.css" rel="stylesheet">
-
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+   
+  <!-- Main structure css file -->
+  <link  rel="stylesheet" href="css/login5-style.css">
+  <link  rel="stylesheet" href="css/jan.css">
+ 
   </head>
-
-  <body class="bg-dark">
-
-    <div class="container">
-      <div class="card card-login mx-auto mt-5">
-        <div class="card-header">Login</div>
-        <div class="card-body">
-            <?php if ($error) { ?>
-            <p>Ungültige Anmeldedaten. Versuchen Sie es noch einmal!</p>
-            <?php } ?>
-            <?php if ($error_gehoeft) { ?>
-            <p>Kein Gehöft zugeordnet!</p>
-            <?php } ?>
-          <form action="login.php" method="post">
-            <div class="form-group">
-              <div class="form-label-group">
-                <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control" placeholder="Ihre E-Mail Adresse..." required="required" autofocus="autofocus">
-                <label for="inputEmail">Ihre E-Mail Adresse...</label>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="form-label-group">
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Ihr Passwort..." required="required">
-                <label for="inputPassword">Ihr Passwort...</label>
-              </div>
-            </div>
-            <button class="btn btn-primary btn-block">Anmelden</button>
-          </form>
-        </div>
-      </div>
+  
+  <body>
+    <!-- Start Preloader -->
+    <div id="preload-block">
+      <div class="square-block"></div>
     </div>
+    <!-- Preloader End -->
+    
+    <div class="container-fluid">
+      <div class="row">
+        <div class="authfy-container col-xs-12 col-sm-10 col-md-8 col-lg-6 col-sm-offset-1 col-md-offset-2 col-lg-offset-3">
+          <div class="col-sm-5 authfy-panel-left">
+            <div class="brand-col">
+              <div class="headline">
+                <!-- brand-logo start -->
+                <div class="brand-logo">
+                  <img src="images/brand-logo-white.png" alt="brand-logo" style="display:block; margin:auto;">
+                </div><!-- ./brand-logo -->
+                <p style="text-align: center;">Horse-Resourcing-Planner</p> <br /> <br /> <br /><br /><br /><br /><br /> 
+                <p style="text-align: center; margin-bottom: -20px;">Copyright &copy; HRP 2019</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-7 authfy-panel-right">
+            <!-- authfy-login start -->
+            <div class="authfy-login">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs nav-justified" role="tablist">
+                <li role="presentation" class="active"><a href="#login" data-toggle="tab">Bereits Mitglied</a></li>
+              </ul>
+              <div class="tab-content">
+                <!-- panel-login start -->
+                <div id="login" class="authfy-panel panel-login text-center tab-pane fade in active">
+                  <div class="row">
+                    <?php if ($error) { ?>
+                    <p>Ungültige Anmeldedaten. Versuchen Sie es noch einmal!</p>
+                    <?php } ?>
+                    <?php if ($error_gehoeft) { ?>
+                    <p>Kein Gehöft zugeordnet!</p>
+                    <?php } ?>
+                    <div class="col-xs-12 col-sm-12">
+                      <form action="login.php" method="POST">
+                        <div class="form-group wrap-input">
+                          <input type="email" value="<?php echo $mail; ?>" name="email" id="inputEmail" class="form-control email" placeholder="E-Mail Adresse" required="required" autofocus="autofocus">
+                          <span class="focus-input"></span>
+                        </div>
+                        <div class="form-group wrap-input">
+                          <div class="pwdMask">
+                            <input type="password" name="password" id="inputPassword" class="form-control password" placeholder="Passwort" required="required">
+                            <span class="focus-input"></span>
+                            <span class="fa fa-eye-slash pwd-toggle"></span>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-lg btn-primary btn-block">Mit E-Mail einloggen</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div> <!-- ./panel-login -->
+                <!-- panel-signup start -->
+                <div id="signup" class="authfy-panel panel-signup text-center tab-pane fade">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                      <form name="signupForm" class="signupForm" action="#" method="POST">
+                        <div class="form-group wrap-input">
+                          <input type="email" class="form-control" name="username" placeholder="E-Mail Adresse">
+                          <span class="focus-input"></span>
+                        </div>
+                        <div class="form-group wrap-input">
+                          <input type="text" class="form-control" name="fullname" placeholder="Full name">
+                          <span class="focus-input"></span>
+                        </div>
+                        <div class="form-group wrap-input">
+                          <div class="pwdMask">
+                            <input  type="password" class="form-control" name="password" placeholder="Passwort">
+                            <span class="focus-input"></span>
+                            <span class="fa fa-eye-slash pwd-toggle"></span>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <p class="term-policy text-muted small">I agree to the <a href="#">privacy policy</a> and <a href="#">terms of service</a>.</p>
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up with email</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div> <!-- ./panel-signup -->
+                <!-- panel-forget start -->
+                <div id="forgot-pwd" class="authfy-panel panel-forgot tab-pane fade">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                      <div class="authfy-heading">
+                        <h3 class="auth-title">Recover your password</h3>
+                        <p>Fill in your e-mail address below and we will send you an email with further instructions.</p>
+                      </div>
+                      <form name="forgetForm" class="forgetForm" action="#" method="POST">
+                        <div class="form-group wrap-input">
+                          <input type="email" class="form-control" name="username" placeholder="Email address">
+                          <span class="focus-input"></span>
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-lg btn-primary btn-block" type="submit">Recover your password</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div> <!-- ./panel-forgot -->
+              </div> <!-- ./tab-content -->
+            </div> <!-- ./authfy-login -->
+          </div>
+        </div>
+      </div> <!-- ./row -->
+    </div> <!-- ./container -->
+    
+    <!-- Javascript Files -->
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  </body>
-
+    <!-- initialize jQuery Library -->
+    <script src="js/jquery-2.2.4.min.js"></script>
+  
+    <!-- for Bootstrap js -->
+    <script src="js/bootstrap.min.js"></script>
+    
+      <!-- Custom js-->
+    <script src="js/custom.js"></script>
+    
+  </body>	
 </html>
