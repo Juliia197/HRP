@@ -77,11 +77,10 @@ if (isset($_POST['email'], $_POST['password'], $_POST['confirm_password'], $_POS
                                     email,
                                     telefonnr,
                                     geburtsdatum,
-                                    id_adresse,
-                                    id_gehoeft
-                                  ) VALUES (?,?,?,?,?,?,?)'
+                                    id_adresse
+                                  ) VALUES (?,?,?,?,?,?)'
             );
-            $bindCon = [$surname, $name, $mail,'','', $addressId,1];
+            $bindCon = [$surname, $name, $mail,'','', $addressId];
             $prepareCon->execute($bindCon);
 
             $personId = $conn->lastInsertId();

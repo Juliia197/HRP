@@ -15,31 +15,17 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
-/*  $id_gehoeft = $_SESSION['id_gehoeft'];
-  $auth = false;
-  
-  $auth_sql = "SELECT id_gehoeft FROM box WHERE id_pferd = " . $_GET['id_pferd'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
-  
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
-    $auth = true;
-*/
-    $pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
-    $pferdloeschen_result = $conn->query($pferdloeschen_sql);
+$pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen_result = $conn->query($pferdloeschen_sql);
 
-    $pferdloeschen2_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
-    $pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
+$pferdloeschen2_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
 
-    $pferdloeschen3_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
-    $pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
+$pferdloeschen3_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
+$pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
 
-    $pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
-    $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
-  //}
-  
-
-
+$pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
+$pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
 
 ?>
 <!DOCTYPE html>
@@ -142,16 +128,8 @@ if($_SESSION["logged"] == true) {
             </li>
           </ol>
 
-          <?php 
-          /*if ($auth == true) {*/
-          echo '<div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr>
-          <a class="btn btn-secondary" href="pferd.php">Zurück zur Übersicht</a>';
-          /*}
-
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
-          }*/
-          ?>
+          <div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr>
+          <a class="btn btn-secondary" href="pferd.php">Zurück zur Übersicht</a>
 
         </div>
         <!-- /.container-fluid -->

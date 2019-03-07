@@ -109,7 +109,7 @@ if($_SESSION["logged"] == true) {
             $lieferdatum = $_POST["lieferdatum"];
             $menge = $_POST["menge"];
             $einkaufspreis = $_POST["einkaufspreis"];
-            $id_gehoeft = $_SESSION["id_gehoeft"];
+            $id_gehoeft = 1;
             $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
             $id_person = $_POST["id_person"];
             $update = $_GET["id_verbrauchsgut"];
