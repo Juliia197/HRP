@@ -132,22 +132,20 @@ if($_SESSION["logged"] == true) {
             $verbrauchsgutsql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_verbrauchsgut = " . $_GET['id_verbrauchsgut'];
             $verbrauchsgut = $conn->query($verbrauchsgutsql);
 
-            /*while($row_p = $verbrauchsgut->fetch_assoc()){
+            while($fetch = $verbrauchsgut->fetch_assoc()){
               echo '<p>Gut:' . $fetch['verbrauchsgutbez'] . '</p>';
               echo '<p>Lieferdatum:' . $fetch['lieferdatum'] . '</p>';
-              echo '<p>Menge' . $fetch['menge'] . '</p>';
-              echo '<p>Einkaufspreis' . $fetch['einkaufspreis'] . '</p>';
-              $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+              echo '<p>Menge:' . $fetch['menge'] . '</p>';
+              echo '<p>Einkaufspreis:' . $fetch['einkaufspreis'] . '</p>';
+              $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut WHERE id_verbrauchsguttyp = ' . $fetch["id_verbrauchsguttyp"] . ' AND verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
               $query1 = $conn->query($lieferant) or die (mysql_error());
                 while($fetch1 = mysqli_fetch_assoc($query1)){
                   echo '<p>Lieferant:' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</p>'  ;
-                echo "<hr>";
-*/
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"gut-deleted.php?id_verbrauchsgut=" . $row_p['id_verbrauchsgut'] . "\" >Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
-              }       
+                }
+              echo "<div class=\"form-group\"></div>
+              <div class=\"form-group\">
+              <a class=\"btn btn-danger\" href=\"gut-deleted.php?id_verbrauchsgut=" . $fetch['id_verbrauchsgut'] . "\" >Löschen</a>
+              <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";      
             }
           ?>
         </div>

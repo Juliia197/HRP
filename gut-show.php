@@ -180,14 +180,14 @@ chart.render();
                 echo '<td>' . $fetch['lieferdatum'] . '</td>';
                 echo '<td>' . $fetch['menge'] . '</td>';
                 echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+                $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut WHERE id_verbrauchsguttyp = ' . $fetch["id_verbrauchsguttyp"] . ' AND verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
                 $query1 = $conn->query($lieferant) or die (mysql_error());
                   while($fetch1 = mysqli_fetch_assoc($query1)){
-                    echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
+                    echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>';
                   }
-                  echo '<td> 
-                  <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
-                  <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
+                echo '<td> 
+                <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
+                <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
                 echo "</tr>";
               }
               echo "
