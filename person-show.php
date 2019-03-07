@@ -16,6 +16,16 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION['id_gehoeft'];
+	$auth = false;
+	
+	$auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
+	$auth_result =  $conn->query($auth_sql);
+	$auth_result = $auth_result->fetch_assoc();
+	
+	if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+	  $auth = true;
+	}
 
 ?>
 
@@ -93,7 +103,7 @@ if($_SESSION["logged"] == true) {
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item activ">
+        <li class="nav-item active">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -108,6 +118,9 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
 
         <?php
+
+          if ($auth == true) {
+
           //Daten zur Person werden abgerufen
           $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
@@ -195,7 +208,12 @@ if($_SESSION["logged"] == true) {
               // href=\"person-delete.php?id_person=" . $row_p['id_person'] . "
           
             }
-
+            
+          }
+	
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+          }
 
         ?>
 

@@ -16,6 +16,16 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION['id_gehoeft'];
+  $auth = false;
+    
+  $auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
+  $auth_result =  $conn->query($auth_sql);
+  $auth_result = $auth_result->fetch_assoc();
+    
+  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+      $auth = true;
+  }
 
 ?>
 
@@ -121,6 +131,8 @@ if($_SESSION["logged"] == true) {
           </ol>
 
           <?php  
+
+          if ($auth ==  true)  {
             //Übergebene Daten werden in Variablen gespeichert
             $id_person = $_GET['id_person'];
             $id_delete = $_GET['id_delete'];
@@ -190,7 +202,11 @@ if($_SESSION["logged"] == true) {
 
               }
             }
+          }
 
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+          }
           ?>
 
 

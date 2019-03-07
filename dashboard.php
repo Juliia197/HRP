@@ -14,9 +14,9 @@ session_start();
 
 if($_SESSION["logged"] == true) {
   
-echo $_SESSION["id_gehoeft"];
+$id_gehoeft = $_SESSION["id_gehoeft"];
 
-$anzahl_stuten_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht = 's'";
+$anzahl_stuten_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 's' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
 $anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
 if ($anzahl_stuten_result->num_rows > 0){
   while($row_as = $anzahl_stuten_result->fetch_assoc()){
@@ -24,7 +24,7 @@ if ($anzahl_stuten_result->num_rows > 0){
   }
 }
 
-$anzahl_wallach_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht='w'";
+$anzahl_wallach_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'w' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
 $anzahl_wallach_result = $conn->query($anzahl_wallach_sql);
 if ($anzahl_wallach_result->num_rows > 0){
   while($row_aw = $anzahl_wallach_result->fetch_assoc()){
@@ -32,7 +32,7 @@ if ($anzahl_wallach_result->num_rows > 0){
   }
 }
 
-$anzahl_hengste_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht='h'";
+$anzahl_hengste_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'h' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
 $anzahl_hengste_result = $conn->query($anzahl_hengste_sql);
 if ($anzahl_hengste_result->num_rows > 0){
   while($row_ah = $anzahl_hengste_result->fetch_assoc()){
@@ -40,7 +40,7 @@ if ($anzahl_hengste_result->num_rows > 0){
   }
 }
 
-$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL";
+$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL AND id_gehoeft = $id_gehoeft";
 $anzahl_boxenfrei_result = $conn->query($anzahl_boxenfrei_sql);
 if ($anzahl_boxenfrei_result->num_rows > 0){
   while($row_abf = $anzahl_boxenfrei_result->fetch_assoc()){
@@ -48,7 +48,7 @@ if ($anzahl_boxenfrei_result->num_rows > 0){
   }
 }
 
-$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL";
+$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL AND id_gehoeft = $id_gehoeft";
 $anzahl_boxenbelegt_result = $conn->query($anzahl_boxenbelegt_sql);
 if ($anzahl_boxenbelegt_result->num_rows > 0){
   while($row_abb = $anzahl_boxenbelegt_result->fetch_assoc()){
@@ -56,7 +56,7 @@ if ($anzahl_boxenbelegt_result->num_rows > 0){
   }
 }
 
-$bestand_hafer_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=1";
+$bestand_hafer_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=1 AND id_gehoeft = $id_gehoeft";
 $bestand_hafer_result = $conn->query($bestand_hafer_sql);
 if ($bestand_hafer_result->num_rows > 0){
   while($row_bh = $bestand_hafer_result->fetch_assoc()){
@@ -64,7 +64,7 @@ if ($bestand_hafer_result->num_rows > 0){
   }
 }
 
-$bestand_heu_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=2";
+$bestand_heu_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=2 AND id_gehoeft = $id_gehoeft";
 $bestand_heu_result = $conn->query($bestand_heu_sql);
 if ($bestand_heu_result->num_rows > 0){
   while($row_bheu = $bestand_heu_result->fetch_assoc()){
@@ -72,7 +72,7 @@ if ($bestand_heu_result->num_rows > 0){
   }
 }
 
-$bestand_stroh_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=3";
+$bestand_stroh_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=3 AND id_gehoeft = $id_gehoeft";
 $bestand_stroh_result = $conn->query($bestand_stroh_sql);
 if ($bestand_stroh_result->num_rows > 0){
   while($row_bs = $bestand_stroh_result->fetch_assoc()){
@@ -80,7 +80,7 @@ if ($bestand_stroh_result->num_rows > 0){
   }
 }
 
-$bestand_saegespaene_sql = "SELECT bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=4";
+$bestand_saegespaene_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=4 AND id_gehoeft = $id_gehoeft";
 $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
 if ($bestand_saegespaene_result->num_rows > 0){
   while($row_bss = $bestand_saegespaene_result->fetch_assoc()){

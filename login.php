@@ -61,6 +61,7 @@ if (isset($_POST['email'], $_POST['password'])) {
         $_SESSION['id_gehoeft'] = $id_gehoeft['id_gehoeft'];
         $_SESSION['logged'] = true;
 
+        /*
         $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = 1 LIMIT 1";
         $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
         $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
@@ -152,7 +153,8 @@ if (isset($_POST['email'], $_POST['password'])) {
           $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
 
         }
-
+        */
+        
         header('location:dashboard.php');
         exit();
       }

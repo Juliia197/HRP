@@ -17,6 +17,7 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 ?>
 
@@ -144,7 +145,7 @@ if($_SESSION["logged"] == true) {
                           
             <?php
               //Abrufen aller Personen
-              $person = "SELECT * FROM person";
+              $person = "SELECT * FROM person WHERE id_gehoeft = $id_gehoeft";
               $query = $conn ->query($person);
               
               //While erzeugt für jede Zeile der Datenbank eine Tabellenzeile

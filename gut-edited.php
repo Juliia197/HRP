@@ -15,6 +15,19 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
+  $auth = false;
+    
+  $auth_sql = "SELECT id_gehoeft FROM verbrauchsgut WHERE id_verbrauchsgut = " . $_GET['id_verbrauchsgut'] . "";
+  $auth_result =  $conn->query($auth_sql);
+  $auth_result = $auth_result->fetch_assoc();
+    
+  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+    $auth = true;
+  }
+  else if ($_GET['id_verbrauchsgut'] == 0) {
+    $auth = true;
+  }
 
 ?>
 <!DOCTYPE html>
@@ -105,6 +118,8 @@ if($_SESSION["logged"] == true) {
           
           <!-- Page Content -->
           <?php
+
+            if ($auth == true) {
             $verbrauchsgutbez = $_POST["verbrauchsgutbez"];
             $lieferdatum = $_POST["lieferdatum"];
             $menge = $_POST["menge"];
@@ -257,6 +272,12 @@ if($_SESSION["logged"] == true) {
                         <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
                       </div>";
               }
+
+            }
+
+            else {
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr>';
+            }
               ?>
             </form>
 

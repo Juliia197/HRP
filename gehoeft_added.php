@@ -1,25 +1,15 @@
 <?php
-//Logindaten
 $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
-
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
-
-session_start();
-
-if($_SESSION["logged"] == true) {
-
-  $id_gehoeft = $_SESSION["id_gehoeft"];
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -88,7 +78,7 @@ if($_SESSION["logged"] == true) {
             <span>Güter</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="pferd.php">
             <i class="fas fa-fw fa-book"></i>
             <span>Pferde</span>
@@ -107,99 +97,35 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          
-          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Pferde
-            </li>
-          </ol>
-          
-          <!-- Überschrift -->
-          <h1>Übersicht Pferde</h1>
+          <h1>Admin</h1>
           <hr>
 
-          <!-- Hinzufügebutton -->
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="pferd-edit.php?id_pferd=0">Hinzufügen</a>
-          </div>
-          </div>
-
-          <!-- Tabelle mit den Pferden in der Datenbank -->
-          <p>
-          <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Geschlecht</th>
-              <th>Besitzer</th>
-              <th>Boxentyp</th>
-              <th>Aktion</th>
-            </tr>
-          </thead>
-
-            <?php    
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $pferd = "SELECT pferd.id_pferd, pferd.pferdename, pferd.geschlecht FROM pferd, box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-              $query = $conn->query($pferd) or die(mysql_error());
-
-              while($fetch = mysqli_fetch_assoc($query)){ //jede Zeile der Datenbank ergibt eine Zeile der Tabelle
-                echo '<tr>';
-                  echo '<td>' . $fetch['pferdename'] . '</td>';
-                  echo '<td>' ; //geschlecht wird in der Datenbank als ein Buchstabe eingeplegt, daher hier umgeändert
-                    if( $fetch['geschlecht'] =='s')
-                      {
-                        echo "Stute";
-                      }
-                    else if( $fetch['geschlecht'] =='w')
-                      {
-                        echo "Wallach";
-                      }
-                    else
-                      {
-                        echo "Hengst";
-                      }
+          <?php 
+            $id_adresse = $_POST['id_adresse'];
+            $gehoeftname = $_POST["gehoeftname"];
+            $check_sql = "SELECT COUNT(id_adresse) AS count FROM gehoeft WHERE id_adresse =  $id_adresse ";
+            $check = $conn->query($check_sql);
+            $check = $check->fetch_assoc();
+            
+            if ($check['count'] > 0) {
+              echo '<div class="alert alert-danger" role="alert">Zu dieser Adresse gibt es bereits ein Gehöft!</div><hr>';
+            }
+            
+            else {
+              $insert_gehoeft_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
+              $insert_gehoeft = $conn->query($insert_gehoeft_sql);
+              $id_gehoeft = $conn->insert_id;
               
-                  echo '</td>';
-                  
-                  //zusammenfügen von Vor und Nachname des Besitzers
-                  $besitzer = 'SELECT person.vorname, person.nachname From person, beziehung  WHERE beziehung.id_pferd = '.$fetch['id_pferd'].' AND beziehung.id_funktion = 1 AND beziehung.id_person=person.id_person';
-                    $query1 = $conn->query($besitzer) or die (mysql_error());
-                    while($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
-                  
-                  //abfragen der Bezeichnung zur Box des Pferdes
-                  $boxentyp = 'SELECT boxentyp.boxenbez From box, boxentyp WHERE box.id_pferd = '.$fetch['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp' ;
-                    $query2 = $conn->query($boxentyp) or die (mysql_error());
-                    while($fetch2 = mysqli_fetch_assoc($query2)){
-                      echo '<td>' . $fetch2['boxenbez'] . '</td>'  ;
-                    }
-
-                  //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
-                  echo '<td>  
-                    <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
-                    <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
-
-                echo '</tr>';
+              for ($i=1; $i<=4; $i++) {
+              $insert_bestand_sql = " INSERT INTO gehoeft_besitzt_verbrauchsguttyp (id_verbrauchsguttyp, id_gehoeft, bestand, datum) VALUES ('$i', '$id_gehoeft', '0', '0000-00-00') ";
+              $insert_bestand = $conn->query($insert_bestand_sql);
               }
-
-              ?>
-                          
-
-          </table>
-            </div>
-            </p>
-      
+              echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
+            }
+            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
+            ?>
 
         </div>
-        
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -235,7 +161,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="logout.php">Ja</a>
+            <a class="btn btn-primary" href="login.html">Ja</a>
           </div>
         </div>
       </div>
@@ -248,35 +174,9 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-      <!-- Demo scripts for this page-->
-  <script src="js/demo/datatables-demo.js"></script>
-
-  <!-- JavaScript for Delete-Confirmation -->
-  <script>
-      function checkDelete(){
-        return confirm('Pferd endgültig löschen?')
-      }
-    </script>
-    
   </body>
 
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>
