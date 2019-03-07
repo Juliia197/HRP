@@ -171,9 +171,8 @@ if($_SESSION["logged"] == true) {
                   echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
                   echo "
                       <div class=\"form-group\">
-                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abbrechen</button>
-                      </div>";
+                        <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                        <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
                 }
               }
               else {
