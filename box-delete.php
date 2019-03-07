@@ -15,7 +15,6 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
-  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 ?>
 <!DOCTYPE html>
@@ -131,7 +130,7 @@ if($_SESSION["logged"] == true) {
           </thead>
           <tbody>
           <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft = $id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
+            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=1 AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
             $boxfrei_result = $conn->query($boxfrei_sql);
             if($boxfrei_result->num_rows > 0){
               while ($row_bf = $boxfrei_result->fetch_assoc()){

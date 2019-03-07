@@ -11,9 +11,6 @@ if ($conn->connect_error) {
 } 
 session_start();
 if($_SESSION["logged"] == true) {
-
-  $id_gehoeft = $_SESSION["id_gehoeft"];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -160,7 +157,7 @@ chart.render();
           $verbrauchsgut = $conn->query($verbrauchsgut_sql);
             while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
               echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
-              $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_gehoeft = $id_gehoeft" ;
+              $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp " ;
               $verbrauchsgut = $conn->query($verbrauchsgut_sql);
               echo "
                 <p>

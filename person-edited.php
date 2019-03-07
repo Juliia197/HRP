@@ -17,20 +17,6 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
-  $id_gehoeft = $_SESSION['id_gehoeft'];
-  $auth = false;
-    
-  $auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
-    
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
-      $auth = true;
-  }
-
-  else if ($_GET['id_person'] == 0) {
-    $auth = true;
-  }
 
 ?>
 
@@ -122,8 +108,6 @@ if($_SESSION["logged"] == true) {
 
           <!-- Page Content -->
           <?php
-
-            if ($auth == true) {
 
             $vorname = $_POST["vorname"];
             $nachname = $_POST["nachname"];
@@ -228,7 +212,7 @@ if($_SESSION["logged"] == true) {
 
                     while($row_a = $id_adresse_result1->fetch_assoc()){   
                       $id_adresseh = $row_a['id_adresse'];
-                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse, id_gehoeft) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh', '$id_gehoeft')";
+                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
                       $personnew_result = $conn->query($personnew_sql);
 
                       $erfolg = 2;
@@ -378,11 +362,7 @@ if($_SESSION["logged"] == true) {
               <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
             </div>";
         }
-      }
 
-      else {
-        echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
-      }
         ?>
 
         </div>

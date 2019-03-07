@@ -10,29 +10,12 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+$boxloeschen_sql = "DELETE FROM box WHERE id_box=" . $_GET["id_box"];
+$boxloeschen_result = $conn->query($boxloeschen_sql);
 
 session_start();
 
 if($_SESSION["logged"] == true) {
-
-  $id_gehoeft = $_SESSION['id_gehoeft'];
-  $auth = false;
-  
-  $auth_sql = "SELECT id_gehoeft FROM box WHERE id_box = " . $_GET['id_box'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
-  
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
-    $auth = true;
-
-    $boxloeschen_sql = "DELETE FROM box WHERE id_box=" . $_GET["id_box"];
-    $boxloeschen_result = $conn->query($boxloeschen_sql);
-  }
-  
-
-
-
-
 
 ?>
 <!DOCTYPE html>
@@ -136,17 +119,7 @@ if($_SESSION["logged"] == true) {
           
           <h1>Box löschen</h1>
           <hr>
-          <?php 
-
-          if ($auth == true) {
-            echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div>';
-          }
-
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Box!</div>';
-          }
-
-          ?>
+          <div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div>
           <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
@@ -158,7 +131,7 @@ if($_SESSION["logged"] == true) {
           </thead>
           <tbody>
           <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft = $id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
+            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=1 AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
             $boxfrei_result = $conn->query($boxfrei_sql);
             if($boxfrei_result->num_rows > 0){
               while ($row_bf = $boxfrei_result->fetch_assoc()){
