@@ -205,7 +205,7 @@ if($_SESSION["logged"] == true) {
                 echo "</select></div>";
                 echo "<div class=\"form-group\"><label>Bezeichnung</label>";
                 echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"></div>";
-                echo "<div class=\"form-group\"><label>Lieferdatum (yyyy-mm-dd)</label>";
+                echo "<div class=\"form-group\"><label>Lieferdatum</label>";
                 echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferant</label>";
                 echo "<select class=\"form-control\" name=\"id_person\">";
@@ -222,10 +222,9 @@ if($_SESSION["logged"] == true) {
                 echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
                 echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
                 echo "
-                      <div class=\"form-group\">
-                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
-                      </div>";
+                    <div class=\"form-group\">
+                    <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                    <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
               }
               ?>
           </form>
