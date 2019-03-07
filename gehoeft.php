@@ -11,13 +11,20 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_gehoeft=1";
+session_start();
+
+if($_SESSION["logged"] == true) {
+
+$id_gehoeft = $_SESSION["id_gehoeft"];
+
+
+$gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_gehoeft=$id_gehoeft";
 $gehoeft_name_result = $conn->query($gehoeft_name_sql);
 
-$gehoeft_adresse_sql = "SELECT gehoeft.id_adresse, adresse.id_adresse, adresse.strasse, adresse.hausnr, adresse.plz, adresse.ort FROM adresse, gehoeft WHERE gehoeft.id_gehoeft=1 AND adresse.id_adresse=gehoeft.id_adresse";
+$gehoeft_adresse_sql = "SELECT gehoeft.id_adresse, adresse.id_adresse, adresse.strasse, adresse.hausnr, adresse.plz, adresse.ort FROM adresse, gehoeft WHERE gehoeft.id_gehoeft=$id_gehoeft AND adresse.id_adresse=gehoeft.id_adresse";
 $gehoeft_adresse_result = $conn->query($gehoeft_adresse_sql);
 
-$anzahl_paddockbox_sql = "SELECT COUNT(id_box) as anzahl_paddockbox FROM box WHERE id_gehoeft=1 AND id_boxentyp=2";
+$anzahl_paddockbox_sql = "SELECT COUNT(id_box) as anzahl_paddockbox FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=2";
 $anzahl_paddockbox_result = $conn->query($anzahl_paddockbox_sql);
 if ($anzahl_paddockbox_result->num_rows > 0) {
   while($row = $anzahl_paddockbox_result->fetch_assoc()) {
@@ -25,7 +32,7 @@ if ($anzahl_paddockbox_result->num_rows > 0) {
   }
 }
 
-$anzahl_innenbox_sql = "SELECT COUNT(id_box) as anzahl_innenbox FROM box WHERE id_gehoeft=1 AND id_boxentyp=1";
+$anzahl_innenbox_sql = "SELECT COUNT(id_box) as anzahl_innenbox FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=1";
 $anzahl_innenbox_result = $conn->query($anzahl_innenbox_sql);
 if ($anzahl_innenbox_result->num_rows > 0) {
   while($row = $anzahl_innenbox_result->fetch_assoc()) {
@@ -33,7 +40,7 @@ if ($anzahl_innenbox_result->num_rows > 0) {
   }
 }
 
-$anzahl_boxbelegt_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=1 AND id_pferd IS NOT NULL";
+$anzahl_boxbelegt_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_pferd IS NOT NULL";
 $anzahl_boxbelegt_result = $conn->query($anzahl_boxbelegt_sql);
 if ($anzahl_boxbelegt_result->num_rows > 0) {
   while($row = $anzahl_boxbelegt_result->fetch_assoc()) {
@@ -41,7 +48,7 @@ if ($anzahl_boxbelegt_result->num_rows > 0) {
   }
 }
 
-$anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=1 AND id_pferd IS NULL";
+$anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=$id_gehoeft AND id_pferd IS NULL";
 $anzahl_boxfrei_result = $conn->query($anzahl_boxfrei_sql);
 if ($anzahl_boxfrei_result->num_rows > 0) {
   while($row = $anzahl_boxfrei_result->fetch_assoc()) {
@@ -49,7 +56,7 @@ if ($anzahl_boxfrei_result->num_rows > 0) {
   }
 }
 
-$anzahl_boxbelegt_paddock_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=1 AND id_boxentyp=2 AND id_pferd IS NOT NULL";
+$anzahl_boxbelegt_paddock_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=2 AND id_pferd IS NOT NULL";
 $anzahl_boxbelegt_paddock_result = $conn->query($anzahl_boxbelegt_paddock_sql);
 if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
   while($row = $anzahl_boxbelegt_paddock_result->fetch_assoc()){
@@ -59,7 +66,7 @@ if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
 
 $anzahl_boxfrei_paddock = $anzahl_paddockbox-$anzahl_boxbelegt_paddock;
 
-$anzahl_boxbelegt_innen_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=1 AND id_boxentyp=1 AND id_pferd IS NOT NULL";
+$anzahl_boxbelegt_innen_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=1 AND id_pferd IS NOT NULL";
 $anzahl_boxbelegt_innen_result = $conn->query($anzahl_boxbelegt_innen_sql);
 if ($anzahl_boxbelegt_innen_result->num_rows > 0){
   while($row = $anzahl_boxbelegt_innen_result->fetch_assoc()){
@@ -68,10 +75,6 @@ if ($anzahl_boxbelegt_innen_result->num_rows > 0){
 }
 
 $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
-
-session_start();
-
-if($_SESSION["logged"] == true) {
 
 ?>
 

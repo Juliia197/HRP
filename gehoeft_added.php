@@ -115,9 +115,15 @@ if ($conn->connect_error) {
             }
             
             else {
-              $insert_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
-              $insert = $conn->query($insert_sql);
+              $insert_gehoeft_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
+              $insert_gehoeft = $conn->query($insert_gehoeft_sql);
 
+              $id_gehoeft = $conn->insert_id;
+              
+              for ($i=1; $i<=4; $i++) {
+              $insert_bestand_sql = " INSERT INTO gehoeft_besitzt_verbrauchsguttyp (id_verbrauchsguttyp, id_gehoeft, bestand, datum) VALUES ('$i', '$id_gehoeft', '0', '0000-00-00') ";
+              $insert_bestand = $conn->query($insert_bestand_sql);
+              }
               echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
             }
 

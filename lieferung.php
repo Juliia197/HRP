@@ -12,10 +12,10 @@ if ($conn->connect_error) {
 } 
 
 session_start();
-$id_gehoeft = $_SESSION["id_gehoeft"];
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 ?>
 <!DOCTYPE html>

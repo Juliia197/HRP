@@ -13,10 +13,9 @@ if ($conn->connect_error) {
 
 session_start();
 
-$id_gehoeft = $_SESSION["id_gehoeft"];
-
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 $preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=1";
 $preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
@@ -167,7 +166,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
             <tbody>
             <?php  
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsguttyp = "SELECT * FROM verbrauchsguttyp";
+              $verbrauchsguttyp = "SELECT verbrauchsguttyp.id_verbrauchsguttyp, verbrauchsguttyp.verbrauchsguttypbez, gehoeft_besitzt_verbrauchsguttyp.bestand FROM verbrauchsguttyp, gehoeft_besitzt_verbrauchsguttyp WHERE gehoeft_besitzt_verbrauchsguttyp.id_gehoeft = $id_gehoeft AND verbrauchsguttyp.id_verbrauchsguttyp = gehoeft_besitzt_verbrauchsguttyp.id_verbrauchsguttyp";
               
               $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
 

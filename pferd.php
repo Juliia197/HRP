@@ -16,8 +16,6 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
-  $id_gehoeft = $_SESSION["id_gehoeft"];
-
 ?>
 
 <!DOCTYPE html>
@@ -144,6 +142,9 @@ if($_SESSION["logged"] == true) {
           </thead>
 
             <?php    
+
+              $id_gehoeft = $_SESSION["id_gehoeft"];
+              
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
               $pferd = "SELECT pferd.id_pferd, pferd.pferdename, pferd.geschlecht FROM pferd, box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
               $query = $conn->query($pferd) or die(mysql_error());

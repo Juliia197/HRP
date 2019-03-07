@@ -15,7 +15,7 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
-/*  $id_gehoeft = $_SESSION['id_gehoeft'];
+  $id_gehoeft = $_SESSION['id_gehoeft'];
   $auth = false;
   
   $auth_sql = "SELECT id_gehoeft FROM box WHERE id_pferd = " . $_GET['id_pferd'] . "";
@@ -24,7 +24,7 @@ if($_SESSION["logged"] == true) {
   
   if ($auth_result['id_gehoeft'] == $id_gehoeft) {
     $auth = true;
-*/
+
     $pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
     $pferdloeschen_result = $conn->query($pferdloeschen_sql);
 
@@ -36,7 +36,7 @@ if($_SESSION["logged"] == true) {
 
     $pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
     $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
-  //}
+  }
   
 
 
@@ -143,14 +143,14 @@ if($_SESSION["logged"] == true) {
           </ol>
 
           <?php 
-          /*if ($auth == true) {*/
+          if ($auth == true) {
           echo '<div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr>
           <a class="btn btn-secondary" href="pferd.php">Zurück zur Übersicht</a>';
-          /*}
+          }
 
           else {
             echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
-          }*/
+          }
           ?>
 
         </div>
