@@ -11,13 +11,23 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
-$verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
-
 session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
+  $auth = false;
+    
+  $auth_sql = "SELECT id_gehoeft FROM verbrauchsgut WHERE id_verbrauchsgut = " . $_GET['id_verbrauchsgut'] . "";
+  $auth_result =  $conn->query($auth_sql);
+  $auth_result = $auth_result->fetch_assoc();
+    
+  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+    $auth = true;
+  }
+  else if ($_GET['id_verbrauchsgut'] == 0) {
+    $auth = true;
+  }
 
 ?>
 <!DOCTYPE html>
@@ -108,6 +118,12 @@ if($_SESSION["logged"] == true) {
 
           <!-- Page Content -->
             <?php
+
+              if ($auth == true) {
+
+              $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
+              $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
+
               if($verbrauchsgut_result->num_rows > 0){
                 while($row_g = $verbrauchsgut_result->fetch_assoc()){   
                   echo "<ol class=\"breadcrumb\">
@@ -171,9 +187,8 @@ if($_SESSION["logged"] == true) {
                   echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
                   echo "
                       <div class=\"form-group\">
-                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abbrechen</button>
-                      </div>";
+                        <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                        <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
                 }
               }
               else {
@@ -206,7 +221,7 @@ if($_SESSION["logged"] == true) {
                 echo "</select></div>";
                 echo "<div class=\"form-group\"><label>Bezeichnung</label>";
                 echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"></div>";
-                echo "<div class=\"form-group\"><label>Lieferdatum (yyyy-mm-dd)</label>";
+                echo "<div class=\"form-group\"><label>Lieferdatum</label>";
                 echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferant</label>";
                 echo "<select class=\"form-control\" name=\"id_person\">";
@@ -223,11 +238,16 @@ if($_SESSION["logged"] == true) {
                 echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
                 echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
                 echo "
-                      <div class=\"form-group\">
-                        <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
-                      </div>";
+                    <div class=\"form-group\">
+                    <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                    <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
               }
+
+            }
+
+            else {
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr>';
+            }
               ?>
           </form>
 

@@ -12,31 +12,41 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-//id_adresse der Person herausfinden
-$id_adresse_sql = "SELECT id_adresse FROM person WHERE id_person=" . $_GET["id_person"];
-$id_adresse = $conn->query($id_adresse_sql);
-
-//Löschen der Person aus der Datenbank
-$personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
-$personloeschen_result = $conn->query($personloeschen_sql);
-
-while($row_x = $id_adresse->fetch_assoc()){   
-  $wieoftda_sql = "SELECT id_person FROM person WHERE id_adresse = " . $row_x["id_adresse"];
-  $wieoftda= $conn->query($wieoftda_sql);
-
-  if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
-    $adresseloeschen_sql = "DELETE FROM adresse WHERE id_adresse=" . $row_x["id_adresse"];
-    $adresseloeschen_result = $conn->query($adresseloeschen_sql);
-
-  }
-  else{
-  }
-}
-
 session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION['id_gehoeft'];
+  $auth = false;
+    
+  $auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
+  $auth_result =  $conn->query($auth_sql);
+  $auth_result = $auth_result->fetch_assoc();
+    
+  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+      $auth = true;
+
+      //id_adresse der Person herausfinden
+      $id_adresse_sql = "SELECT id_adresse FROM person WHERE id_person=" . $_GET["id_person"];
+      $id_adresse = $conn->query($id_adresse_sql);
+
+      //Löschen der Person aus der Datenbank
+      $personloeschen_sql = "DELETE FROM person WHERE id_person=" . $_GET["id_person"];
+      $personloeschen_result = $conn->query($personloeschen_sql);
+
+      while($row_x = $id_adresse->fetch_assoc()){   
+        $wieoftda_sql = "SELECT id_person FROM person WHERE id_adresse = " . $row_x["id_adresse"];
+        $wieoftda= $conn->query($wieoftda_sql);
+
+        if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
+          $adresseloeschen_sql = "DELETE FROM adresse WHERE id_adresse=" . $row_x["id_adresse"];
+          $adresseloeschen_result = $conn->query($adresseloeschen_sql);
+
+        }
+        else{
+        }
+      }
+  }
 
 ?>
 
@@ -141,14 +151,17 @@ if($_SESSION["logged"] == true) {
             </li>
           </ol>
           <?php  
+          if ($auth == true) {
             //Success Balken
             echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
-
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
             <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>
             </div";
-
+          }
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+          }
           ?>
 
 
