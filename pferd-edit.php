@@ -325,8 +325,8 @@ if (isset($_POST['id_box'])){
                 <br />
                 <hr>
                 <h2>Personen zuweisen</h2>
-                <table class="table">
-                <thead>
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
                 <tr>
                 <th>Person</th>
                 <th>Beziehung</th>
@@ -368,8 +368,8 @@ if (isset($_POST['id_box'])){
                 <hr>
                 <h2>Box zuweisen</h2>
                 <div class="table-responsive">
-                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
+                  <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <thead class="thead-light">
                     <tr>
                       <th>Auswahl</th>
                       <th>Boxentyp</th>
@@ -393,7 +393,7 @@ if (isset($_POST['id_box'])){
                   </tbody>
                   </table>
                 </div>
-                <button type="submit" class="btn btn-success" id="sendButton">Speichern</button>
+                <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
             </form>
 

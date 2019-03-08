@@ -165,8 +165,8 @@ chart.render();
               echo "
                 <p>
                 <div class='table-responsive'>
-                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
-                <thead>
+                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                <thead class='thead-light'>
                   <tr >
                     <th>Lieferung</th>
                     <th>Lieferdatum</th>
@@ -189,8 +189,8 @@ chart.render();
                     echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>';
                   }
                 echo '<td> 
-                <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
-                <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
+                <a class="btn btn-primary" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
+                <a class="btn btn-danger" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
                 echo "</tr>";
               }
               echo "

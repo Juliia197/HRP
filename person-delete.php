@@ -164,8 +164,8 @@ if($_SESSION["logged"] == true) {
 
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
+                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
+                <a class=\"btn btn-danger\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
               }       
               
@@ -196,7 +196,7 @@ if($_SESSION["logged"] == true) {
 
                 echo "<div class=\"form-group\"></div>
                 <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
+                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
                 <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferde anzeigen</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
 
