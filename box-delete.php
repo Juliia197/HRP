@@ -153,6 +153,10 @@ if($_SESSION["logged"] == true) {
           </tbody>
           </table>
           </div>
+          <hr>
+          <div class="row">
+            <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
+          </div>
 
         </div>
         <!-- /.container-fluid -->
