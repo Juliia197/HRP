@@ -187,7 +187,7 @@ if($_SESSION["logged"] == true) {
                   echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
                   echo "
                       <div class=\"form-group\">
-                        <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                        <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Speichern</button>
                         <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
                 }
               }
@@ -239,7 +239,7 @@ if($_SESSION["logged"] == true) {
                 echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
                 echo "
                     <div class=\"form-group\">
-                    <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                    <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Speichern</button>
                     <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
               }
 
