@@ -197,7 +197,7 @@ if($_SESSION["logged"] == true) {
                     }
 
                   //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
-                  echo '<td> 
+                  echo '<td>
                         <div class="d-sm-flex flex-row">
                           <div><a class="btn btn-sm btn-dark" role="button" href="pferd-show.php?id_pferd=' . $pferd_fetch['id_pferd'] . '">Anzeigen</a></div>
                           <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="pferd-edit.php?id_pferd=' . $pferd_fetch['id_pferd'] . '" >Bearbeiten</a></div>
