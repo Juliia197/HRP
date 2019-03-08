@@ -126,9 +126,12 @@ if ($bestand_saegespaene_result->num_rows > 0){
         var heu = <?php echo $bestand_heu ?>;
         var stroh = <?php echo $bestand_stroh ?>;
         var saegespaene = <?php echo $bestand_saegespaene ?>;
+
+        CanvasJS.addColorSet("customColors", ["#7e5738", "#a4bf6b", "#473221", "a09189", "240c01"]);
         
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
+          colorSet: "customColors",
           title: {
             fontFamily: "Helvetica",
             fontWeight: "bold",
@@ -162,7 +165,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
             type: "bar",
             name: "Pferdegeschlecht",
             axisYType: "secondary",
-            color: "#014D65",
+            color: "#7e5738",
             dataPoints: [
               { y: stuten, label: "Stuten" },
               { y: wallache, label: "Wallache" },
@@ -187,7 +190,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
             type: "bar",
             name: "Pferdegeschlecht",
             axisYType: "secondary",
-            color: "#014D65",
+            color: "#7e5738",
             dataPoints: [
               { y: heu, label: "Heu" },
               { y: hafer, label: "Hafer" },
