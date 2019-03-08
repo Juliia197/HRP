@@ -13,7 +13,6 @@ if ($conn->connect_error) {
 session_start();
 
 if($_SESSION["logged"] == true) {
-  
 $id_gehoeft = $_SESSION["id_gehoeft"];
 
 $anzahl_stuten_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 's' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";

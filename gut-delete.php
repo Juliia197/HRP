@@ -200,9 +200,7 @@ if($_SESSION["logged"] == true) {
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-    <script src="js/demo/datatables-demo.js"></script>
+    
 
   </body>
 
