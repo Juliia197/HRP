@@ -110,7 +110,7 @@ if($_SESSION["logged"] == true) {
               <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item">
-              <a href="gehoeft.php">Gehöfft</a>
+              <a href="gehoeft.php">Gehöft</a>
             </li>
             <li class="breadcrumb-item active">
               Box löschen
@@ -140,6 +140,10 @@ if($_SESSION["logged"] == true) {
           ?>
           </tbody>
           </table>
+          </div>
+          <hr>
+          <div class="row">
+            <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
           </div>
 
         </div>

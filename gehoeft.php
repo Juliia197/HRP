@@ -247,19 +247,19 @@ if($_SESSION["logged"] == true) {
             ?>
           </p>
           <hr>
+          <div class="row justify-content-end">
+            <div class="col-3">
+            <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
+            <a class="btn btn-danger" href="box-delete.php">Box löschen</a>
+          </div>
+          </div>
+          <hr>
           <div class="card mb-3">
             <div class="card-header">
             <i class="fas fa-chart-pie"></i>
             Belegung der Boxen
             </div>
             <div class="card-body">
-              <div class="row justify-content-end">
-                <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
-              </div>
-              <br>
-              <div class="row justify-content-end">
-                <a class="btn btn-danger" href="box-delete.php">Box löschen</a>
-              </div>
               <div class="row">
                 <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
               </div>
