@@ -1,8 +1,20 @@
 <?php
+$servername = "localhost";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
 
 session_start();
 
 if($_SESSION["logged"] == true) {
+  $id_gehoeft = $_SESSION['id_gehoeft'];
 
 ?>
 
@@ -106,7 +118,19 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
           <h1>Box hinzufügen</h1>
           <hr>
-          <form action="box-edited.php" method="post">
+          <?php
+            if (isset($_GET['saved']) && $_GET['saved'] == true){
+              $boxenpreis = $_POST['boxenpreis'];
+              $boxentyp = $_POST['boxentyp'];
+              $boxadd_sql = "INSERT INTO box (boxenpreis, id_gehoeft, id_boxentyp) VALUES (?, ?, ?)";
+              $boxadd_prepare = $conn->prepare($boxadd_sql);
+              $boxadd_prepare->bind_param('dii', $boxenpreis, $id_gehoeft, $boxentyp);
+              $boxadd_prepare->execute();
+              $boxadd_prepare->close();
+              echo '<div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div><hr>';
+            }
+          ?>
+          <form action="box-edit.php?saved=true" method="post">
             <div class="form-group">
             <label>Boxentyp:</label><br>
             <div class="radio">
