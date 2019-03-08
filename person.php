@@ -133,8 +133,8 @@ if($_SESSION["logged"] == true) {
           <!-- Tabelle mit den Personen in der Datenbank -->
           <p>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-           <thead>
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+           <thead class="thead-light">
             <tr >
               <th >Vorname</th>
               <th >Name</th>
@@ -165,10 +165,10 @@ if($_SESSION["logged"] == true) {
 
                   //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
                   echo '<td> 
-                    <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
-                    <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
+                    <a class="btn btn-dark" href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
+                    <a class="btn btn-primary" href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
                   if($query1->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
-                    echo"<a href=\"person-deleted.php?id_person=" . $fetch['id_person'] . "\" onclick='return checkDelete()'>Löschen</a><br></td>";
+                    echo"<a class='btn btn-danger' href=\"person-deleted.php?id_person=" . $fetch['id_person'] . "\" onclick='return checkDelete()'>Löschen</a><br></td>";
                   }
                   else{
                     echo 'Löschen nicht möglich*';

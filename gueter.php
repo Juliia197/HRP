@@ -154,8 +154,8 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           
           <p>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead class="thead-light">
             <tr>
               <th>Typ</th>
               <th>Bestand</th>
@@ -192,7 +192,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
                         echo $preis_verbrauchsguttyp4;
                       }
                   echo '</td>';
-                  echo '<td> <a href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
+                  echo '<td> <a class="btn btn-dark" href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
                   }
             ?>
             </tbody>                

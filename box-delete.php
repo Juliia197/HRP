@@ -132,8 +132,8 @@ if($_SESSION["logged"] == true) {
 
           ?>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="thead-light">
             <tr>
               <td>Boxentyp</td>
               <td>Boxenpreis</td>
