@@ -139,7 +139,7 @@ if($_SESSION["logged"] == true) {
               <th >Vorname</th>
               <th >Name</th>
               <th >Beziehung</th>
-              <th>Aktion</th>
+              <th></th>
             </tr>
             </thead>
                           
@@ -164,18 +164,20 @@ if($_SESSION["logged"] == true) {
                   echo '</td>';
 
                   //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
-                  echo '<td> 
-                    <a class="btn btn-dark" href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
-                    <a class="btn btn-primary" href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
+                  echo '
+                  <td>
+                  <div class="d-sm-flex flex-row">
+                    <div><a class="btn btn-sm btn-dark" href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a></div>';
                   if($query1->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
-                    echo"<a class='btn btn-danger' href=\"person-deleted.php?id_person=" . $fetch['id_person'] . "\" onclick='return checkDelete()'>Löschen</a><br></td>";
+                    echo '<div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="person-delete.php?id_person=' . $fetch['id_person'] . '" onclick="return checkDelete()">Löschen</a></div>';
                   }
                   else{
-                    echo 'Löschen nicht möglich*';
+                    echo '<div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-outline-danger disabled" href=\"#\">Löschen nicht möglich*</a></div>';
                     //echo '<div></div>';
                   }
 
-                echo '</tr>';
+                echo "</td></tr>";
               }
 
 
