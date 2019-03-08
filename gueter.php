@@ -192,7 +192,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
                         echo $preis_verbrauchsguttyp4;
                       }
                   echo '</td>';
-                  echo '<td> <a href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
+                  echo '<td> <a class="btn btn-dark" href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
                   }
             ?>
             </tbody>                

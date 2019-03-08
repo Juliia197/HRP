@@ -133,7 +133,7 @@ if($_SESSION["logged"] == true) {
           <p>
           <div class="table-responsive">
           <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead>
+            <thead class="thead-light">
             <tr>
               <th>Name</th>
               <th>Geschlecht</th>
@@ -183,9 +183,9 @@ if($_SESSION["logged"] == true) {
 
                   //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
                   echo '<td>  
-                    <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
-                    <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
+                    <a class="btn btn-dark" href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> 
+                    <a class="btn btn-primary" href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> 
+                    <a class="btn btn-danger" Löschen href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
 
                 echo '</tr>';
               }
