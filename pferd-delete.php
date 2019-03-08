@@ -17,22 +17,46 @@ if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION['id_gehoeft'];
   $auth = false;
+
+  $id_pferd = $_GET["id_pferd"];
+
+  $query = "SELECT id_gehoeft FROM box WHERE id_pferd = ?";
+  $auth_sql = $conn->prepare($query);
+  $auth_sql->bind_param("i", $id_pferd);
+  $auth_sql->execute();
+  $result = $auth_sql->get_result();
+  $auth_result = $result->fetch_assoc();
   
-  $auth_sql = "SELECT id_gehoeft FROM box WHERE id_pferd = " . $_GET['id_pferd'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
-  
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+  if ($auth_result["id_gehoeft"] == $id_gehoeft) {
     $auth = true;
-    $pferdloeschen_sql = "DELETE FROM beziehung WHERE id_pferd= " . $_GET['id_pferd'];
-    $pferdloeschen_result = $conn->query($pferdloeschen_sql);
-    $pferdloeschen2_sql = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd= " . $_GET['id_pferd'];
-    $pferdloeschen2_result = $conn->query($pferdloeschen2_sql);
-    $pferdloeschen3_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd=" . $_GET["id_pferd"];
-    $pferdloeschen3_result = $conn->query($pferdloeschen3_sql);
-    $pferdloeschen4_sql = "DELETE FROM pferd WHERE id_pferd= " . $_GET['id_pferd'];
-    $pferdloeschen4_result = $conn->query($pferdloeschen4_sql);
+
+    $pferd_delete1_query = "DELETE FROM beziehung WHERE id_pferd =  ?";
+    $pferd_delete1_sql = $conn->prepare($pferd_delete1_query);
+    $pferd_delete1_sql->bind_param("i", $id_pferd);
+    $pferd_delete1_sql->execute();
+    $pferd_delete1_sql->close();
+
+    $pferd_delete2_query = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd =  ?";
+    $pferd_delete2_sql = $conn->prepare($pferd_delete2_query);
+    $pferd_delete2_sql->bind_param("i", $id_pferd);
+    $pferd_delete2_sql->execute();
+    $pferd_delete2_sql->close();
+
+    $pferd_delete3_query = "UPDATE box SET id_pferd = NULL WHERE id_pferd = ?";
+    $pferd_delete3_sql = $conn->prepare($pferd_delete3_query);
+    $pferd_delete3_sql->bind_param("i", $id_pferd);
+    $pferd_delete3_sql->execute();
+    $pferd_delete3_sql->close();
+
+    $pferd_delete4_query = "DELETE FROM pferd WHERE id_pferd =  ?";
+    $pferd_delete4_sql = $conn->prepare($pferd_delete4_query);
+    $pferd_delete4_sql->bind_param("i", $id_pferd);
+    $pferd_delete4_sql->execute();
+    $pferd_delete4_sql->close();
   }
+
+  $auth_sql->close();
+
 
 ?>
 <!DOCTYPE html>
@@ -145,9 +169,7 @@ if($_SESSION["logged"] == true) {
             echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
           }
           ?>
-
-          <a class="btn btn-secondary" href="pferd.php">Zurück zur Übersicht</a>
-
+          
         </div>
         <!-- /.container-fluid -->
 
