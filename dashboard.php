@@ -13,10 +13,9 @@ if ($conn->connect_error) {
 session_start();
 
 if($_SESSION["logged"] == true) {
+$id_gehoeft = $_SESSION["id_gehoeft"];
 
-$id_gehoeft = $_SESSION['id_gehoeft'];
-
-$anzahl_stuten_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht = 's'";
+$anzahl_stuten_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 's' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
 $anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
 if ($anzahl_stuten_result->num_rows > 0){
   while($row_as = $anzahl_stuten_result->fetch_assoc()){
@@ -24,7 +23,7 @@ if ($anzahl_stuten_result->num_rows > 0){
   }
 }
 
-$anzahl_wallach_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht='w'";
+$anzahl_wallach_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'w' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
 $anzahl_wallach_result = $conn->query($anzahl_wallach_sql);
 if ($anzahl_wallach_result->num_rows > 0){
   while($row_aw = $anzahl_wallach_result->fetch_assoc()){
@@ -32,7 +31,7 @@ if ($anzahl_wallach_result->num_rows > 0){
   }
 }
 
-$anzahl_hengste_sql = "SELECT COUNT(id_pferd) as anzahl FROM pferd WHERE geschlecht='h'";
+$anzahl_hengste_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'h' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
 $anzahl_hengste_result = $conn->query($anzahl_hengste_sql);
 if ($anzahl_hengste_result->num_rows > 0){
   while($row_ah = $anzahl_hengste_result->fetch_assoc()){
@@ -40,7 +39,7 @@ if ($anzahl_hengste_result->num_rows > 0){
   }
 }
 
-$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL";
+$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL AND id_gehoeft = $id_gehoeft";
 $anzahl_boxenfrei_result = $conn->query($anzahl_boxenfrei_sql);
 if ($anzahl_boxenfrei_result->num_rows > 0){
   while($row_abf = $anzahl_boxenfrei_result->fetch_assoc()){
@@ -48,7 +47,7 @@ if ($anzahl_boxenfrei_result->num_rows > 0){
   }
 }
 
-$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL";
+$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL AND id_gehoeft = $id_gehoeft";
 $anzahl_boxenbelegt_result = $conn->query($anzahl_boxenbelegt_sql);
 if ($anzahl_boxenbelegt_result->num_rows > 0){
   while($row_abb = $anzahl_boxenbelegt_result->fetch_assoc()){

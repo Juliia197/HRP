@@ -1,33 +1,3 @@
-<?php
-$servername = "localhost";
-$username = "hrppr_1";
-$password = "J49Wj7wUbSsKmNC5";
-$dbname = "hrppr_db1";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-session_start();
-
-if($_SESSION["logged"] == true) {
-
-  $id_gehoeft = $_SESSION['id_gehoeft'];
-  $auth = false;
-  
-  $auth_sql = "SELECT id_gehoeft FROM box WHERE id_box = " . $_GET['id_box'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
-  
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
-    $auth = true;
-    $boxloeschen_sql = "DELETE FROM box WHERE id_box=" . $_GET["id_box"];
-    $boxloeschen_result = $conn->query($boxloeschen_sql);
-  }
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,7 +54,7 @@ if($_SESSION["logged"] == true) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -115,50 +85,77 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="dashboard.php">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a href="gehoeft">Gehöft</a>
-            </li>
-            <li class="breadcrumb-item active">
-              Box löschen
-            </li>
-          </ol>
-          
-          <h1>Box löschen</h1>
+
+          <h1>Design</h1>
           <hr>
-          <?php 
-          if ($auth == true) {
-            echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div>';
-          }
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Box!</div>';
-          }
-          ?>
+          
+          <p><button class="btn btn-success">Hinzufügen</button></p>
+          <p><button class="btn btn-danger">Löschen</button></p>
+          <p><button class="btn btn-dark">Anzeigen</button></p>
+          <p><button class="btn btn-primary">Bearbeiten</button></p>
+          <p><button class="btn btn-success">Abschicken/Speichern</button></p>
+          <p><button class="btn btn-danger">Abbrechen</button></p>
+          <p><button class="btn btn-success">Person zuweisen</button></p>
+          <p><button class="btn btn-primary">Lieferungen</button></p>
+          <p><button class="btn btn-secondary">zurück zur Übersicht</button></p>
+          <p><button class="btn">Button</button></p>
+          <p><button class="btn btn-warning">Warning</button></p>
+          <p><button class="btn btn-info">Info</button></p>
+          <p><button class="btn btn-light">Light</button></p>
+          <br>
+          <p><button class="btn btn-primary">Lieferungen</button></p>
+          <p><button class="btn btn-info">Lieferungen</button></p>
+          <p><button class="btn btn-secondary">Anzeigen</button></p>
+          <p><button class="btn">zurück zur Übersicht</button></p>
+          <p><button class="btn btn-outline-success">Abschicken</button></p>
+          <p><button class="btn btn-outline-danger">Abbrechen</button></p>
+          <p><button class="btn btn-outline-success">Person zuweisen</button></p>
+          
+          <br>
+
+          <h2>Beispieltabelle</h2>
+          <hr>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <td>Boxentyp</td>
-              <td>Boxenpreis</td>
-              <td>Aktion</td>
-            </tr>
-          </thead>
-          <tbody>
-          <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft = $id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
-            $boxfrei_result = $conn->query($boxfrei_sql);
-            if($boxfrei_result->num_rows > 0){
-              while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf["id_box"] . "\">Box löschen</a></td></tr>";
-              }
-            }
-          ?>
-          </tbody>
-          </table>
-          </div>
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
+              <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Ort</th>
+                <th>Land</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Max</td>
+                <td>Mustermann</td>
+                <td>Musterstadt</td>
+                <td>Musterland</td>
+                <td>
+                  <div class="d-sm-flex flex-row">
+                    <div><a class="btn btn-sm btn-secondary" role="button" href="#">Anzeigen</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="#">Bearbeiten</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="#" onclick="return checkDelete()">Löschen</a></div>
+                    <!-- JavaScript-Funktion steht unten -->
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Cordula</td>
+                <td>Grün</td>
+                <td>Oberschweinbach</td>
+                <td>Deutschland</td>
+                <td>
+                    <div class="d-sm-flex flex-row">
+                      <div><a class="btn btn-sm btn-dark" role="button" href="#">Anzeigen</a></div>
+                      <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="#">Bearbeiten</a></div>
+                      <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="#" onclick="return checkDelete()">Löschen</a></div>
+                    </div>
+                </td>
+              </tr>
+            </tbody>
+
 
         </div>
         <!-- /.container-fluid -->
@@ -196,7 +193,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="logout.php">Ja</a>
+            <a class="btn btn-primary" href="login.html">Ja</a>
           </div>
         </div>
       </div>
@@ -213,29 +210,17 @@ if($_SESSION["logged"] == true) {
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
+
+
+    <!-- JavaScript für Delete-Confirm -->
     <script>
-    $(document).ready(function() {
-    $('#dataTable').DataTable( {
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
-        }
-    } );
-} );
+      function checkDelete(){
+        return confirm('Person endgültig löschen?')
+      }
     </script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>
