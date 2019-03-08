@@ -17,12 +17,20 @@ if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION['id_gehoeft'];
   $auth = false;
-  $auth_sql = "SELECT id_gehoeft FROM box WHERE id_pferd = " . $_GET['id_pferd'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+
+  $id_pferd = $_GET["id_pferd"];
+
+  $query = "SELECT id_gehoeft FROM box WHERE id_pferd = ?";
+  $auth_sql = $conn->prepare($query);
+  $auth_sql->bind_param("i", $id_pferd);
+  $auth_sql->execute();
+  $result = $auth_sql->get_result();
+  $auth_result = $result->fetch_assoc();
+  
+  if ($auth_result["id_gehoeft"] == $id_gehoeft) {
     $auth = true;
   }
+  $auth_sql->close();
 
 ?>
 

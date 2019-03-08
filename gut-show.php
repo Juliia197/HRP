@@ -41,7 +41,7 @@ if($_SESSION["logged"] == true) {
     <link href="css/sb-admin.css" rel="stylesheet">
 
     <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'];
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft;
       $lieferungen_result = $conn->query($lieferungen_sql);
       $dataPoints = '';
       if ($lieferungen_result->num_rows > 0){

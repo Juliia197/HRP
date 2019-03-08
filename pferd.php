@@ -261,10 +261,10 @@ if($_SESSION["logged"] == true) {
 
   <!-- JavaScript for Delete-Confirmation -->
   <script>
-      function checkDelete(){
-        return confirm('Pferd endgültig löschen?')
-      }
-    </script>
+    function checkDelete(){
+      return confirm('Pferd endgültig löschen?')
+    }
+  </script>
     
   </body>
 
