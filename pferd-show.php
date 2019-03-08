@@ -125,12 +125,13 @@ if($_SESSION["logged"] == true) {
 
           if ($auth == true) {
 
-          $pferdsql = "SELECT * FROM pferd WHERE id_pferd = " . $_GET['id_pferd'] . "";
-          $pferd = $conn->query($pferdsql) or die (mysql_error());
+          $pferd_query = "SELECT * FROM pferd WHERE id_pferd = ?";
+          $pferd_sql = $conn->prepare($pferd_query);
+          $pferd_sql->bind_param("i", $id_pferd);
+          $pferd_sql->execute();
+          $pferd_result = $pferd_sql->get_result();
+          while ($pferd_fetch = $pferd_result->fetch_assoc()) {  
 
-         // echo $pferdsql;
-
-          while($row_p = $pferd->fetch_assoc()){
             echo "<ol class=\"breadcrumb\">
                   <li class=\"breadcrumb-item\">
                     <a href=\"dashboard.php\">Dashboard</a>
@@ -142,14 +143,14 @@ if($_SESSION["logged"] == true) {
                     Pferd anzeigen
                   </li>
                 </ol>";
-            echo "<h1>" . $row_p['pferdename'] . "</h1> <hr>";
+            echo "<h1>" . $pferd_fetch['pferdename'] . "</h1> <hr>";
             
             echo "<p>Geschlecht: ";
-            if( $row_p['geschlecht'] =='s')
+            if( $pferd_fetch['geschlecht'] =='s')
                 {
                   echo "Stute";
                 }
-            else if( $row_p['geschlecht'] =='w')
+            else if( $pferd_fetch['geschlecht'] =='w')
                 {
                   echo "Wallach";
                 }
@@ -159,40 +160,47 @@ if($_SESSION["logged"] == true) {
                 }
             echo "</p>";
             
-            $geburtsdatum_pferd = new DateTime($row_p['geburtsdatum_pferd']);
-            $ankunft = new DateTime($row_p['ankunft']);
+            $geburtsdatum_pferd = new DateTime($pferd_fetch['geburtsdatum_pferd']);
+            $ankunft = new DateTime($pferd_fetch['ankunft']);
 
-            echo "<p>Gewicht: " . $row_p['gewicht'] . " kg</p>
-                  <p>Größe: " . $row_p['groesse'] . " cm</p>
-                  <p>Passnummer: " . $row_p['passnr'] . "</p>
+            echo "<p>Gewicht: " . $pferd_fetch['gewicht'] . " kg</p>
+                  <p>Größe: " . $pferd_fetch['groesse'] . " cm</p>
+                  <p>Passnummer: " . $pferd_fetch['passnr'] . "</p>
                   <p>Geburtsdatum: " . $geburtsdatum_pferd->format('d.m.Y') . "</p>
                   <p>Ankunft: " . $ankunft->format('d.m.Y') . "</p>";
           
           }
 
-            $boxsql = "SELECT boxentyp.boxenbez, box.boxenpreis FROM box, boxentyp WHERE box.id_pferd = " . $_GET['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp';
-            $box = $conn->query($boxsql) or die (mysql_error());
-            while($fetch1 = mysqli_fetch_assoc($box)){
-              echo "<p>Boxentyp: " . $fetch1['boxenbez'] . "</p>
-                    <p>Boxenpreis: " . $fetch1['boxenpreis'] .  " €</p>";
+            $box_query = "SELECT boxentyp.boxenbez, box.boxenpreis FROM box, boxentyp WHERE box.id_pferd = ? AND box.id_boxentyp = boxentyp.id_boxentyp";
+            $box_sql = $conn->prepare($box_query);
+            $box_sql->bind_param("i", $id_pferd);
+            $box_sql->execute();
+            $box_result = $box_sql->get_result();
+            while ($box_fetch = $box_result->fetch_assoc()) {  
+              echo "<p>Boxentyp: " . $box_fetch['boxenbez'] . "</p>
+                    <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €</p>";
             }
             
             echo "
             <hr>
             <h3>Verbrauch</h3>";
 
+            $verbrauchsgut_query = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = ? AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
+            $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
+            $verbrauchsgut_sql->bind_param("i", $id_pferd);
+            $verbrauchsgut_sql->execute();
+            $verbrauchsgut_result = $verbrauchsgut_sql->get_result();
 
-            $verbrauchstypsql = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = " . $_GET['id_pferd']. " AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
-            $verbrauchstyp = $conn->query($verbrauchstypsql) or die (mysql_error());
-
-            $bedarfsql = "SELECT id_verbrauchsguttyp, bedarf FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd = " . $_GET['id_pferd']. "";
-            $bedarf = $conn->query($bedarfsql) or die (mysql_error());
-
+            $bedarf_query = "SELECT id_verbrauchsguttyp, bedarf FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd = ? ";
+            $bedarf_sql = $conn->prepare($bedarf_query);
+            $bedarf_sql->bind_param("i", $id_pferd);
+            $bedarf_sql->execute();
+            $bedarf_result = $bedarf_sql->get_result();
             
             echo "
             <div class='table-responsive'>
             <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
-            <thead>
+            <thead class='thead-light'>
               <tr>
                 <th>Verbrauchsgut</th>
                 <th>Bedarf</th>
@@ -200,8 +208,9 @@ if($_SESSION["logged"] == true) {
             </thead>
             
             <tbody>";
-            while($fetch2 = mysqli_fetch_assoc($verbrauchstyp) and $fetch3 = mysqli_fetch_assoc($bedarf)){
-              echo "<tr><td>" . $fetch2['verbrauchsguttypbez'] . "</td><td>" . $fetch3['bedarf'] . "</td></tr>";
+
+            while($verbrauchsgut_fetch = $verbrauchsgut_result->fetch_assoc() AND $bedarf_fetch = $bedarf_result->fetch_assoc()){
+              echo "<tr><td>" . $verbrauchsgut_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf_fetch['bedarf'] . "</td></tr>";
             
             }
             
@@ -212,14 +221,11 @@ if($_SESSION["logged"] == true) {
             
             <hr>
             <h3>Personen</h3>"; 
-            
-            $personsql = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = " . $_GET['id_pferd'] . " AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
-            $personbez = $conn->query($personsql) or die (mysql_error());
-
+                      
             echo "
             <div class='table-responsive'>
             <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
-            <thead>
+            <thead class='thead-light'>
               <tr>
                 <th>Vorname</th>
                 <th>Nachname</th>
@@ -230,15 +236,25 @@ if($_SESSION["logged"] == true) {
             
             <tbody>";
 
-              while($fetch4 = mysqli_fetch_assoc($personbez)){
+            $person_query = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = ? AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
+            $person_sql = $conn->prepare($person_query);
+            $person_sql->bind_param("i", $id_pferd);
+            $person_sql->execute();
+            $person_result = $person_sql->get_result();
+            while ($person_fetch = $person_result->fetch_assoc()) {  
+
                 echo "<tr>";
-                echo "<td>" . $fetch4['vorname'] .  "</td>";
-                echo "<td>" . $fetch4['nachname'] .  "</td>";
-                echo "<td>" . $fetch4['funktionsbez'] . "</td>";
+                echo "<td>" . $person_fetch['vorname'] .  "</td>";
+                echo "<td>" . $person_fetch['nachname'] .  "</td>";
+                echo "<td>" . $person_fetch['funktionsbez'] . "</td>";
 
                 echo '<td>
-                  <a class="btn btn-secondary" href="person-show.php?id_person=' . $fetch4["id_person"] . '" >Anzeigen</a>
-                  <a class="btn btn-primary" href="person-edit.php?id_person=' . $fetch4["id_person"] . '" >Bearbeiten</a></td></tr>';
+                  <div class="d-sm-flex flex-row">
+                  <div><a class="btn btn-sm btn-dark" role="button" href="person-show.php?id_person=' . $person_fetch["id_person"] . '" >Anzeigen</a></div>
+                  <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="person-edit.php?id_person=' . $person_fetch["id_person"] . '" >Bearbeiten</a></div>
+                  </div>
+                  </td>
+                  </tr>';
                 }
                 
             echo "
@@ -251,8 +267,8 @@ if($_SESSION["logged"] == true) {
 
             echo "
             <div class=\"form-group\">
-            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $_GET['id_pferd'] . "\" >Bearbeiten</a>
-            <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $_GET['id_pferd'] . "\" onclick='return checkDelete()'>Löschen</a>
+            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $id_pferd . "\" >Bearbeiten</a>
+            <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
             <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
           
           }
@@ -317,24 +333,6 @@ if($_SESSION["logged"] == true) {
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script>
-    $(document).ready(function() {
-    $('#dataTable1').DataTable( {
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
-        }
-    } );
-} );
-    </script>
-    <script>
-    $(document).ready(function() {
-    $('#dataTable2').DataTable( {
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
-        }
-    } );
-} );
-    </script>
     <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
     <script src="js/demo/datatables-demo.js"></script>
 
@@ -347,7 +345,11 @@ if($_SESSION["logged"] == true) {
     <!-- JavaScript für mehrere DataTables auf einer Seite -->
     <script>
       $(document).ready(function() {
-      $('table.display').DataTable();
+      $('table.display').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+      });
       });
     </script>
 
