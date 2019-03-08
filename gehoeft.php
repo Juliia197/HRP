@@ -116,7 +116,7 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
           title: {
-            fontFamily: "Segoe UI",
+            fontFamily: "Helvetica",
             fontWeight: "bold",
             text: "Belegung der Boxen"
           },
@@ -137,7 +137,7 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           animationEnabled: true,
           theme: "light2",
           title:{
-            fontFamily: "Segoe UI",
+            fontFamily: "Helvetica",
             fontWeight: "bold",
             text: "Freie und Belegte Boxen anhand des Boxentyps"
           },
@@ -220,7 +220,7 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         <div class="container-fluid">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Dashboard</a>
+            <a href="dashboard.php">Dashboard</a>
           </li>
           <li class="breadcrumb-item active">
             Gehöft
@@ -249,19 +249,19 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
             ?>
           </p>
           <hr>
+          <div class="row justify-content-end">
+            <div class="col-3">
+            <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
+            <a class="btn btn-danger" href="box-delete.php">Box löschen</a>
+          </div>
+          </div>
+          <hr>
           <div class="card mb-3">
             <div class="card-header">
             <i class="fas fa-chart-pie"></i>
             Belegung der Boxen
             </div>
             <div class="card-body">
-              <div class="row justify-content-end">
-                <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
-              </div>
-              <br>
-              <div class="row justify-content-end">
-                <a class="btn btn-danger" href="box-delete.php">Box löschen</a>
-              </div>
               <div class="row">
                 <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
               </div>

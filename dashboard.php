@@ -130,7 +130,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
           title: {
-            fontFamily: "Segoe UI",
+            fontFamily: "Helvetica",
             fontWeight: "bold",
             text: "Belegung der Boxen"
           },
@@ -152,7 +152,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
           
           title:{
             text:"Anzahl der Pferde",
-            fontFamily: "Segoe UI",
+            fontFamily: "Helvetica",
             fontWeight: "bold"
           },
           axisX:{
@@ -177,7 +177,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
           
           title:{
             text:"Bestände der Verbrauchsgüter",
-            fontFamily: "Segoe UI",
+            fontFamily: "Helvetica",
             fontWeight: "bold"
           },
           axisX:{
