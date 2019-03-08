@@ -142,7 +142,7 @@ if($_SESSION["logged"] == true) {
             <br />
             <div class="form-group">
             <label>Boxenpreis:</label><br>
-            <input type="number" name="boxenpreis" required>
+            <input type="number" name="boxenpreis" step="0.01" required>
             </div><br />
             <div class="form-group">
             <button type="submit" class="btn btn-success">Abschicken</button>
