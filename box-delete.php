@@ -14,8 +14,7 @@ if ($conn->connect_error) {
 session_start();
 
 if($_SESSION["logged"] == true) {
-
-  $id_gehoeft = $_SESSION["id_gehoeft"];
+  $id_gehoeft = $_SESSION['id_gehoeft'];
 
 ?>
 <!DOCTYPE html>
@@ -120,9 +119,21 @@ if($_SESSION["logged"] == true) {
 
           <h1>Box löschen</h1>
           <hr>
+          <?php
+            if (isset($_GET['id_box'])){
+              $id_box = $_GET['id_box'];
+              $boxdelete_sql = "DELETE FROM box WHERE id_box = ?";
+              $boxdelete_prepare = $conn->prepare($boxdelete_sql);
+              $boxdelete_prepare->bind_param('i', $id_box);
+              $boxdelete_prepare->execute();
+              $boxdelete_prepare->close();
+              echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div><hr>';
+            }
+
+          ?>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="thead-light">
             <tr>
               <td>Boxentyp</td>
               <td>Boxenpreis</td>
@@ -131,11 +142,11 @@ if($_SESSION["logged"] == true) {
           </thead>
           <tbody>
           <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft = $id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
+            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=$id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
             $boxfrei_result = $conn->query($boxfrei_sql);
             if($boxfrei_result->num_rows > 0){
               while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-deleted.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
+                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-delete.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
               }
             }
           ?>

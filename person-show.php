@@ -163,8 +163,8 @@ if($_SESSION["logged"] == true) {
               if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
                echo "<div class=\"form-group\"></div>
                <div class=\"form-group\">
-               <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-               <a class=\"btn btn-secondary\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" onclick='return checkDelete()'>Löschen</a>
+               <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+               <a class=\"btn btn-danger\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" onclick='return checkDelete()'>Löschen</a>
                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
@@ -174,8 +174,8 @@ if($_SESSION["logged"] == true) {
                 echo "
                   <p>
                   <div class='table-responsive'>
-                  <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
-                  <thead>
+                  <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                  <thead class='thead-light'>
                     <tr >
                       <th >Pferdename</th>
                       <th >Beziehung</th>
@@ -193,16 +193,16 @@ if($_SESSION["logged"] == true) {
   
                   //Links mit welchen die Id des Pferdes übergeben wird
                   echo '<td> 
-                    <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '>Anzeigen</a> <br>
-                    <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '>Bearbeiten</a> <br>';
+                    <a class="btn btn-secondary" href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '>Anzeigen</a> <br>
+                    <a class="btn btn-primary href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '>Bearbeiten</a> <br>';
                   echo '</tr></table></div></p><hr>';
                   } 
 
-                echo "<div class=\"form-group\"></div>
+                echo '<div class=\"form-group\"></div>
                 <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-                <a class=\"btn btn-secondary\" &id_delete=0\" >Löschen nicht möglich*</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
+                <a class=\"btn btn-outline-danger disabled\" href=\"person.php\" >Löschen nicht möglich*</a>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>';
                 echo "<br>*Löschen nicht möglich, da dieser Person Pferde zugeordnet sind.";
               }           
               // href=\"person-delete.php?id_person=" . $row_p['id_person'] . "

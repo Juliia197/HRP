@@ -195,7 +195,7 @@ if($_SESSION["logged"] == true) {
                     }
 
                     else{//wird durchgeführt wenn die alte Adresse mehr als einer Person zugeordnet ist
-                      echo "Adresse bleibt im System da sie nicht nur dieser Person zugeorndet war";
+                     // echo "Adresse bleibt im System da sie nicht nur dieser Person zugeorndet war";
                     }
 
                   }
@@ -316,7 +316,7 @@ if($_SESSION["logged"] == true) {
             <div class=\"form-group\">
             <a class=\"btn btn-secondary\" href=\"person-show.php?id_person=" . $row_v['id_person'] . "\" >Person anzeigen</a>
             <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>     
-            <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
+            <a class=\"btn btn-success\" href=\"person-edit.php?id_person=0\" >eine andere Person anlegen</a>    
             </div>";
           }
         }

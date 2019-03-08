@@ -213,7 +213,7 @@ if($_SESSION["logged"] == true) {
                   echo "<div class=\"form-group\"></div>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abbrechen</button>
+                        <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
                       </div>";
                 }
               }
@@ -269,7 +269,7 @@ if($_SESSION["logged"] == true) {
                 echo "<div class=\"form-group\"></div>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gut-edited.php?id_verbrauchsgut=0\" role=\"button\">Abbrechen</button>
+                        <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
                       </div>";
               }
 
