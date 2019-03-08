@@ -132,7 +132,7 @@ if($_SESSION["logged"] == true) {
               <th>Menge in kg</th>
               <th>Einkaufspreis je kg</th>
               <th>Lieferant</th>
-              <th>Aktion</th>
+              <th></th>
             </tr>
             </thead>          
             <tbody>
@@ -153,10 +153,15 @@ if($_SESSION["logged"] == true) {
                     if($fetch1 = mysqli_fetch_assoc($query1)){
                       echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
                     }
-                  echo '<td> 
-                  <a class="btn btn-primary" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . ' >Bearbeiten</a>  
-                  <a class="btn btn-danger"  href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';                    
-              }
+                                
+                  echo '<td>
+                  <div class="d-sm-flex flex-row">
+                  <div><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
+                  <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Löschen</a></div>
+                  </div>
+                  </td>
+                  </tr>';
+                }
 
             ?>
             </tbody>                

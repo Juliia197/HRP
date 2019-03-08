@@ -230,7 +230,7 @@ if($_SESSION["logged"] == true) {
                 <th>Vorname</th>
                 <th>Nachname</th>
                 <th>Funktion</th>
-                <th>Aktion</th>
+                <th></th>
               </tr>
             </thead>
             

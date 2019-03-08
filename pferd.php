@@ -139,7 +139,7 @@ if($_SESSION["logged"] == true) {
               <th>Geschlecht</th>
               <th>Besitzer</th>
               <th>Boxentyp</th>
-              <th>Aktion</th>
+              <th></th>
             </tr>
           </thead>
 
