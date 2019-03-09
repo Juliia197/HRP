@@ -161,9 +161,9 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select></div>";
                   echo "<div class=\"form-group\"><label>Bezeichnung</label>";
-                  echo "<input  class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\" required></div>";
+                  echo "<input  class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\" required></div>";
                   echo "<div class=\"form-group\"><label>Lieferdatum</label>";
-                  echo "<input required class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div>";
+                  echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div>";
                   echo "<div class=\"form-group\"><label>Lieferant</label>";
                   echo "<select required class=\"form-control\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
@@ -182,9 +182,9 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select></div>";
                   echo "<div class=\"form-group\"><label>Menge</label>";
-                  echo "<input required lass=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\"></div>";
+                  echo "<input required lass=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"></div>";
                   echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
-                  echo "<input required class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
+                  echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
                   echo "
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
@@ -220,9 +220,9 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select></div>";
                 echo "<div class=\"form-group\"><label>Bezeichnung</label>";
-                echo "<input required class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"></div>";
+                echo "<input required class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"verbrauchsgutbez\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferdatum</label>";
-                echo "<input required class=\"form-control\" type=\"date\" name=\"lieferdatum\"></div>";
+                echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferant</label>";
                 echo "<select required class=\"form-control\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person";
@@ -234,9 +234,9 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select></div>";
                 echo "<div class=\"form-group\"><label>Menge</label>";
-                echo "<input required class=\"form-control\" type=\"number\" name=\"menge\"></div>";
+                echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"></div>";
                 echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
-                echo "<input required class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
+                echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" name=\"einkaufspreis\"></div>";
                 echo "
                     <div class=\"form-group\">
                     <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
