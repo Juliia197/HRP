@@ -15,7 +15,7 @@ session_start();
 
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
-
+  
 ?>
 
 <!DOCTYPE html>

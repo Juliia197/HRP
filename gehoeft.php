@@ -113,8 +113,11 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         var anzahl_paddockbox = <?php echo $anzahl_paddockbox ?>;
         var anzahl_innenbox = <?php echo $anzahl_innenbox ?>;
 
+        CanvasJS.addColorSet("customColors", ["#7e5738", "#a4bf6b", "#473221", "a09189", "240c01"]);
+
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
+          colorSet: "customColors",
           title: {
             fontFamily: "Helvetica",
             fontWeight: "bold",
@@ -146,10 +149,17 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           },
           data: [{        
             type: "column",
+            color: "#7e5738",
             dataPoints: [      
               { y: anzahl_paddockbox, label: "Paddockboxen gesamt" },
+              { y: anzahl_innenbox,  label: "Innenboxen gesamt" }
+            ]
+          },
+          {
+            type: "column",
+            color: "#a4bf6b",
+            dataPoints: [
               { y: anzahl_boxbelegt_paddock,  label: "Paddockboxen belegt" },
-              { y: anzahl_innenbox,  label: "Innenboxen gesamt" },
               { y: anzahl_boxbelegt_innen,  label: "Innenboxen belegt" }
             ]
           }]
@@ -249,11 +259,9 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
             ?>
           </p>
           <hr>
-          <div class="row justify-content-end">
-            <div class="col-3">
-            <a class="btn btn-success" href="box-edit.php">Box hinzufügen</a>
-            <a class="btn btn-danger" href="box-delete.php">Box löschen</a>
-          </div>
+          <div class="d-flex flex-row-reverse">
+            <div class="p-2"><a class="btn btn-success" href="box-edit.php">Box hinzufügen</a></div>
+            <div class="p-2"><a class="btn btn-danger" href="box-delete.php">Box löschen</a></div>
           </div>
           <hr>
           <div class="card mb-3">
