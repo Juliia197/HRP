@@ -144,7 +144,7 @@ if($_SESSION["logged"] == true) {
                         <hr>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
-                  echo "<select required class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                  echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\" required>";
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
                   if($verbrauchsguttyp_result->num_rows > 0){
@@ -161,7 +161,7 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select></div>";
                   echo "<div class=\"form-group\"><label>Bezeichnung</label>";
-                  echo "<input required class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"></div>";
+                  echo "<input  class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\" required></div>";
                   echo "<div class=\"form-group\"><label>Lieferdatum</label>";
                   echo "<input required class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div>";
                   echo "<div class=\"form-group\"><label>Lieferant</label>";
@@ -210,7 +210,7 @@ if($_SESSION["logged"] == true) {
                         <hr>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
-                echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                echo "<select required class=\"form-control\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
                 if ($verbrauchsguttypall_result->num_rows > 0){
@@ -220,11 +220,11 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select></div>";
                 echo "<div class=\"form-group\"><label>Bezeichnung</label>";
-                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"></div>";
+                echo "<input required class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferdatum</label>";
-                echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"></div>";
+                echo "<input required class=\"form-control\" type=\"date\" name=\"lieferdatum\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferant</label>";
-                echo "<select class=\"form-control\" name=\"id_person\">";
+                echo "<select required class=\"form-control\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person";
                 $lieferantall_result = $conn->query($lieferantall_sql);
                 if($lieferantall_result->num_rows > 0){
@@ -234,13 +234,13 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select></div>";
                 echo "<div class=\"form-group\"><label>Menge</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"menge\"></div>";
+                echo "<input required class=\"form-control\" type=\"number\" name=\"menge\"></div>";
                 echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
+                echo "<input required class=\"form-control\" type=\"number\" name=\"einkaufspreis\"></div>";
                 echo "
                     <div class=\"form-group\">
                     <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
-                    <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";
+                    <a class=\"btn btn-secondary\" href=\"lieferung.php\" >Abbrechen</a> </div>";
               }
 
             }
