@@ -61,7 +61,7 @@ if (isset($_POST['email'], $_POST['password'])) {
         $_SESSION['id_gehoeft'] = $id_gehoeft['id_gehoeft'];
         $_SESSION['logged'] = true;
 
-        /*
+        
         $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = 1 LIMIT 1";
         $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
         $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
@@ -82,12 +82,12 @@ if (isset($_POST['email'], $_POST['password'])) {
           $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
 
           $bestand_veraenderung = 0;
-          $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = 1";
+          $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
           $gewichtpferd_result = $conn->query($gewichtpferd_sql);
           $gewichtpferd_result = $gewichtpferd_result->fetch();
           $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
 
-          $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = 1";
+          $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = $id_gehoeft AND id_pferd IS NOT NULL";
           $anzahlbox_result = $conn->query($anzahlbox_sql);
           $anzahlbox_result = $anzahlbox_result->fetch();
           $anzahlboxen = $anzahlbox_result['anzahlbox'];
@@ -112,22 +112,22 @@ if (isset($_POST['email'], $_POST['password'])) {
           $spaenekoeff_result = $spaenekoeff_result->fetch();
           $koeffspaene = $spaenekoeff_result['koeffizient'];
 
-          $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = 1";
+          $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
           $haferbestand_result = $conn->query($haferbestand_sql);
           $haferbestand_result = $haferbestand_result->fetch();
           $bestand_hafer = $haferbestand_result['bestand'];
 
-          $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = 1";
+          $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
           $heubestand_result = $conn->query($heubestand_sql);
           $heubestand_result = $heubestand_result->fetch();
           $bestand_heu = $heubestand_result['bestand'];
 
-          $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = 1";
+          $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
           $strohbestand_result = $conn->query($strohbestand_sql);
           $strohbestand_result = $strohbestand_result->fetch();
           $bestand_stroh = $strohbestand_result['bestand'];
 
-          $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = 1";
+          $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
           $spaenebestand_result = $conn->query($spaenebestand_sql);
           $spaenebestand_result = $spaenebestand_result->fetch();
           $bestand_spaene = $spaenebestand_result['bestand'];
@@ -153,7 +153,7 @@ if (isset($_POST['email'], $_POST['password'])) {
           $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
 
         }
-        */
+        
         
         header('location:dashboard.php');
         exit();

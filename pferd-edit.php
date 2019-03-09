@@ -16,16 +16,17 @@ catch(PDOException $e)
 session_start();
 
 if($_SESSION["logged"] == true) {
+  $id_gehoeft = $_SESSION['id_gehoeft'];
 
-if (isset($_POST['id_box'])){
+/*if (isset($_POST['id_box'])){
   
     $boxbelegen_sql = "UPDATE box SET id_pferd = " . $_GET['id_pferd'] . " WHERE id_box = " . $_POST['id_box'];
-    $boxbelgen_result = $conn->query($boxbelegen_sql);
+    $boxbelegen_result = $conn->query($boxbelegen_sql);
     if ($_GET['id_pferd'] > 0){
     $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = " . $_GET['id_pferd'] . " AND id_box != " . $_POST['id_box'];
     $boxleeren_result = $conn->query($boxleeren_sql);
-  }
 }
+}*/
 
   
 ?>
@@ -194,75 +195,106 @@ if (isset($_POST['id_box'])){
                     }
 
                     if ($pferdId !== 0) {
-                        foreach ($_POST as $key => $post) {
-                            if (strpos($key, 'userId-') === 0) {
-                                $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
-                                $userId = $_POST['userId-'.$connId];
-                                $functionId = $_POST['functionId-'.$connId];
-                                $prepareCon = $conn->prepare(
-                                    "UPDATE
-                                        beziehung
-                                      SET
-                                        id_person ='$userId',
-                                        id_funktion = '$functionId',
-                                        id_pferd='$pferdId'
-                                      WHERE
-                                       id_beziehung = ?"
-                                        );
-                                $bindCon = [$connId];
-                                if($prepareCon->execute($bindCon)){
-                                    $saved = true;
-                                }
+                      $besitzerId = $_POST['besitzerId'];
+                      $rbId = $_POST['rbId'];
+                      $tierarztId = $_POST['tierarztId'];
+                      $hufschmiedId = $_POST['hufschmiedId'];
+                      $userIdArray = [$besitzerId, $rbId, $tierarztId, $hufschmiedId];
+                      for ($idf = 1; $idf<=4; $idf++){
+                        $beziehungexist_sql = "SELECT * FROM beziehung WHERE id_pferd = $pferdId AND id_funktion = $idf";
+                        $beziehungexist_result = $conn->query($beziehungexist_sql);
+                        $beziehungexist_result = $beziehungexist_result->fetch();
+                        if (is_null($beziehungexist_result['id_beziehung'])){
+                          if ($userIdArray[$idf-1] > 0) {
+                            $prepareCon = $conn->prepare('
+                            INSERT INTO 
+                              beziehung
+                              (
+                                id_person,
+                                id_funktion,
+                                id_pferd
+                              ) VALUES (?,?,?)');
+                            $bindCon=[(int) $userIdArray[$idf-1], (int) $idf, $pferdId];
+                            $prepareCon->execute($bindCon);
+                          }
+                        } else {
+                          if($userIdArray[$idf-1] > 0){
+                            $prepareCon = $conn->prepare("
+                              UPDATE
+                                beziehung
+                              SET
+                                id_person = " . $userIdArray[$idf-1] . ",
+                                id_funktion = '$idf',
+                                id_pferd = '$pferdId'
+                              WHERE
+                                id_beziehung = ?");
+                            $bindCon = [$beziehungexist_result['id_beziehung']];
+                            if($prepareCon->execute($bindCon)){
+                              $saved = true;
                             }
-                            if (strpos($key, 'userIdNew-') === 0) {
-                                $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
-                                $userId = $_POST['userIdNew-'.$connId];
-                                $functionId = $_POST['functionIdNew-'.$connId];
-                                $prepareCon = $conn->prepare('
-                                    INSERT INTO 
-                                        beziehung 
-                                      ( 
-                                        id_person,
-                                        id_funktion,
-                                        id_pferd
-                                      ) VALUES (?,?,?)'
-                                );
-                                $bindCon = [(int) $userId, (int) $functionId, $pferdId];
-                                if($prepareCon->execute($bindCon)){
-                                    $saved = true;
-                                }
-                            }
+                          } else{
+                            $prepareCon = $conn->prepare("
+                              DELETE FROM beziehung WHERE id_funktion = $idf AND id_pferd = $pferdId");
+                            $prepareCon->execute();
+                          }
                         }
+                      }
+
+                      $prepareBoxCon = $conn->prepare("
+                        UPDATE 
+                          box
+                        SET
+                          id_pferd='$pferdId'
+                        WHERE
+                          id_gehoeft='$id_gehoeft' AND
+                          id_box=?");
+                      $bindBoxCon = [$_POST['id_box']];
+                      $prepareBoxCon->execute($bindBoxCon);
+                      $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = $pferdId AND id_box != " . $_POST['id_box'];
+                      $boxleerenprepare = $conn->prepare($boxleeren_sql);
+                      $boxleerenprepare->execute();
+
                     }
 
                     if ($pferdId === 0 && $prepare->execute($bind)) {
                         $pferdId = $conn->lastInsertId();
-                        foreach ($_POST as $key => $post) {
-                            if (strpos($key, 'userIdNew-') === 0) {
-                                $connId = abs((int) filter_var($key, FILTER_SANITIZE_NUMBER_INT));
-                                $userId = $_POST['userIdNew-'.$connId];
-                                $functionId = $_POST['functionIdNew-'.$connId];
-                                $prepareCon = $conn->prepare('
-                                INSERT INTO 
-                                    beziehung 
-                                  ( 
-                                    id_person,
-                                    id_funktion,
-                                    id_pferd
-                                  ) VALUES (?,?,?)'
-                                );
-                                $bindCon = [(int) $userId, (int) $functionId, $conn->lastInsertId()];
-                                $prepareCon->execute($bindCon);
-                                
-                            }
+                        $besitzerId = $_POST['besitzerId'];
+                        $rbId = $_POST['rbId'];
+                        $tierarztId = $_POST['tierarztId'];
+                        $hufschmiedId = $_POST['hufschmiedId'];
+                        $userIdArray = [$besitzerId, $rbId, $tierarztId, $hufschmiedId];
+                        for ($idf = 1; $idf<=4; $idf++){
+                          if ($userIdArray[$idf-1] > 0) {
+                            $prepareCon = $conn->prepare('
+                            INSERT INTO 
+                              beziehung
+                              (
+                                id_person,
+                                id_funktion,
+                                id_pferd
+                              ) VALUES (?,?,?)');
+                            $bindCon=[(int) $userIdArray[$idf-1], (int) $idf, $pferdId];
+                            $prepareCon->execute($bindCon);
+                          }
                         }
+
+                        $prepareBoxCon = $conn->prepare("
+                          UPDATE
+                            box
+                          SET 
+                            id_pferd = '$pferdId'
+                          WHERE
+                            id_gehoeft = '$id_gehoeft' AND
+                            id_box = ?");
+                        $bindBoxCon = [$_POST['id_box']];
+                        $prepareBoxCon->execute($bindBoxCon);
+                        
 
                         header('Location: pferd-edit.php?id_pferd=' . $pferdId . '&saved=true');
 
                         exit();
                     }
-
-
+                  
                 } else {
                     $sql = 'SELECT * FROM pferd WHERE id_pferd = ' . $_GET['id_pferd'];
                     $pferd = $conn->query($sql);
@@ -324,47 +356,98 @@ if (isset($_POST['id_box'])){
 
                 <br />
                 <hr>
-                <h2>Personen zuweisen</h2>
-                <table class="table">
-                <thead>
-                <tr>
-                <th>Person</th>
-                <th>Beziehung</th>
-                <th>Aktion</th>
-                </tr>
-                </thead>
-                <tbody>
                 <?php
-                    foreach ($connections as $connection) {
-                ?>
-                      <tr>
-                       <td><select name="userId-<?php echo $connection['id_beziehung'];?>" id="userId-<?php echo $connection['id_beziehung'];?>">
-                           <?php
-                                foreach ($users as $user) {
-                           ?>
-                                    <option <?php if ($connection['id_person'] === $user['id_person']) {echo 'selected';} ?> value="<?php echo $user['id_person']; ?>"><?php echo $user['vorname'] . ' ' . $user['nachname']; ?></option>
-                           <?php
-                                }
-                           ?>
-                        </select></td>
-                        <td><select name="functionId-<?php echo $connection['id_beziehung'];?>" id="functionId-<?php echo $connection['id_beziehung'];?>">
-                            <?php
-                            foreach ($functions as $function) {
-                                ?>
-                                <option <?php if ($connection['id_funktion'] === $function['id_funktion']) {echo 'selected';} ?> value="<?php echo $function['id_funktion']; ?>"><?php echo $function['funktionsbez']; ?></option>
-                                <?php
-                            }
-                            ?>
-                        </select></td>
-
-                        <td><span class="delete btn btn-danger btn-sm" id="delete-<?php echo $connection['id_beziehung'];?>" data-connid="<?php echo $connection['id_beziehung'];?>">Löschen</span></td>
-                        </tr>
-                <?php
+                  $allepersonen_sql = "SELECT id_person, vorname, nachname FROM person WHERE id_gehoeft = $id_gehoeft";
+                  $allepersonen_result = $conn->query($allepersonen_sql);
+                  $allepersonen_result = $allepersonen_result->fetchAll();
+                  $id_besitzer = 0;
+                  $id_rb = 0;
+                  $id_tierarzt = 0;
+                  $id_hufschmied = 0;
+                  if ($_GET['id_pferd']>0){
+                    $allebeziehungen_sql = "SELECT person.vorname, person.nachname, person.id_person, beziehung.id_funktion FROM person, beziehung WHERE person.id_person = beziehung.id_person AND id_pferd = " . $_GET['id_pferd'];
+                    $allebeziehungen_result = $conn->query($allebeziehungen_sql);
+                    $allebeziehungen_result = $allebeziehungen_result->fetchAll();
+                    foreach ($allebeziehungen_result as $beziehung){
+                      $beziehungid = $beziehung['id_funktion'];
+                      if ($beziehungid == 1){
+                        $id_besitzer = $beziehung['id_person'];
+                      } elseif ($beziehungid == 2){
+                        $id_rb = $beziehung['id_person'];
+                      } elseif ($beziehungid == 3){
+                        $id_tierarzt = $beziehung['id_person'];
+                      } elseif ($beziehungid == 4){
+                        $id_hufschmied = $beziehung['id_person'];
+                      }
                     }
+                  }
+
                 ?>
-                </tbody>
-                </table>
-                <button class="btn btn-success" id="addNewConnection">Dem Pferd eine neue Person zuweisen...</button> <br /><br />
+                <h2>Beziehungen zu Pferd</h2>
+                <div class="table-responsive">
+                  <div class="table table-bordered" width="100%" cellspacing = "0">
+                    <table>
+                      <thead>
+                        <th>Beziehung</th>
+                        <th>Person</th>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Besitzer</td>
+                          <td>
+                            <select name="besitzerId">  
+                            <?php
+                              foreach($allepersonen_result as $person){?>
+                                <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_besitzer){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                              <?php }
+
+                            ?>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Reitbeteiligung</td>
+                          <td>
+                            <select name="rbId">
+                              <option value="0"></option>
+                              <?php
+                                foreach($allepersonen_result as $person){?>
+                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_rb){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                                <?php }
+                              ?>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Tierarzt</td>
+                          <td>
+                            <select name="tierarztId">
+                              <option value="0"></option>
+                              <?php
+                                foreach($allepersonen_result as $person){?>
+                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_tierarzt){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                                <?php }
+                              ?>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Hufschmied</td>
+                          <td>
+                            <select name="hufschmiedId">
+                              <option value="0"></option>
+                              <?php
+                                foreach($allepersonen_result as $person){?>
+                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_hufschmied){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                                <?php }
+                              ?>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
                 <hr>
                 <h2>Box zuweisen</h2>
                 <div class="table-responsive">
@@ -384,9 +467,9 @@ if (isset($_POST['id_box'])){
                   $boxenfrei_result = $boxenfrei_result->fetchAll();
                   foreach ($boxenfrei_result as $boxfrei){
                     if ($boxfrei['id_pferd'] == $_GET['id_pferd']){
-                      echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                      echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
                     } else {
-                    echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\"></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                    echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
                     }
                   }
                   ?>
