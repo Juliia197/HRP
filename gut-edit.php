@@ -184,7 +184,7 @@ if($_SESSION["logged"] == true) {
                   echo "<div class=\"form-group\"><label>Menge</label>";
                   echo "<input required lass=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"></div>";
                   echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
-                  echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
+                  echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
                   echo "
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
@@ -236,7 +236,7 @@ if($_SESSION["logged"] == true) {
                 echo "<div class=\"form-group\"><label>Menge</label>";
                 echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"></div>";
                 echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
-                echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" name=\"einkaufspreis\"></div>";
+                echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"></div>";
                 echo "
                     <div class=\"form-group\">
                     <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
