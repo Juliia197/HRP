@@ -132,12 +132,12 @@ if($_SESSION["logged"] == true) {
 
           ?>
           <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="thead-light">
             <tr>
-              <td>Boxentyp</td>
-              <td>Boxenpreis</td>
-              <td>Aktion</td>
+              <th>Boxentyp</th>
+              <th>Boxenpreis</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -146,7 +146,7 @@ if($_SESSION["logged"] == true) {
             $boxfrei_result = $conn->query($boxfrei_sql);
             if($boxfrei_result->num_rows > 0){
               while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-danger\" href=\"box-delete.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
+                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-sm btn-danger\" href=\"box-delete.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
               }
             }
           ?>
@@ -154,7 +154,7 @@ if($_SESSION["logged"] == true) {
           </table>
           </div>
           <hr>
-          <div class="row">
+          <div class="form-group">
             <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
           </div>
 

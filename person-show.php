@@ -121,6 +121,8 @@ if($_SESSION["logged"] == true) {
 
           if ($auth == true) {
 
+          $id_person = $_GET["id_person"];
+
           //Daten zur Person werden abgerufen
           $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
           $person = $conn->query($personsql);
@@ -163,53 +165,64 @@ if($_SESSION["logged"] == true) {
               if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
                echo "<div class=\"form-group\"></div>
                <div class=\"form-group\">
-               <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-               <a class=\"btn btn-secondary\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" onclick='return checkDelete()'>Löschen</a>
-               <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
                 // echo "<hr>";
   
                 //Tabelle wird erzeugt
                 echo "
-                  <p>
-                  <div class='table-responsive'>
-                  <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
-                  <thead>
-                    <tr >
-                      <th >Pferdename</th>
-                      <th >Beziehung</th>
-                      <th>Aktion</th>
-                    </tr>
-                    </thead>";
+                <div class='table-responsive'>
+                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                <thead class='thead-light'>
+                  <tr>
+                    <th>Pferdename</th>
+                    <th>Funktion</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                
+                <tbody>";
 
                 $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
                 $pferd_bez = $conn->query($pferd_sql);
   
                 while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
                   echo '<tr>';
-                  echo'<td>' . $fetch['pferdename'] .  '</td>';
-                  echo'<td>' . $fetch['funktionsbez'] . '</td>';
+                  echo '<td>' . $fetch['pferdename'] .  '</td>';
+                  echo '<td>' . $fetch['funktionsbez'] . '</td>';
   
                   //Links mit welchen die Id des Pferdes übergeben wird
-                  echo '<td> 
-                    <a href="pferd-show.php?id_person=' . $fetch["id_pferd"] . '>Anzeigen</a> <br>
-                    <a href="pferd-edit.php?id_person=' . $fetch["id_pferd"] . '>Bearbeiten</a> <br>';
-                  echo '</tr></table></div></p><hr>';
-                  } 
 
-                echo "<div class=\"form-group\"></div>
+                  echo '<td>
+                  <div class="d-sm-flex flex-row">
+                  <div><a class="btn btn-sm btn-dark" role="button" href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '" >Anzeigen</a></div>
+                  <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a></div>
+                  </div>
+                  </td>
+                  </tr>';
+
+                }
+                echo "
+                  </tbody>
+                  </table>
+                  </div>
+                  <hr>";
+
+                echo "
                 <div class=\"form-group\">
-                <a class=\"btn btn-secondary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Bearbeiten</a>
-                <a class=\"btn btn-secondary\" &id_delete=0\" >Löschen nicht möglich*</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
-                echo "<br>*Löschen nicht möglich, da dieser Person Pferde zugeordnet sind.";
-              }           
-              // href=\"person-delete.php?id_person=" . $row_p['id_person'] . "
+                  <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                  <a class=\"btn btn-outline-danger disabled\" href=\"#\" onclick='return checkDelete()'>Löschen nicht möglich*</a>
+                  <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a></div>
+                  *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.";
           
             }
             
           }
+
+        }
 	
           else {
             echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';

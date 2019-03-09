@@ -166,15 +166,15 @@ chart.render();
               echo "
                 <p>
                 <div class='table-responsive'>
-                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
-                <thead>
+                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                <thead class='thead-light'>
                   <tr >
                     <th>Lieferung</th>
                     <th>Lieferdatum</th>
                     <th>Menge in kg</th>
                     <th>Einkaufpreis je kg</th>
                     <th>Lieferant</th>
-                    <th>Aktion</th>
+                    <th></th>
                   </tr>
                   </thead>";
               while($fetch = mysqli_fetch_assoc($verbrauchsgut)){
@@ -189,16 +189,24 @@ chart.render();
                   while($fetch1 = mysqli_fetch_assoc($query1)){
                     echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>';
                   }
-                echo '<td> 
-                <a href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a> <br>
-                <a href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a> <br></td>';               
+                echo '<td>
+                <div class="d-sm-flex flex-row">
+                <div><a class="btn btn-sm btn-primary" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
+                <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a></div>
+                </div>
+                </td>';               
                 echo "</tr>";
               }
               echo "
                 </tbody>
-                </table>"; 
+                </table>
+                </div>"; 
             }
-          echo "<p><br><a class=\"btn btn-secondary\" href=\"gueter.php\" >zurück zur Übersicht</a></div>";
+          echo '
+          <hr>
+          <div class="form-group">
+          <a class="btn btn-secondary" href="gueter.php">zurück zur Übersicht</a>
+          </div>';
 
 
           ?>
