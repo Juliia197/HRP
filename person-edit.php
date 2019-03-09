@@ -129,9 +129,12 @@ if($_SESSION["logged"] == true) {
 
           if($personid>0){ //wird ausgeführt wenn eine Person bearbeitet werden will
             
-            //Daten der Person mit der übergebenen ID werden abgerufen
-            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-            $person = $conn->query($personsql);
+            $personquery = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person =? ";
+            $person_sql = $conn->prepare($personquery);
+            $person_sql->bind_param("i",$_GET["id_person"]);
+            $person_sql->execute();
+            $person = $person_sql->get_result();
+  
 
             while($row_p = $person->fetch_assoc()){
               // Leiste zur Darstellung der aktuellen Position auf der Seite
@@ -169,7 +172,8 @@ if($_SESSION["logged"] == true) {
               echo "<label>Geburtsdatum</label>";
               echo "<input class=\"form-control\" type=\"date\" min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\"><br>";
 
-              echo "<br><h3>Adresse</h3>";
+
+              echo "<br><hr><br><h3> Adresse </h3>";
 
               echo "<label>Straße</label>";
               echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\"><br>";
@@ -183,8 +187,9 @@ if($_SESSION["logged"] == true) {
               echo "<label>Ortschaft</label>";
               echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["ort"] . "\" name=\"ort\"><br>";
 
-              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-              echo "<input class=\"form-control\" type=\"text\" maxlength=\"2\" value=\"" . $row_p["land"] . "\" name=\"land\"><br>";
+              echo "<label>Land</label>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\"><br>";
+
 
               echo "<hr>";
 

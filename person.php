@@ -145,8 +145,11 @@ if($_SESSION["logged"] == true) {
                           
             <?php
               //Abrufen aller Personen
-              $person = "SELECT * FROM person WHERE id_gehoeft = $id_gehoeft";
-              $query = $conn ->query($person);
+              $person_query = "SELECT * FROM person WHERE id_gehoeft = ?";
+              $person_sql = $conn->prepare($person_query);
+              $person_sql -> bind_param("i",$id_gehoeft);
+              $person_sql->execute();
+              $query=$person_sql->get_result();
               
               //While erzeugt für jede Zeile der Datenbank eine Tabellenzeile
               while($fetch = mysqli_fetch_assoc($query)){
@@ -156,8 +159,12 @@ if($_SESSION["logged"] == true) {
                   echo '<td>';
                   
                   //Abrufen der verschiedenen Beziehungen die die Person mit einem oder mehreren Pferden hat
-                  $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $fetch['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
-                  $query1 = $conn->query($funktion) ;
+                  $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion';
+                  $funktion_sql = $conn->prepare($funktion_query);
+                  $funktion_sql->bind_param("i",$fetch["id_person"]);
+                  $funktion_sql->execute();
+                  $query1 = $funktion_sql->get_result();
+                  
                   while($fetch1 = mysqli_fetch_assoc($query1)){
                     echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
                   }
