@@ -186,7 +186,7 @@ if (isset($_POST['email'], $_POST['password'])) {
   <meta name="pferdeverwalter" content="" />
   <meta name="JanFreymuth" content="hrp-projekt.de" />
 	
-  <title>Admin Login</title>
+  <title>HRP-Projekt - Login</title>
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
