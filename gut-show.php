@@ -61,13 +61,14 @@ var chart = new CanvasJS.Chart("preisentwicklung", {
 	title:{
 		text: "Preisentwicklung",
     fontWeight: "bold",
-    fontFamily: "Segoe UI"
+    fontFamily: "Helvetica"
 	},
 	axisY:{
 		includeZero: false
 	},
 	data: [{        
-		type: "line",       
+		type: "line",    
+    color: "#7e5738",   
 		dataPoints: dataPoints_verbrauchsgut
 	}]
 });
@@ -160,7 +161,7 @@ chart.render();
           $verbrauchsgut = $conn->query($verbrauchsgut_sql);
             while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
               echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
-              $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_gehoeft = $id_gehoeft" ;
+              $verbrauchsgut_sql = "SELECT verbrauchsgut.verbrauchsgutbez, DATE_FORMAT(lieferdatum, '%d.%m.%Y'), verbrauchsgut.menge, verbrauchsgut.einkaufspreis FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_gehoeft = $id_gehoeft" ;
               $verbrauchsgut = $conn->query($verbrauchsgut_sql);
               echo "
                 <p>
