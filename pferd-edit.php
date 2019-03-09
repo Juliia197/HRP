@@ -17,17 +17,6 @@ session_start();
 
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
-
-/*if (isset($_POST['id_box'])){
-  
-    $boxbelegen_sql = "UPDATE box SET id_pferd = " . $_GET['id_pferd'] . " WHERE id_box = " . $_POST['id_box'];
-    $boxbelegen_result = $conn->query($boxbelegen_sql);
-    if ($_GET['id_pferd'] > 0){
-    $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = " . $_GET['id_pferd'] . " AND id_box != " . $_POST['id_box'];
-    $boxleeren_result = $conn->query($boxleeren_sql);
-}
-}*/
-
   
 ?>
 
@@ -356,6 +345,16 @@ if($_SESSION["logged"] == true) {
 
                 <br />
                 <hr>
+                <h2>Personen zuweisen</h2>
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
+                <tr>
+                <th>Person</th>
+                <th>Beziehung</th>
+                <th>Aktion</th>
+                </tr>
+                </thead>
+                <tbody>
                 <?php
                   $allepersonen_sql = "SELECT id_person, vorname, nachname FROM person WHERE id_gehoeft = $id_gehoeft";
                   $allepersonen_result = $conn->query($allepersonen_sql);
@@ -451,8 +450,8 @@ if($_SESSION["logged"] == true) {
                 <hr>
                 <h2>Box zuweisen</h2>
                 <div class="table-responsive">
-                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
+                  <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <thead class="thead-light">
                     <tr>
                       <th>Auswahl</th>
                       <th>Boxentyp</th>
@@ -476,7 +475,7 @@ if($_SESSION["logged"] == true) {
                   </tbody>
                   </table>
                 </div>
-                <button type="submit" class="btn btn-success" id="sendButton">Speichern</button>
+                <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
             </form>
 

@@ -133,30 +133,37 @@ if($_SESSION["logged"] == true) {
           <p>
           <div class="table-responsive">
           <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead>
+            <thead class="thead-light">
             <tr>
               <th>Name</th>
               <th>Geschlecht</th>
               <th>Besitzer</th>
               <th>Boxentyp</th>
-              <th>Aktion</th>
+              <th></th>
             </tr>
           </thead>
 
             <?php    
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $pferd = "SELECT pferd.id_pferd, pferd.pferdename, pferd.geschlecht FROM pferd, box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-              $query = $conn->query($pferd) or die(mysql_error());
+              $pferd_query = "SELECT pferd.id_pferd, pferd.pferdename, pferd.geschlecht FROM pferd, box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = ?";
+              $pferd_sql = $conn->prepare($pferd_query);
+              $pferd_sql->bind_param("i", $id_gehoeft);
+              $pferd_sql->execute();
+              $pferd_result = $pferd_sql->get_result();
 
-              while($fetch = mysqli_fetch_assoc($query)){ //jede Zeile der Datenbank ergibt eine Zeile der Tabelle
+              while ($pferd_fetch = $pferd_result->fetch_assoc()) {
+
+             // $query = $conn->query($pferd) or die(mysql_error());
+
+             // while($fetch = mysqli_fetch_assoc($query)){ //jede Zeile der Datenbank ergibt eine Zeile der Tabelle
                 echo '<tr>';
-                  echo '<td>' . $fetch['pferdename'] . '</td>';
+                  echo '<td>' . $pferd_fetch['pferdename'] . '</td>';
                   echo '<td>' ; //geschlecht wird in der Datenbank als ein Buchstabe eingeplegt, daher hier umgeändert
-                    if( $fetch['geschlecht'] =='s')
+                    if( $pferd_fetch['geschlecht'] == 's')
                       {
                         echo "Stute";
                       }
-                    else if( $fetch['geschlecht'] =='w')
+                    else if( $pferd_fetch['geschlecht'] == 'w')
                       {
                         echo "Wallach";
                       }
@@ -168,30 +175,40 @@ if($_SESSION["logged"] == true) {
                   echo '</td>';
                   
                   //zusammenfügen von Vor und Nachname des Besitzers
-                  $besitzer = 'SELECT person.vorname, person.nachname From person, beziehung  WHERE beziehung.id_pferd = '.$fetch['id_pferd'].' AND beziehung.id_funktion = 1 AND beziehung.id_person=person.id_person';
-                    $query1 = $conn->query($besitzer) or die (mysql_error());
-                    while($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
+                  $besitzer_query = "SELECT person.vorname, person.nachname FROM person, beziehung  WHERE beziehung.id_pferd = ? AND beziehung.id_funktion = 1 AND beziehung.id_person=person.id_person";
+                  $besitzer_sql = $conn->prepare($besitzer_query);
+                  $besitzer_sql->bind_param("i", $pferd_fetch["id_pferd"]);
+                  $besitzer_sql->execute();
+                  $besitzer_result = $besitzer_sql->get_result();
+
+                  while ($besitzer_fetch = $besitzer_result->fetch_assoc()) {
+                      echo '<td>' . $besitzer_fetch['vorname'] . ' ' . $besitzer_fetch['nachname'] . '</td>'  ;
                     }
                   
                   //abfragen der Bezeichnung zur Box des Pferdes
-                  $boxentyp = 'SELECT boxentyp.boxenbez From box, boxentyp WHERE box.id_pferd = '.$fetch['id_pferd'].' AND box.id_boxentyp = boxentyp.id_boxentyp' ;
-                    $query2 = $conn->query($boxentyp) or die (mysql_error());
-                    while($fetch2 = mysqli_fetch_assoc($query2)){
-                      echo '<td>' . $fetch2['boxenbez'] . '</td>'  ;
+                  $box_query = "SELECT boxentyp.boxenbez From box, boxentyp WHERE box.id_pferd = ? AND box.id_boxentyp = boxentyp.id_boxentyp";
+                  $box_sql = $conn->prepare($box_query);
+                  $box_sql->bind_param("i", $pferd_fetch["id_pferd"]);
+                  $box_sql->execute();
+                  $box_result = $box_sql->get_result();
+
+                  while ($box_fetch = $box_result->fetch_assoc()) {
+                      echo '<td>' . $box_fetch['boxenbez'] . '</td>'  ;
                     }
 
                   //Links zum verweisen auf die anderen Seiten, mit übergabe der Id des Pferdes
-                  echo '<td>  
-                    <a href="pferd-show.php?id_pferd=' . $fetch["id_pferd"] . '">Anzeigen</a> <br> 
-                    <a href="pferd-edit.php?id_pferd=' . $fetch["id_pferd"] . '" >Bearbeiten</a> <br>
-                    <a href="pferd-delete.php?id_pferd=' . $fetch["id_pferd"] . '" onclick="return checkDelete()">Löschen</a></td>';
+                  echo '<td>
+                        <div class="d-sm-flex flex-row">
+                          <div><a class="btn btn-sm btn-dark" role="button" href="pferd-show.php?id_pferd=' . $pferd_fetch['id_pferd'] . '">Anzeigen</a></div>
+                          <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="pferd-edit.php?id_pferd=' . $pferd_fetch['id_pferd'] . '" >Bearbeiten</a></div>
+                          <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="pferd-delete.php?id_pferd=' . $pferd_fetch['id_pferd'] . '" onclick="return checkDelete()">Löschen</a></div>
+                        </div>
+                        </td>';
 
                 echo '</tr>';
               }
 
               ?>
-                          
 
           </table>
             </div>
