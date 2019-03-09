@@ -117,6 +117,8 @@ if($_SESSION["logged"] == true) {
             </li>            
           </ol>
           <div class="container-fluid">
+          <h1>Lieferungen</h1>
+          <hr>
           <div class="row justify-content-end">
           <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
           </div>
