@@ -129,9 +129,12 @@ if($_SESSION["logged"] == true) {
 
           if($personid>0){ //wird ausgeführt wenn eine Person bearbeitet werden will
             
-            //Daten der Person mit der übergebenen ID werden abgerufen
-            $personsql = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-            $person = $conn->query($personsql);
+            $personquery = "SELECT * FROM adresse, person WHERE adresse.id_adresse = person.id_adresse AND person.id_person =? ";
+            $person_sql = $conn->prepare($personquery);
+            $person_sql->bind_param("i",$_GET["id_person"]);
+            $person_sql->execute();
+            $person = $person_sql->get_result();
+  
 
             while($row_p = $person->fetch_assoc()){
               // Leiste zur Darstellung der aktuellen Position auf der Seite
