@@ -180,14 +180,16 @@ if($_SESSION["logged"] == true) {
   
                 //Tabelle wird erzeugt
                 echo "
-                <h3>Beziehungen zu dieser Person</h3><br>
+                <h3>Beziehungen zu dieser Person</h3><br>";
+
+                echo "
                 <div class='table-responsive'>
-                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
                 <thead class='thead-light'>
                   <tr>
-                    <th>Pferdename</th>
-                    <th>Funktion</th>
-                    <th></th>
+                  <th>Pferdename</th>
+                  <th>Funktion</th>
+                  <th></th>
                   </tr>
                 </thead>
                 
