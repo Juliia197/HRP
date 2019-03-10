@@ -336,7 +336,7 @@ if($_SESSION["logged"] == true) {
 
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
                 <label>Pferdename</label>
-                <input class="form-control" type="text" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
+                <input class="form-control" type="text" maxlength="45" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
                 <label>Geschlecht</label>
                 <select name="geschlecht">
                     <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">Stute</option>
@@ -344,15 +344,15 @@ if($_SESSION["logged"] == true) {
                     <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">Wallach</option>
                 </select><br /><br />
                 <label>Gewicht (in kg)</label>
-                <input class="form-control" type="number" value="<?php echo $gewicht ?>" name="gewicht" required><br />
+                <input class="form-control" type="number" min="3" max="1543" value="<?php echo $gewicht ?>" name="gewicht" required><br />
                 <label>Größe (in cm)</label>
-                <input class="form-control" type="number" value="<?php echo $groesse ?>" name="groesse" required><br />
+                <input class="form-control" type="number" min="35" max="210" value="<?php echo $groesse ?>" name="groesse" required><br />
                 <label>Passnummer</label>
-                <input class="form-control" type="number" value="<?php echo $passnr ?>" name="passnr" required><br />
+                <input class="form-control" type="number" min="100000000" max="999999999999999" value="<?php echo $passnr ?>" name="passnr" required><br />
                 <label>Geburtsdatum</label>
-                <input class="form-control" type="date" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
+                <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
                 <label>Ankunft des Pferdes am Hof</label>
-                <input class="form-control" type="date" value="<?php echo $ankunft ?>" name="ankunft" required><br />
+                <input class="form-control" type="date" min="2018-10-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $ankunft ?>" name="ankunft" required><br />
 
                 <br />
                 <hr>
@@ -476,9 +476,11 @@ if($_SESSION["logged"] == true) {
                   </tbody>
                   </table>
                 </div>
+
                 <br>
                 <hr>
                 <br>
+
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
             </form>

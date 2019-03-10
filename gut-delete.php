@@ -81,7 +81,7 @@ if($_SESSION["logged"] == true) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
