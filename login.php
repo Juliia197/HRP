@@ -72,9 +72,87 @@ if (isset($_POST['email'], $_POST['password'])) {
       
         if (isset($_POST['gehoeftauswaehlen'])) {
 
-          $_SESSION['id_gehoeft'] = $_POST['gehoeftauswaehlen'];
+          $id_gehoeft = $_POST['gehoeftauswaehlen'];
+
+          $_SESSION['id_gehoeft'] = $id_gehoeft;
           $_SESSION['logged'] = true;
 
+          $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
+            $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
+            $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
+            $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
+            $heute_datum = date("Y-m-d");
+          
+          if ($letzteaenderung_datum != $heute_datum){
+            $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
+            $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
+            $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
+            $heute_datum_jahr = intval(substr($heute_datum,0,4));
+            $heute_datum_monat = intval(substr($heute_datum,5,2));
+            $heute_datum_tag = intval(substr($heute_datum,8,2));
+            $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
+            $bestand_veraenderung = 0;
+            $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+            $gewichtpferd_result = $conn->query($gewichtpferd_sql);
+            $gewichtpferd_result = $gewichtpferd_result->fetch();
+            $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
+            $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = $id_gehoeft AND id_pferd IS NOT NULL";
+            $anzahlbox_result = $conn->query($anzahlbox_sql);
+            $anzahlbox_result = $anzahlbox_result->fetch();
+            $anzahlboxen = $anzahlbox_result['anzahlbox'];
+            $haferkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 1";
+            $haferkoeff_result = $conn->query($haferkoeff_sql);
+            $haferkoeff_result = $haferkoeff_result->fetch();
+            $koeffhafer = $haferkoeff_result['koeffizient'];
+
+            $heukoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
+            $heukoeff_result = $conn->query($heukoeff_sql);
+            $heukoeff_result = $heukoeff_result->fetch();
+            $koeffheu = $heukoeff_result['koeffizient'];
+            $strohkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
+            $strohkoeff_result = $conn->query($strohkoeff_sql);
+            $strohkoeff_result = $strohkoeff_result->fetch();
+            $koeffstroh = $strohkoeff_result['koeffizient'];
+            $spaenekoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
+            $spaenekoeff_result = $conn->query($spaenekoeff_sql);
+            $spaenekoeff_result = $spaenekoeff_result->fetch();
+            $koeffspaene = $spaenekoeff_result['koeffizient'];
+            $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+            $haferbestand_result = $conn->query($haferbestand_sql);
+            $haferbestand_result = $haferbestand_result->fetch();
+            $bestand_hafer = $haferbestand_result['bestand'];
+            $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+            $heubestand_result = $conn->query($heubestand_sql);
+            $heubestand_result = $heubestand_result->fetch();
+            $bestand_heu = $heubestand_result['bestand'];
+            $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+            $strohbestand_result = $conn->query($strohbestand_sql);
+            $strohbestand_result = $strohbestand_result->fetch();
+            $bestand_stroh = $strohbestand_result['bestand'];
+            $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+            $spaenebestand_result = $conn->query($spaenebestand_sql);
+            $spaenebestand_result = $spaenebestand_result->fetch();
+            $bestand_spaene = $spaenebestand_result['bestand'];
+            $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
+            $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
+            $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
+            $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
+            
+            $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
+            $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
+            $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
+            $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
+            $bestandneu_hafer_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_heu_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
+            $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
+            $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
+            $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+          
+          }
+          
           header('location:dashboard.php');
           exit();
           
@@ -86,88 +164,89 @@ if (isset($_POST['email'], $_POST['password'])) {
             
             $id_gehoeft_sql = " SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = '" . $id_benutzer . "'";
             $id_gehoeft = $conn->query($id_gehoeft_sql);
-            $id_gehoeft = $id_gehoeft->fetch();
-    
-            $_SESSION['id_gehoeft'] = $id_gehoeft['id_gehoeft'];
+            $id_gehoeft_fetch = $id_gehoeft->fetch();
+            
+            $id_gehoeft = $id_gehoeft_fetch["id_gehoeft"];
+
+            $_SESSION['id_gehoeft'] = $id_gehoeft;
             $_SESSION['logged'] = true;
-            /*$bestandsaenderungnoetig_sql = "SELECT letzteaenderung FROM verbrauchsguttyp";
+
+            $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
             $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
             $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
-            $letzteaenderung_datum = $bestandsaenderungnoetig_result['letzteaenderung'];
-    
+            $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
             $heute_datum = date("Y-m-d");
+          
+          if ($letzteaenderung_datum != $heute_datum){
+            $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
+            $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
+            $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
+            $heute_datum_jahr = intval(substr($heute_datum,0,4));
+            $heute_datum_monat = intval(substr($heute_datum,5,2));
+            $heute_datum_tag = intval(substr($heute_datum,8,2));
+            $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
+            $bestand_veraenderung = 0;
+            $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+            $gewichtpferd_result = $conn->query($gewichtpferd_sql);
+            $gewichtpferd_result = $gewichtpferd_result->fetch();
+            $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
+            $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = $id_gehoeft AND id_pferd IS NOT NULL";
+            $anzahlbox_result = $conn->query($anzahlbox_sql);
+            $anzahlbox_result = $anzahlbox_result->fetch();
+            $anzahlboxen = $anzahlbox_result['anzahlbox'];
+            $haferkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 1";
+            $haferkoeff_result = $conn->query($haferkoeff_sql);
+            $haferkoeff_result = $haferkoeff_result->fetch();
+            $koeffhafer = $haferkoeff_result['koeffizient'];
+
+            $heukoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
+            $heukoeff_result = $conn->query($heukoeff_sql);
+            $heukoeff_result = $heukoeff_result->fetch();
+            $koeffheu = $heukoeff_result['koeffizient'];
+            $strohkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
+            $strohkoeff_result = $conn->query($strohkoeff_sql);
+            $strohkoeff_result = $strohkoeff_result->fetch();
+            $koeffstroh = $strohkoeff_result['koeffizient'];
+            $spaenekoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
+            $spaenekoeff_result = $conn->query($spaenekoeff_sql);
+            $spaenekoeff_result = $spaenekoeff_result->fetch();
+            $koeffspaene = $spaenekoeff_result['koeffizient'];
+            $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+            $haferbestand_result = $conn->query($haferbestand_sql);
+            $haferbestand_result = $haferbestand_result->fetch();
+            $bestand_hafer = $haferbestand_result['bestand'];
+            $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+            $heubestand_result = $conn->query($heubestand_sql);
+            $heubestand_result = $heubestand_result->fetch();
+            $bestand_heu = $heubestand_result['bestand'];
+            $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+            $strohbestand_result = $conn->query($strohbestand_sql);
+            $strohbestand_result = $strohbestand_result->fetch();
+            $bestand_stroh = $strohbestand_result['bestand'];
+            $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+            $spaenebestand_result = $conn->query($spaenebestand_sql);
+            $spaenebestand_result = $spaenebestand_result->fetch();
+            $bestand_spaene = $spaenebestand_result['bestand'];
+            $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
+            $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
+            $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
+            $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
             
-            if ($letzteaenderung_datum != $heute_datum){
-    
-              $id_gehoeft = 1;
-    
-              $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
-              $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
-              $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
-    
-              $heute_datum_jahr = intval(substr($heute_datum,0,4));
-              $heute_datum_monat = intval(substr($letzteaenderung_datum,5,2));
-              $heute_datum_tag = intval(substr($letzteaenderung_datum,8,2));
-    
-              $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
-    
-              $bestand_veraenderung = 0;
-              $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-              $gewichtpferd_result = $conn->query($gewichtpferd_sql);
-              $gewichtpferd_result = $gewichtpferd_result->fetch();
-              $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
-    
-              $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = 1";
-              $anzahlbox_result = $conn->query($anzahlbox_sql);
-              $anzahlbox_result = $anzahlbox_result->fetch();
-              $anzahlboxen = $anzahlbox_result['anzahlbox'];
-    
-              $hafer_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
-              $hafer_result = $conn->query($hafer_sql);
-              $hafer_result = $hafer_result->fetch();
-              $koeffhafer = $hafer_result['koeffizient'];
-              $bestand_hafer = $hafer_result['bestand'];
-    
-              $heu_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
-              $heu_result = $conn->query($heu_sql);
-              $heu_result = $heu_result->fetch();
-              $koeffheu = $heu_result['koeffizient'];
-              $bestand_heu = $heu_result['bestand'];
-    
-              $spaene_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
-              $spaene_result = $conn->query($spaene_sql);
-              $spaene_result = $spaene_result->fetch();
-              $koeffspaene = $spaene_result['koeffizient'];
-              $bestand_spaene = $spaene_result['bestand'];
-    
-              $stroh_sql = "SELECT koeffizient, bestand FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 5";
-              $stroh_result = $conn->query($stroh_sql);
-              $stroh_result = $stroh_result->fetch();
-              $koeffstroh = $stroh_result['koeffizient'];
-              $bestand_stroh = $stroh_result['bestand'];
-    
-              $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
-              $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
-              $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
-              $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
-              
-              $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
-              $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
-              $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
-              $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
-    
-              $bestandneu_hafer_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_hafer . " WHERE id_verbrauchsguttyp = 2";
-              $bestandneu_heu_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_heu . " WHERE id_verbrauchsguttyp = 3";
-              $bestandneu_spaene_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_spaene . " WHERE id_verbrauchsguttyp = 4";
-              $bestandneu_stroh_sql = "UPDATE verbrauchsguttyp SET bestand = " . $bestandneu_stroh . " WHERE id_verbrauchsguttyp = 5";
-    
-              $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
-              $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
-              $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
-              $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
-    
-            } */
-    
+            $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
+            $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
+            $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
+            $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
+            $bestandneu_hafer_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_heu_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
+            $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
+            $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
+            $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+          
+          }
+
             header('location:dashboard.php');
             exit();
           }
