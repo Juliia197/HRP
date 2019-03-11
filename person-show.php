@@ -124,8 +124,12 @@ if($_SESSION["logged"] == true) {
           $id_person = $_GET["id_person"];
 
           //Daten zur Person werden abgerufen
-          $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-          $person = $conn->query($personsql);
+
+          $personquery = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = ?";
+          $person_sql = $conn->prepare($personquery);
+          $person_sql->bind_param("i",$_GET["id_person"]);
+          $person_sql->execute();
+          $person = $person_sql->get_result();
 
           while($row_p = $person->fetch_assoc()){
             //Leiste zur Darstellung der aktuellen Position auf der Seite
@@ -159,8 +163,11 @@ if($_SESSION["logged"] == true) {
             
             
             //Abfrage, ob diese Person Beziehungen hat
-            $funktion = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ' . $_GET['id_person'] . ' AND beziehung.id_funktion = funktion.id_funktion';
-            $query1 = $conn->query($funktion) ; 
+            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion';
+            $funktion_sql = $conn->prepare($funktion_query);
+            $funktion_sql->bind_param("i",$_GET["id_person"]);
+            $funktion_sql->execute();
+            $query1 = $funktion_sql->get_result();
 
               if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
                echo "<div class=\"form-group\"></div>
@@ -170,24 +177,30 @@ if($_SESSION["logged"] == true) {
                 <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
-                // echo "<hr>";
   
                 //Tabelle wird erzeugt
                 echo "
+                <h3>Beziehungen zu dieser Person</h3><br>";
+
+                echo "
                 <div class='table-responsive'>
-                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
                 <thead class='thead-light'>
                   <tr>
-                    <th>Pferdename</th>
-                    <th>Funktion</th>
-                    <th></th>
+                  <th>Pferdename</th>
+                  <th>Funktion</th>
+                  <th></th>
                   </tr>
                 </thead>
                 
                 <tbody>";
 
-                $pferd_sql = "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = " . $_GET['id_person'] . " AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
-                $pferd_bez = $conn->query($pferd_sql);
+                
+                $pferd_query= "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = ? AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
+                $pferd_sql = $conn->prepare($pferd_query);
+                $pferd_sql->bind_param("i",$_GET["id_person"]);
+                $pferd_sql->execute();
+                $pferd_bez = $pferd_sql->get_result();
   
                 while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
                   echo '<tr>';
