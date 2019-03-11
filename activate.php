@@ -108,8 +108,8 @@ else {
   ';
   $header  = "MIME-Version: 1.0\r\n";
   $header .= "Content-type: text/html; charset=utf-8\r\n";
-  $header .= "From: bestaetigung@hrp-projekt.de" . "\r\n" .
-  $header .= "Reply-to: info@hrp-projekt.de";
+  $absender = "noreply@hrp-projekt.de";
+  $header .= 'From: '. $absender."\r\nReply-To: ".$absender.'';
 
   mail($to, $subject, $message, $header);
   
