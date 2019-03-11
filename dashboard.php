@@ -282,27 +282,27 @@ if ($bestand_saegespaene_result->num_rows > 0){
           <h1>Dashboard</h1>
           <hr>
           <div class="row">
-          <div class="col">
-          <div class="card mb-3">
-            <div class="card-header">
-              <i class="fas fa-chart-pie"></i>
-              Pferd
-            </div>
-            <div class="card-body">
-              <div id="anzahl_hws" style="height: 300px; width: 100%;"></div>
-            </div>
-          </div>
-          </div>
-          <div class="col">
-          <div class="card mb-3">
-            <div class="card-header">
-              <i class="fas fa-chart-pie"></i>
-              Boxen
-            </div>
-            <div class="card-body">
-              <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
+          <div class="col-md">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                Pferd
+              </div>
+              <div class="card-body">
+                <div id="anzahl_hws" style="height: 300px; width: 100%;"></div>
+              </div>
             </div>
           </div>
+          <div class="col-md">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                Boxen
+              </div>
+              <div class="card-body">
+                <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
+              </div>
+            </div>
           </div>
           </div>
           <div class="card mb-3">
