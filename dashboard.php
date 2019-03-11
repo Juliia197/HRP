@@ -99,7 +99,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Dashboard</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
