@@ -146,11 +146,14 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
             </li>            
           </ol>
           
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Lieferungen</a>
+          <h1 class="float-left">Güter</h1>
+          <div class="float-right">
+          <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">zu den Lieferungen</a>
           </div>
-          </div>
+          <br>
+          <br>
+          <hr>
+          <br>
           
           <p>
           <div class="table-responsive">
@@ -167,7 +170,6 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
             <?php  
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
               $verbrauchsguttyp = "SELECT verbrauchsguttyp.id_verbrauchsguttyp, verbrauchsguttyp.verbrauchsguttypbez, gehoeft_besitzt_verbrauchsguttyp.bestand FROM verbrauchsguttyp, gehoeft_besitzt_verbrauchsguttyp WHERE gehoeft_besitzt_verbrauchsguttyp.id_gehoeft = $id_gehoeft AND verbrauchsguttyp.id_verbrauchsguttyp = gehoeft_besitzt_verbrauchsguttyp.id_verbrauchsguttyp";
-              
               $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
 
               while($fetch = mysqli_fetch_assoc($query)){
