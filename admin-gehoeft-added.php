@@ -3,7 +3,6 @@ $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
-
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
@@ -100,27 +99,31 @@ if ($conn->connect_error) {
           <!-- Page Content -->
           <h1>Admin</h1>
           <hr>
-          <h2>Hinzufügen von Benutzern als Gehöftverwalter</h2><br>
 
-          <form action= "admin-benutzer.php" method="post">
-          
-          <label for="id_benutzer">id_benutzer</label>
-          <input class="form-control" id="id_benutzer" type="number" name="id_benutzer" required>
-          <label for="id_gehoeft">id_gehoeft</label>
-          <input class="form-control" id="id_gehoeft" type="number" name="id_gehoeft" required>
-          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
-          </form>
-          
-          <h2>Hinzufügen von Gehöften</h2>
-
-          <form action= "admin-gehoeft-added.php" method="post">
-          
-          <label for="gehoeftname">Gehöftname</label>
-          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required>
-          <label for="id_adresse">Adresse</label>
-          <input class="form-control" id="id_adresse" type="number" name="id_adresse" required>
-          <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
-          </form>
+          <?php 
+            $id_adresse = $_POST['id_adresse'];
+            $gehoeftname = $_POST["gehoeftname"];
+            $check_sql = "SELECT COUNT(id_adresse) AS count FROM gehoeft WHERE id_adresse =  $id_adresse ";
+            $check = $conn->query($check_sql);
+            $check = $check->fetch_assoc();
+            
+            if ($check['count'] > 0) {
+              echo '<div class="alert alert-danger" role="alert">Zu dieser Adresse gibt es bereits ein Gehöft!</div><hr>';
+            }
+            
+            else {
+              $insert_gehoeft_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
+              $insert_gehoeft = $conn->query($insert_gehoeft_sql);
+              $id_gehoeft = $conn->insert_id;
+              
+              for ($i=1; $i<=4; $i++) {
+              $insert_bestand_sql = " INSERT INTO gehoeft_besitzt_verbrauchsguttyp (id_verbrauchsguttyp, id_gehoeft, bestand, datum) VALUES ('$i', '$id_gehoeft', '0', '0000-00-00') ";
+              $insert_bestand = $conn->query($insert_bestand_sql);
+              }
+              echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
+            }
+            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
+            ?>
 
         </div>
         <!-- /.container-fluid -->
