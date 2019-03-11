@@ -66,7 +66,7 @@ else {
   $aktivierungslink = $_SESSION["aktivierungslink"];
 
   // Ausgabe Aktivierungslink für localhost
-  echo $aktivierungslink;
+  //echo $aktivierungslink;
 
   // Mail wird gesendet 
   
