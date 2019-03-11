@@ -103,9 +103,24 @@ if($_SESSION["logged"] == true) {
       <div id="content-wrapper">
 
         <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="dashboard.php">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="gehoeft.php">Gehöft</a>
+          </li>
+          <li class="breadcrumb-item active">
+            Gehöftverwaltung
+          </li>
+        </ol>
 
           <!-- Page Content -->
-          <h1>Benutzer zum Gehöft hinzufügen</h1>
+
+          <h1>Gehöftverwaltung</h1>
+          <hr>
+
+          <h2>Benutzer zum Gehöft hinzufügen</h1>
           <hr>
 
           <form action= "gehoeft-benutzer-added.php" method="post">
@@ -114,9 +129,57 @@ if($_SESSION["logged"] == true) {
           <input class="form-control" id="email" type="email" name="email" required>
           </div>
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
-          
-          </form>
 
+          </form>
+          <br>
+
+          <h2>Übersicht Gehöftverwalter</h2>
+          <hr>
+
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>E-Mail</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+
+              $gehoeftverwalter_query = "SELECT benutzer.email FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
+              $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
+              $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
+              $gehoeftverwalter_sql->execute();
+              $gehoeftverwalter_result = $gehoeftverwalter_sql->get_result();
+              
+              $nummer=1;
+              while ($gehoeftverwalter_fetch = $gehoeftverwalter_result->fetch_assoc()) {
+                echo '<tr>
+                <td>' . $nummer . '</td>
+                <td>' . $gehoeftverwalter_fetch['email'] . '</td>
+
+
+                </tr>';
+                $nummer += 1;
+              } 
+              ?>
+            </tbody>
+            </table>
+            </div>
+            <br>
+
+            <h2>Benutzer entfernen</h2>
+            <hr>
+            <p>Um einen Benutzer als Gehöftverwalter zu entfernen, schreiben Sie uns an 
+              <a href="mailto:info@hrp-projekt.de?subject=Benutzer als Gehöftverwalter entfernen">info@hrp-projekt.de</a>
+            </p>
+            
+            <hr>
+            <div class="form-group">
+              <a class="btn btn-secondary" href="gehoeft.php">zurück zur Übersicht</a>
+            </div>
 
 
         </div>
@@ -168,8 +231,25 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 

@@ -66,18 +66,53 @@ else {
   $aktivierungslink = $_SESSION["aktivierungslink"];
 
   // Ausgabe Aktivierungslink für localhost
-  echo $aktivierungslink;
+  //echo $aktivierungslink;
 
   // Mail wird gesendet 
-  /*
+  
   $to = $register_email;
   $subject = "Bestätigung Ihres Accounts bei hrp-projekt.de";
-  $txt = $aktivierungslink;
-  $headers = "From: bestaetigung@hrp-projekt.de" . "\r\n" .
-  "Reply-to: info@hrp-projekt.de";
+  $message ='
+  <html>
+  <head>
+      <style>
+          * {
+              font-family: Helvetica, sans-serif
+          }
+          .button {
+              padding: 8px;
+              background-color: #a4bf6b;
+              border: 1px solid black;
+              border-radius: 4px;
+              display: inline-block;
+          }
+          .button:hover {
+              background-color: #8da35b;
+          }
+          .center {
+              margin: 0 auto;
+              text-align: center;
+          }
+      </style>
+  </head>
+  <body>
+    <h1>Best&auml;tigung Ihres Accounts bei <a href="https://www.hrp-projekt.de">hrp-projekt.de</a></h1>
+    <p>Zum Best&auml;tigen Ihres Accounts dr&uuml;cken Sie einfach auf den unten stehenden Button:</p>
+    <p><div class="center"><div class="button">
+    <a style="color: black; text-decoration: none;" href="'.$aktivierungslink.'">E-Mail-Adresse jetzt best&auml;tigen</a>
+    </div></div></p>
+    <p>Sollte dies nicht funktionieren, folgen Sie dem unten stehenden Link:</p>
+    <p><a href="'.$aktivierungslink.'">'.$aktivierungslink.'</a></p>
+  </body>
+</html>
+  ';
+  $header  = "MIME-Version: 1.0\r\n";
+  $header .= "Content-type: text/html; charset=utf-8\r\n";
+  $absender = "noreply@hrp-projekt.de";
+  $header .= 'From: '. $absender."\r\nReply-To: ".$absender.'';
 
-  mail($to,$subject,$txt,$headers);
-  */
+  mail($to, $subject, $message, $header);
+  
   
 }
 
@@ -149,7 +184,7 @@ else {
                     <p>Ihre E-Mail-Adresse wurde noch nicht bestätigt!</p>
                     <p>Wir haben Ihnen einen Bestätigungslink an <strong><?php echo $register_email?></strong> gesendet. 
                     Überprüfen Sie auch Ihren Spam-Ordner. 
-                    Bei Problemen melden Sie sich bei <a href="mailto:info@hrp-projekt.de">info@hrp-projekt.de</a></p> <br />
+                    Bei Problemen melden Sie sich bei <a href="mailto:info@hrp-projekt.de?subject=Bestätigung der E-Mail-Adresse">info@hrp-projekt.de</a></p> <br />
                     <div class="col-xs-12 col-sm-12">
                       <form action="activate.php" method="POST">
                         <div class="form-group">

@@ -53,9 +53,9 @@ $id_benutzer = $mysqli->insert_id;
 
 //Nicht-Passende Links auskommentieren
 
-//$link_base = "hrp-projekt.de/activate.php";
+$link_base = "https://www.hrp-projekt.de/activate.php";
 //$link_base = "localhost/HRP/activate.php";
-$link_base = "henriks-macbook-pro.local/HRP/activate.php";
+//$link_base = "henriks-macbook-pro.local/HRP/activate.php";
 
 $link_parameter = "?id_benutzer=$id_benutzer&aktivierungscode=$aktivierungscode";
 
