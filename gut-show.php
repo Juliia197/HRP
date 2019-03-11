@@ -219,6 +219,7 @@ chart.render();
           </div>
           </div>
           <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>
+          <br>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
