@@ -3,12 +3,20 @@ $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+session_start();
+
+if($_SESSION["logged"] == true) {
+
+  $id_gehoeft = $_SESSION['id_gehoeft'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +74,7 @@ if ($conn->connect_error) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -97,33 +105,19 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Admin</h1>
+          <h1>Benutzer zum Gehöft hinzufügen</h1>
           <hr>
 
-          <?php 
-            $id_adresse = $_POST['id_adresse'];
-            $gehoeftname = $_POST["gehoeftname"];
-            $check_sql = "SELECT COUNT(id_adresse) AS count FROM gehoeft WHERE id_adresse =  $id_adresse ";
-            $check = $conn->query($check_sql);
-            $check = $check->fetch_assoc();
-            
-            if ($check['count'] > 0) {
-              echo '<div class="alert alert-danger" role="alert">Zu dieser Adresse gibt es bereits ein Gehöft!</div><hr>';
-            }
-            
-            else {
-              $insert_gehoeft_sql = " INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES ('$gehoeftname', '$id_adresse') ";
-              $insert_gehoeft = $conn->query($insert_gehoeft_sql);
-              $id_gehoeft = $conn->insert_id;
-              
-              for ($i=1; $i<=4; $i++) {
-              $insert_bestand_sql = " INSERT INTO gehoeft_besitzt_verbrauchsguttyp (id_verbrauchsguttyp, id_gehoeft, bestand, datum) VALUES ('$i', '$id_gehoeft', '0', '0000-00-00') ";
-              $insert_bestand = $conn->query($insert_bestand_sql);
-              }
-              echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
-            }
-            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
-            ?>
+          <form action= "gehoeft-benutzer-added.php" method="post">
+          <div class="form-group">
+          <label for="email">E-Mail</label>
+          <input class="form-control" id="email" type="email" name="email" required>
+          </div>
+          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
+          
+          </form>
+
+
 
         </div>
         <!-- /.container-fluid -->
@@ -161,7 +155,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="login.php">Ja</a>
           </div>
         </div>
       </div>
@@ -180,3 +174,14 @@ if ($conn->connect_error) {
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>
