@@ -133,7 +133,7 @@ if($_SESSION["logged"] == true) {
                   $update_result = $conn->query($update_sql);
                   if($update_result->num_rows > 0){
                     while($row_u = $update_result->fetch_assoc()){
-                      $gutupdate_sql = "UPDATE verbrauchsgut SET verbrauchsgutbez = '$verbrauchsgutbez', lieferdatum = '$lieferdatum', menge ='$menge', einkaufspreis = '$einkaufspreis', id_gehoeft = '$id_gehoeft', id_person='$id_person',id_verbrauchsguttyp='$id_verbrauchsguttyp' WHERE id_verbrauchsgut=$update AND id_gehoeft=1";
+                      $gutupdate_sql = "UPDATE verbrauchsgut SET verbrauchsgutbez = '$verbrauchsgutbez', lieferdatum = '$lieferdatum', menge ='$menge', einkaufspreis = '$einkaufspreis', id_gehoeft = '$id_gehoeft', id_person='$id_person',id_verbrauchsguttyp='$id_verbrauchsguttyp' WHERE id_verbrauchsgut=$update AND id_gehoeft=$id_gehoeft";
                       $gutupdate_result = $conn->query($gutupdate_sql);
                       
                     }

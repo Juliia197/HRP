@@ -74,7 +74,7 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
-            <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+            <a class="nav-link" href="logout.php" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
 
@@ -316,7 +316,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="login.php">Ja</a>
           </div>
         </div>
       </div>

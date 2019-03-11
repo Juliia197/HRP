@@ -10,6 +10,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -100,27 +101,29 @@ if ($conn->connect_error) {
           <!-- Page Content -->
           <h1>Admin</h1>
           <hr>
-          <h2>Hinzufügen von Benutzern als Gehöftverwalter</h2><br>
 
-          <form action= "admin-benutzer.php" method="post">
-          
-          <label for="id_benutzer">id_benutzer</label>
-          <input class="form-control" id="id_benutzer" type="number" name="id_benutzer" required>
-          <label for="id_gehoeft">id_gehoeft</label>
-          <input class="form-control" id="id_gehoeft" type="number" name="id_gehoeft" required>
-          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
-          </form>
-          
-          <h2>Hinzufügen von Gehöften</h2>
+          <?php 
+            $id_benutzer = $_POST['id_benutzer'];
+            $id_gehoeft = $_POST["id_gehoeft"];
 
-          <form action= "admin-gehoeft-added.php" method="post">
-          
-          <label for="gehoeftname">Gehöftname</label>
-          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required>
-          <label for="id_adresse">Adresse</label>
-          <input class="form-control" id="id_adresse" type="number" name="id_adresse" required>
-          <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
-          </form>
+            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
+            $check = $conn->query($check_sql);
+            $check = $check->fetch_assoc();
+
+            if ($check['count'] > 0) {
+              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
+            }
+            
+            else {
+              $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
+              $insert = $conn->query($insert_sql);
+
+              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
+            }
+
+            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
+
+            ?>
 
         </div>
         <!-- /.container-fluid -->
