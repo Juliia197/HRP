@@ -99,10 +99,10 @@ else {
     <h1>Best&auml;tigung Ihres Accounts bei <a href="https://www.hrp-projekt.de">hrp-projekt.de</a></h1>
     <p>Zum Best&auml;tigen Ihres Accounts dr&uuml;cken Sie einfach auf den unten stehenden Button:</p>
     <p><div class="center"><div class="button">
-    <a style="color: black; text-decoration: none;" href="#">E-Mail-Adresse jetzt best&auml;tigen</a>
+    <a style="color: black; text-decoration: none;" href="'.$aktivierungslink.'">E-Mail-Adresse jetzt best&auml;tigen</a>
     </div></div></p>
     <p>Sollte dies nicht funktionieren, folgen Sie dem unten stehenden Link:</p>
-    <p><a href="#">#</a></p>
+    <p><a href="'.$aktivierungslink.'">'.$aktivierungslink.'</a></p>
   </body>
 </html>
   ';
