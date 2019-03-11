@@ -238,7 +238,7 @@ if($_SESSION["logged"] == true) {
             echo "<label>Geburtsdatum</label>";
             echo "<input class=\"form-control\" type=\"date\" min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" name=\"geburtsdatum\"><br>";
 
-            echo "<br><h3> Adresse </h3>";
+            echo "<br><hr><h3> Adresse </h3>";
 
             echo "<label>Straße</label>";
             echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"strasse\"><br>";
@@ -252,7 +252,7 @@ if($_SESSION["logged"] == true) {
             echo "<label>Ortschaft</label>";
             echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"ort\"><br>";
 
-            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
+            echo "<label>Land </label>";
             echo "<input class=\"form-control\" type=\"text\" maxlength=\"2\" name=\"land\"><br>";
           
             echo "<hr>";
