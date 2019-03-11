@@ -476,6 +476,11 @@ if($_SESSION["logged"] == true) {
                   </tbody>
                   </table>
                 </div>
+
+                <br>
+                <hr>
+                <br>
+
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
             </form>

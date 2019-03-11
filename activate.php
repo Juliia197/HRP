@@ -16,6 +16,7 @@ $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 $error = false;
+$activated = false;
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -33,39 +34,52 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 } 
 
+if (isset($_GET["id_benutzer"]) && isset($_GET["aktivierungscode"])) {
 
-$register_email = $_POST['register_email'];
-$register_password = $_POST['register_password'];
-$aktivierungscode = uniqid();
-$aktiviert = 0;
-$date = date('Y-m-d H:i:s');
+  $id_benutzer = $_GET["id_benutzer"];
+  $aktivierungscode = $_GET["aktivierungscode"];
 
-$register_password_hash = md5($register_password);
-$aktivierungscode_hash = md5($aktivierungscode);
+  $check_activate_query = "SELECT aktivierungscode FROM benutzer WHERE id_benutzer = ?";
+  $check_activate_sql = $mysqli->prepare($check_activate_query);
+  $check_activate_sql->bind_param("i", $id_benutzer);
+  $check_activate_sql->execute();
+  $check_activate_result = $check_activate_sql->get_result();
+  $check_activate_fetch = $check_activate_result->fetch_assoc();
 
-$register_query = "INSERT INTO benutzer (email, passwort, aktivierungscode, aktiviert, registrierungsdatum) VALUES (?, ?, ?, ?, ?)";
+  if ($check_activate_fetch["aktivierungscode"] == md5($aktivierungscode)) {
 
-$register_sql = $mysqli->prepare($register_query);
-$register_sql->bind_param("sssis", $register_email, $register_password_hash, $aktivierungscode_hash, $aktiviert, $date);
-$register_sql->execute();
+    $aktiviert = 1;
 
-$id_benutzer = $mysqli->insert_id;
+    $activate_query = "UPDATE benutzer SET aktiviert = ? WHERE id_benutzer = ?";
+    $activate_sql = $mysqli->prepare($activate_query);
+    $activate_sql->bind_param("ii", $aktiviert, $id_benutzer);
+    $activate_sql->execute();
 
-//Nicht-Passende Links auskommentieren
+    $activated = true;
+  }
 
-//$link_base = "hrp-projekt.de/activate.php";
-//$link_base = "localhost/HRP/activate.php";
-$link_base = "henriks-macbook-pro.local/HRP/activate.php";
+}
 
-$link_parameter = "?id_benutzer=$id_benutzer&aktivierungscode=$aktivierungscode";
+else {
 
-$aktivierungslink = $link_base . $link_parameter;
+  $register_email = $_SESSION["register_email"];
+  $aktivierungslink = $_SESSION["aktivierungslink"];
 
-$_SESSION["register_email"] = $register_email;
-$_SESSION["aktivierungslink"] = $aktivierungslink;
+  // Ausgabe Aktivierungslink für localhost
+  echo $aktivierungslink;
 
-header('location:activate.php');
-exit();
+  // Mail wird gesendet 
+  /*
+  $to = $register_email;
+  $subject = "Bestätigung Ihres Accounts bei hrp-projekt.de";
+  $txt = $aktivierungslink;
+  $headers = "From: bestaetigung@hrp-projekt.de" . "\r\n" .
+  "Reply-to: info@hrp-projekt.de";
+
+  mail($to,$subject,$txt,$headers);
+  */
+  
+}
 
 ?>
 
@@ -131,14 +145,29 @@ exit();
                 <!-- panel-activate start -->
                 <div id="activate" class="authfy-panel panel-login text-center tab-pane fade in active">
                   <div class="row">
-                    <p>Ihr Account wurde registriert. Zur Verifizierung müssen Sie Ihre E-Mail-Adresse bestätigen. Hierzu senden wir Ihnen einen Bestätigungslink an die angebene E-Mail-Adresse.</p> <br />
+                  <?php if ($activated == false) { ?>
+                    <p>Ihre E-Mail-Adresse wurde noch nicht bestätigt!</p>
+                    <p>Wir haben Ihnen einen Bestätigungslink an <strong><?php echo $register_email?></strong> gesendet. 
+                    Überprüfen Sie auch Ihren Spam-Ordner. 
+                    Bei Problemen melden Sie sich bei <a href="mailto:info@hrp-projekt.de">info@hrp-projekt.de</a></p> <br />
                     <div class="col-xs-12 col-sm-12">
                       <form action="activate.php" method="POST">
                         <div class="form-group">
-                          <button class="btn btn-lg btn-primary btn-block">E-Mail Adresse jetzt bestätigen</button>
+                          <button class="btn btn-lg btn-primary btn-block">E-Mail erneut versenden</button>
                         </div>
                       </form>
                     </div>
+                    <?php } ?>
+                  <?php if ($activated == true) { ?>
+                    <p>Ihre E-Mail-Adresse wurde bestätigt!</p> <br />
+                    <div class="col-xs-12 col-sm-12">
+                      <form action="login.php" method="POST">
+                        <div class="form-group">
+                          <button class="btn btn-lg btn-primary btn-block">Zum Login</button>
+                        </div>
+                      </form>
+                    </div>
+                    <?php } ?>
                   </div>
                 </div> <!-- ./panel-activate -->
               </div> <!-- ./tab-content -->
