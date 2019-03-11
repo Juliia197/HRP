@@ -11,6 +11,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+session_start();
+
+if($_SESSION["logged"] == true) {
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,7 +72,7 @@ if ($conn->connect_error) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -99,12 +103,21 @@ if ($conn->connect_error) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Admin</h1>
+          <h1>Benutzer zum Gehöft hinzufügen</h1>
           <hr>
 
           <?php 
-            $id_benutzer = $_POST['id_benutzer'];
-            $id_gehoeft = $_POST["id_gehoeft"];
+            $email = $_POST['email'];
+            $id_gehoeft = $_SESSION['id_gehoeft'];
+
+            $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
+            $id_benutzer_sql = $conn->prepare($id_benutzer_query);
+            $id_benutzer_sql->bind_param("s", $email);
+            $id_benutzer_sql->execute();
+            $id_benutzer_result = $id_benutzer_sql->get_result();
+            $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
+
+            $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
             $check = $conn->query($check_sql);
@@ -161,7 +174,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="login.php">Ja</a>
           </div>
         </div>
       </div>
@@ -180,3 +193,14 @@ if ($conn->connect_error) {
   </body>
 
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>
