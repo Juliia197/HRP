@@ -103,8 +103,17 @@ if ($conn->connect_error) {
           <hr>
 
           <?php 
-            $id_benutzer = $_POST['id_benutzer'];
+            $email = $_POST['email'];
             $id_gehoeft = $_POST["id_gehoeft"];
+
+            $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
+            $id_benutzer_sql = $mysqli->prepare($id_benutzer_query);
+            $id_benutzer_sql->bind_param("s", $email);
+            $id_benutzer_sql->execute();
+            $id_benutzer_result = $id_benutzer_sql->get_result();
+            $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
+
+            $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
             $check = $conn->query($check_sql);

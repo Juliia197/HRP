@@ -133,10 +133,11 @@ if($_SESSION["logged"] == true) {
 
               echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
             }
-
-            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
-
             ?>
+            <div class="form-group">
+              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >zurück zur Übersicht</a>
+            </div>
+            
 
         </div>
         <!-- /.container-fluid -->
