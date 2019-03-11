@@ -70,7 +70,7 @@ var chart = new CanvasJS.Chart("preisentwicklung", {
 	},
 	data: [{        
 		type: "line",    
-    color: "#7e5738",   
+    color: "#a4bf6b",   
 		dataPoints: dataPoints_verbrauchsgut
 	}]
 });
