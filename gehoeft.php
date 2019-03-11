@@ -251,12 +251,17 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           </h1>
           <hr>
           <p>
-            <?php if ($gehoeft_adresse_result->num_rows > 0) {
+          <div class="d-flex justify-content-between">
+            <div>
+              <?php if ($gehoeft_adresse_result->num_rows > 0) {
               while($row = $gehoeft_adresse_result->fetch_assoc()) {
                 echo $row["strasse"] . " " . $row["hausnr"] . "<br>" . $row["plz"] . " " . $row["ort"];
               }
             }
             ?>
+            </div>
+            <div class="p-2"><a class="btn btn-success" href="gehoeft-benutzer.php">Benutzer zum Gehöft hinzufügen</a></div>
+          </div>
           </p>
           <hr>
           <div class="d-flex flex-row-reverse">
