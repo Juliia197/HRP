@@ -3,13 +3,16 @@ $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
 session_start();
+
 if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION["id_gehoeft"];
@@ -40,42 +43,6 @@ if($_SESSION["logged"] == true) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
 
-    <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft;
-      $lieferungen_result = $conn->query($lieferungen_sql);
-      $dataPoints = '';
-      if ($lieferungen_result->num_rows > 0){
-        while ($row_l = $lieferungen_result->fetch_assoc()){
-          $dataPoints = $dataPoints . '{label: "' . $row_l["lieferdatum"] . '" , y: ' . $row_l["einkaufspreis"] . '},';
-        }
-      }
-      $dataPoints = "[" . $dataPoints . "]";
-
-    ?>
-        <script>
-        window.onload = function () {
-          var dataPoints_verbrauchsgut = <?php echo $dataPoints ?>;
-var chart = new CanvasJS.Chart("preisentwicklung", {
-	animationEnabled: true,
-	theme: "light2",
-	title:{
-		text: "Preisentwicklung",
-    fontWeight: "bold",
-    fontFamily: "Helvetica"
-	},
-	axisY:{
-		includeZero: false
-	},
-	data: [{        
-		type: "line",    
-    color: "#7e5738",   
-		dataPoints: dataPoints_verbrauchsgut
-	}]
-});
-chart.render();
-
-}
-          </script>
   </head>
 
   <body id="page-top">
@@ -146,78 +113,63 @@ chart.render();
               <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Lieferungen
+              Gut anzeigen
             </li>            
           </ol>
-          <div class="container-fluid">
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
-          </div>
-          </div>
           
           <?php
-          $id_verbrauchsguttyp = $_GET['id_verbrauchsguttyp'];
-          $verbrauchsgut_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp " ;
-          $verbrauchsgut = $conn->query($verbrauchsgut_sql);
-            while ($fetch1 = mysqli_fetch_assoc($verbrauchsgut)){
-              echo "<h1> " . $fetch1['verbrauchsguttypbez'] . "</h1><hr>";
-              $verbrauchsgut_sql = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = $id_verbrauchsguttyp AND verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_gehoeft = $id_gehoeft" ;
-              $verbrauchsgut = $conn->query($verbrauchsgut_sql);
-              echo "
-                <p>
-                <div class='table-responsive'>
-                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
-                <thead class='thead-light'>
-                  <tr >
-                    <th>Lieferung</th>
-                    <th>Lieferdatum</th>
-                    <th>Menge in kg</th>
-                    <th>Einkaufpreis je kg</th>
-                    <th>Lieferant</th>
-                    <th></th>
-                  </tr>
-                  </thead>";
-              while($fetch = mysqli_fetch_assoc($verbrauchsgut)){
-                echo '<tbody>';
-                echo '<tr>';
-                echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
-                echo '<td>' . $fetch['lieferdatum'] . '</td>';
-                echo '<td>' . $fetch['menge'] . '</td>';
-                echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut WHERE id_verbrauchsguttyp = ' . $fetch["id_verbrauchsguttyp"] . ' AND verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-                $query1 = $conn->query($lieferant) or die (mysql_error());
-                  while($fetch1 = mysqli_fetch_assoc($query1)){
-                    echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>';
-                  }
-                echo '<td>
-                <div class="d-sm-flex flex-row">
-                <div><a class="btn btn-sm btn-primary" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
-                <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '&id_delete=1" >Löschen</a></div>
-                </div>
-                </td>';               
-                echo "</tr>";
-              }
-              echo "
-                </tbody>
-                </table>
-                </div>"; 
+
+            $verbrauchsguttypbez_query = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=?";
+            $verbrauchsguttypbez_sql= $conn->prepare($verbrauchsguttypbez_query);
+            $verbrauchsguttypbez_sql -> bind_param("i", $_GET["id_verbrauchsguttyp"]);
+            $verbrauchsguttypbez_sql ->execute();
+            $verbrauchsguttypbez = $verbrauchsguttypbez_sql->get_result();
+
+            while ($fetch = $verbrauchsguttypbez ->fetch_assoc()){
+              echo "<h1> " . $fetch['verbrauchsguttypbez'] . "</h1>";
+              echo "<hr>";
+              echo "<h3> Lieferungen </h3>";
+              echo "                
+              <div class='table-responsive'>
+              <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+              <thead class='thead-light'>
+                <tr>
+                <th>Lieferung</th>
+                <th>Lieferdatum</th>
+                <th>Menge in kg</th>
+                <th>Einkaufpreis je kg</th>
+                <th>Lieferant</th>
+                </tr>
+              </thead>              
+              <tbody>";
             }
-          echo '
-          <hr>
-          <div class="form-group">
-          <a class="btn btn-secondary" href="gueter.php">zurück zur Übersicht</a>
-          </div>';
+            $verbrauchsgut_query = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
+            $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
+            $verbrauchsgut_sql->bind_param("i", $_GET["id_verbrauchsguttyp"]);
+            $verbrauchsgut_sql->execute();
+            $verbrauchsgut = $verbrauchsgut_sql->get_result();
+            while($row_v = mysqli_fetch_assoc($verbrauchsgut)){
+              echo "<tr>";
+              echo "<td>" . $row_v["verbrauchsgutbez"] . "</td>";
+              echo "<td>" . $row_v["lieferdatum"] . "</td>";
+              echo "<td>" . $row_v["menge"] . "</td>";
+              echo "<td>" . $row_v["einkaufspreis"] . "</td>";
 
-
+              $lieferant_query = "SELECT vorname , nachname FROM person WHERE id_person =?";
+              $lieferant_sql = $conn->prepare($lieferant_query);
+              $lieferant_sql -> bind_param("i", $row_v["id_person"]);
+              $lieferant_sql->execute();
+              $lieferant = $lieferant_sql->get_result();
+              
+              while($lief = mysqli_fetch_assoc($lieferant)){
+                echo "<td>" . $lief["vorname"] . " " . $lief["nachname"] . "</td>";
+              }
+              echo "</tr>";
+              
+            }
           ?>
+          
 
-
-        </div>
-        
-          </head>
-          <body>
-          <div id="preisentwicklung" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
-        <script src="../../canvasjs.min.js"></script>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -267,8 +219,8 @@ chart.render();
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script>
     $(document).ready(function() {
     $('#dataTable').DataTable( {
         "language": {
@@ -277,7 +229,7 @@ chart.render();
     } );
 } );
     </script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
 
     <!-- Custom scripts for all pages-->
@@ -286,14 +238,16 @@ chart.render();
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
 
-  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-
   </body>
 </html>
 
 <?php
 }
+
 else {
+
   header('location:login.php');
+
 }
+
 ?>
