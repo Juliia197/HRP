@@ -42,6 +42,42 @@ if($_SESSION["logged"] == true) {
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
+    <?php
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft;
+      $lieferungen_result = $conn->query($lieferungen_sql);
+      $dataPoints = '';
+      if ($lieferungen_result->num_rows > 0){
+        while ($row_l = $lieferungen_result->fetch_assoc()){
+          $dataPoints = $dataPoints . '{label: "' . $row_l["lieferdatum"] . '" , y: ' . $row_l["einkaufspreis"] . '},';
+        }
+      }
+      $dataPoints = "[" . $dataPoints . "]";
+
+    ?>
+        <script>
+        window.onload = function () {
+          var dataPoints_verbrauchsgut = <?php echo $dataPoints ?>;
+var chart = new CanvasJS.Chart("preisentwicklung", {
+	animationEnabled: true,
+	theme: "light2",
+	title:{
+		text: "Preisentwicklung",
+    fontWeight: "bold",
+    fontFamily: "Helvetica"
+	},
+	axisY:{
+		includeZero: false
+	},
+	data: [{        
+		type: "line",    
+    color: "#7e5738",   
+		dataPoints: dataPoints_verbrauchsgut
+	}]
+});
+chart.render();
+
+}
+</script>
 
   </head>
 
@@ -168,8 +204,20 @@ if($_SESSION["logged"] == true) {
               
             }
           ?>
+          </tbody>
+          </table>
+          <br>
+          <hr>
+          <h3> Preisentwicklung des Gutes</h3>
           
-
+          <div class="card mb-3">
+          <div class="card-header">
+          </div>
+          <div class="card-body">
+          <div id="preisentwicklung" style="height: 300px; width: 100%;"></div>
+          
+          </div>
+          </div>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -237,6 +285,8 @@ if($_SESSION["logged"] == true) {
 
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
+
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
   </body>
 </html>
