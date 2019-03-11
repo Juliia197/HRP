@@ -165,7 +165,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
             type: "bar",
             name: "Pferdegeschlecht",
             axisYType: "secondary",
-            color: "#7e5738",
+            color: "#a4bf6b",
             dataPoints: [
               { y: stuten, label: "Stuten" },
               { y: wallache, label: "Wallache" },
@@ -190,7 +190,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
             type: "bar",
             name: "Pferdegeschlecht",
             axisYType: "secondary",
-            color: "#7e5738",
+            color: "#a4bf6b",
             dataPoints: [
               { y: heu, label: "Heu" },
               { y: hafer, label: "Hafer" },
