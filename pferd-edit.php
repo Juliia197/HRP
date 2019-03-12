@@ -485,7 +485,7 @@ if($_SESSION["logged"] == true) {
                 <hr>
 
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
-                <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
+                <a class="btn btn-secondary" href="pferd.php">Abbrechen</a>
             </form>
 
         </div>
