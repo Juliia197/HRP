@@ -135,7 +135,7 @@ if($_SESSION["logged"] == true) {
 
           //Daten zur Person werden abgerufen
 
-          $personquery = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = ?";
+          $personquery = "SELECT *, DATE_FORMAT(person.geburtsdatum, '%d.%m.%Y') as geburtsdatum FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = ?";
           $person_sql = $conn->prepare($personquery);
           $person_sql->bind_param("i",$_GET["id_person"]);
           $person_sql->execute();
