@@ -179,7 +179,7 @@ chart.render();
               </thead>              
               <tbody>";
             }
-            $verbrauchsgut_query = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
+            $verbrauchsgut_query = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
             $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
             $verbrauchsgut_sql->bind_param("i", $_GET["id_verbrauchsguttyp"]);
             $verbrauchsgut_sql->execute();
