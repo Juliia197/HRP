@@ -9,6 +9,12 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+session_start();
+
+$admin_mail  = $_SESSION["admin_mail"];
+$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -101,6 +107,8 @@ if ($conn->connect_error) {
           <hr>
 
           <?php 
+          if (in_array($admin_mail, $admin_mail_array)) {
+
             $gehoeftname = $_POST["gehoeftname"];
             $strasse = $_POST['strasse'];
             $hausnr = $_POST['hausnr'];
@@ -166,6 +174,14 @@ if ($conn->connect_error) {
             
             <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>
             
+            <?php
+          }
+
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
+          }
+
+        ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -203,7 +219,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.php">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>

@@ -13,7 +13,13 @@ if ($conn->connect_error) {
 
 session_start();
 
-if($_SESSION["logged"] == true) {
+
+$admin_mail  = $_SESSION["admin_mail"];
+$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+
+if (isset($_GET["id_gehoeft"])) {
+  $id_gehoeft = $_GET["id_gehoeft"];
+}
 
 ?>
 <!DOCTYPE html>
@@ -72,7 +78,7 @@ if($_SESSION["logged"] == true) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
@@ -103,50 +109,76 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Benutzer zum Gehöft hinzufügen</h1>
+          <h1>Admin</h1>
           <hr>
 
           <?php 
-            $email = $_POST['email'];
-            $id_gehoeft = $_SESSION['id_gehoeft'];
+          if (in_array($admin_mail, $admin_mail_array)) {
+          ?>
 
-            $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
-            $id_benutzer_sql = $conn->prepare($id_benutzer_query);
-            $id_benutzer_sql->bind_param("s", $email);
-            $id_benutzer_sql->execute();
-            $id_benutzer_result = $id_benutzer_sql->get_result();
-            $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
+          <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
+          <hr>
 
-            if ($id_benutzer_result->num_rows == 0) {
-              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
-            }
+          <form action= "admin-verwalter-added.php" method="post">
+          <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input class="form-control" id="email" name="email" type="email">
+          </div>
+          <input value="<?php echo $id_gehoeft ?>" name="id_gehoeft" type="hidden">
+          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
+          </form>
+          <br>
 
-            else {
+          <h2>Gehöftverwalter</h2>
+          <hr>
+          <div class="table-responsive">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>E-Mail</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
 
-            $id_benutzer = $id_benutzer_fetch["id_benutzer"];
+              <?php
 
-            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
-            $check = $conn->query($check_sql);
-            $check = $check->fetch_assoc();
+              $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
+              $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
+              $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
+              $gehoeftverwalter_sql->execute();
+              $gehoeftverwalter_result = $gehoeftverwalter_sql->get_result();
 
-            if ($check['count'] > 0) {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
-            }
-            
-            else {
-              $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
-              $insert = $conn->query($insert_sql);
+              $nummer=1;
+              while ($gehoeftverwalter_fetch = $gehoeftverwalter_result->fetch_assoc()) {
+                echo '<tr>
+                <td>' . $nummer . '</td>
+                <td>' . $gehoeftverwalter_fetch['email'] . '</td>
+                <td> <a class="btn btn-sm btn-danger" href="admin-verwalter-delete.php?id_benutzer=' . $gehoeftverwalter_fetch["id_benutzer"] . '&id_gehoeft='. $id_gehoeft .'" onclick="return checkDelete()">Benutzer entfernen</a></td>
+                </tr>';
+                $nummer += 1;
+              } 
+              
+              ?>
 
-              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
-            }
+            </tbody>
+          </table>
+          </div>
+          <hr>
 
-            }
+          <div class="form-group">
+          <a class="btn btn-secondary" href="admin.php">zurück zur Übersicht</a>
+          </div>
+          
+          <?php
+          }
 
-            ?>
-            <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >zurück zur Übersicht</a>
-            </div>
-            
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
+          }
+
+        ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -197,20 +229,33 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
+
+  <!-- JavaScript for Delete-Confirmation -->
+  <script>
+    function checkDelete(){
+      return confirm('Benutzer als Gehöftverwalter entfernen?')
+    }
+  </script>
 
   </body>
 
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>
