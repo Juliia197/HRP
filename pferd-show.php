@@ -188,7 +188,7 @@ if($_SESSION["logged"] == true) {
             $box_result = $box_sql->get_result();
             while ($box_fetch = $box_result->fetch_assoc()) {  
               echo "<p>Boxentyp: " . $box_fetch['boxenbez'] . "</p>
-                    <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €</p>";
+                    <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €/Monat</p>";
             }
             
             echo "

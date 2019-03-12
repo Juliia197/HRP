@@ -353,9 +353,9 @@ if($_SESSION["logged"] == true) {
                 <input class="form-control" type="number" min="35" max="210" value="<?php echo $groesse ?>" name="groesse" required><br />
                 <label>Passnummer</label>
                 <input class="form-control" type="number" min="100000000" max="999999999999999" value="<?php echo $passnr ?>" name="passnr" required><br />
-                <label>Geburtsdatum</label>
+                <label>Geburtsdatum (tt.mm.jjjj)</label>
                 <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
-                <label>Ankunft des Pferdes am Hof</label>
+                <label>Ankunft des Pferdes am Hof (tt.mm.jjjj)</label>
                 <input class="form-control" type="date" min="2018-10-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $ankunft ?>" name="ankunft" required><br />
 
                 <br />
@@ -466,7 +466,7 @@ if($_SESSION["logged"] == true) {
                   <tbody>
                   
                   <?php
-                  $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp)";
+                  $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft)";
                   $boxenfrei_result = $conn->query($boxenfrei_sql);
                   $boxenfrei_result = $boxenfrei_result->fetchAll();
                   foreach ($boxenfrei_result as $boxfrei){
@@ -483,7 +483,6 @@ if($_SESSION["logged"] == true) {
 
                 <br>
                 <hr>
-                <br>
 
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
