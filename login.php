@@ -330,7 +330,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
   <meta name="pferdeverwalter" content="" />
   <meta name="JanFreymuth" content="hrp-projekt.de" />
 	
-  <title>Admin Login</title>
+  <title>HRP - Login</title>
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>

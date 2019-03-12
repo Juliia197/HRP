@@ -40,7 +40,17 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      $personname_sql = "SELECT vorname, nachname FROM person WHERE id_person = ?";
+      $personname_result = $conn->prepare($personname_sql);
+      $personname_result->bind_param('i', $_GET['id_person']);
+      $personname_result->execute();
+      $personname_result = $personname_result->get_result();
+      $personname_result = $personname_result->fetch_assoc();
+      $name = $personname_result['vorname'] . " " . $personname_result['nachname'];
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

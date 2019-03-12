@@ -18,16 +18,6 @@ session_start();
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
 
-/*if (isset($_POST['id_box'])){
-  
-    $boxbelegen_sql = "UPDATE box SET id_pferd = " . $_GET['id_pferd'] . " WHERE id_box = " . $_POST['id_box'];
-    $boxbelegen_result = $conn->query($boxbelegen_sql);
-    if ($_GET['id_pferd'] > 0){
-    $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = " . $_GET['id_pferd'] . " AND id_box != " . $_POST['id_box'];
-    $boxleeren_result = $conn->query($boxleeren_sql);
-}
-}*/
-
   
 ?>
 
@@ -42,7 +32,22 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      if ($_GET['id_pferd'] == 0){
+        $pferdename = "Pferd erstellen";
+      } else {
+        $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
+        $pferdename_result = $conn->prepare($pferdename_sql);
+        $pferdename_result->bind_param("i", $_GET['id_pferd']);
+        $pferdename_result->execute();
+        $pferdename_result = $pferdename_result->get_result();
+        $pferdename_result = $pferdename_result->fetch_assoc();
+        $pferdename = $pferdename_result['pferdename'] . " bearbeiten";
+      }
+
+    ?>
+
+    <title>HRP - <?php echo $pferdename; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
