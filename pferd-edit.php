@@ -38,10 +38,9 @@ if($_SESSION["logged"] == true) {
       } else {
         $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
         $pferdename_result = $conn->prepare($pferdename_sql);
-        $pferdename_result->bind_param("i", $_GET['id_pferd']);
-        $pferdename_result->execute();
-        $pferdename_result = $pferdename_result->get_result();
-        $pferdename_result = $pferdename_result->fetch_assoc();
+        $pferdename_bind = [$_GET['id_pferd']];
+        $pferdename_result->execute($pferdename_bind);
+        $pferdename_result = $pferdename_result->fetch();
         $pferdename = $pferdename_result['pferdename'] . " bearbeiten";
       }
 

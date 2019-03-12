@@ -101,9 +101,7 @@ if($_SESSION["logged"] == true) {
       </ul>
 
       <div id="content-wrapper">
-
-        <div class="container-fluid">
-
+          <div class="container-fluid">
           <!-- Page Content -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -116,13 +114,20 @@ if($_SESSION["logged"] == true) {
               Lieferungen
             </li>            
           </ol>
-          <div class="container-fluid">
-          <h1>Lieferungen</h1>
+          <h1 class="float-left">Lieferungen</h1>
+          <div class="float-right">
+          <a class="btn btn-secondary" role="button" href="gueter.php">Zu den Gütern</a>
+          </div>
+          <br>
+          <br>
           <hr>
-          <div class="row justify-content-end">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
+          <div class="d-flex flex-row-reverse">
+            <div class="p-2">
+              <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
+            </div>
           </div>
-          </div>
+          
+          
           
           <p>
           <div class="table-responsive">
