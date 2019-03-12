@@ -294,7 +294,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
       $register_password = $_POST['register_password'];
       ?>
 
-      <form id="form_register" action="register_neu.php" method="POST">
+      <form id="form_register" action="register.php" method="POST">
         <input type="hidden" value="<?php echo $register_email ?>"  name="register_email">
         <input type="hidden" value="<?php echo $register_password ?>"  name="register_password">
       </form>
