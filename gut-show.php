@@ -70,7 +70,7 @@ var chart = new CanvasJS.Chart("preisentwicklung", {
 	},
 	data: [{        
 		type: "line",    
-    color: "#7e5738",   
+    color: "#a4bf6b",   
 		dataPoints: dataPoints_verbrauchsgut
 	}]
 });
@@ -179,7 +179,7 @@ chart.render();
               </thead>              
               <tbody>";
             }
-            $verbrauchsgut_query = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
+            $verbrauchsgut_query = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
             $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
             $verbrauchsgut_sql->bind_param("i", $_GET["id_verbrauchsguttyp"]);
             $verbrauchsgut_sql->execute();
@@ -218,6 +218,8 @@ chart.render();
           
           </div>
           </div>
+          <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>
+          <br>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->

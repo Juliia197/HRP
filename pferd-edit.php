@@ -18,16 +18,6 @@ session_start();
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
 
-/*if (isset($_POST['id_box'])){
-  
-    $boxbelegen_sql = "UPDATE box SET id_pferd = " . $_GET['id_pferd'] . " WHERE id_box = " . $_POST['id_box'];
-    $boxbelegen_result = $conn->query($boxbelegen_sql);
-    if ($_GET['id_pferd'] > 0){
-    $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = " . $_GET['id_pferd'] . " AND id_box != " . $_POST['id_box'];
-    $boxleeren_result = $conn->query($boxleeren_sql);
-}
-}*/
-
   
 ?>
 
@@ -42,7 +32,21 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      if ($_GET['id_pferd'] == 0){
+        $pferdename = "Pferd erstellen";
+      } else {
+        $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
+        $pferdename_result = $conn->prepare($pferdename_sql);
+        $pferdename_bind = [$_GET['id_pferd']];
+        $pferdename_result->execute($pferdename_bind);
+        $pferdename_result = $pferdename_result->fetch();
+        $pferdename = $pferdename_result['pferdename'] . " bearbeiten";
+      }
+
+    ?>
+
+    <title>HRP - <?php echo $pferdename; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -349,9 +353,9 @@ if($_SESSION["logged"] == true) {
                 <input class="form-control" type="number" min="35" max="210" value="<?php echo $groesse ?>" name="groesse" required><br />
                 <label>Passnummer</label>
                 <input class="form-control" type="number" min="100000000" max="999999999999999" value="<?php echo $passnr ?>" name="passnr" required><br />
-                <label>Geburtsdatum</label>
+                <label>Geburtsdatum (tt.mm.jjjj)</label>
                 <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
-                <label>Ankunft des Pferdes am Hof</label>
+                <label>Ankunft des Pferdes am Hof (tt.mm.jjjj)</label>
                 <input class="form-control" type="date" min="2018-10-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $ankunft ?>" name="ankunft" required><br />
 
                 <br />
@@ -462,7 +466,7 @@ if($_SESSION["logged"] == true) {
                   <tbody>
                   
                   <?php
-                  $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp)";
+                  $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft)";
                   $boxenfrei_result = $conn->query($boxenfrei_sql);
                   $boxenfrei_result = $boxenfrei_result->fetchAll();
                   foreach ($boxenfrei_result as $boxfrei){
@@ -479,7 +483,6 @@ if($_SESSION["logged"] == true) {
 
                 <br>
                 <hr>
-                <br>
 
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />

@@ -22,7 +22,7 @@ if ($conn->connect_error) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Admin</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -100,25 +100,37 @@ if ($conn->connect_error) {
           <!-- Page Content -->
           <h1>Admin</h1>
           <hr>
-          <h2>Hinzufügen von Benutzern als Gehöftverwalter</h2><br>
+          <h2>Hinzufügen von Benutzern als Gehöftverwalter</h2>
+          <hr>
 
           <form action= "admin-benutzer.php" method="post">
-          
-          <label for="id_benutzer">id_benutzer</label>
-          <input class="form-control" id="id_benutzer" type="number" name="id_benutzer" required>
+          <div class="form-group">
+          <label for="email">E-Mail</label>
+          <input class="form-control" id="id_benutzer" type="email" name="email" required><br>
           <label for="id_gehoeft">id_gehoeft</label>
           <input class="form-control" id="id_gehoeft" type="number" name="id_gehoeft" required>
+          </div>
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
           </form>
-          
-          <h2>Hinzufügen von Gehöften</h2>
+          <br>
 
+          <h2>Hinzufügen von Gehöften</h2>
+          <hr>
           <form action= "admin-gehoeft-added.php" method="post">
-          
+          <div class="form-group">
           <label for="gehoeftname">Gehöftname</label>
-          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required>
-          <label for="id_adresse">Adresse</label>
-          <input class="form-control" id="id_adresse" type="number" name="id_adresse" required>
+          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required><br>
+          <label for="strasse">Straße</label>
+          <input class="form-control" id="strasse" type="text" name="strasse" required><br>
+          <label for="hausnr">Hausnummer</label>
+          <input class="form-control" id="hausnr" type="number" name="hausnr" required><br>
+          <label for="plz">Postleitzahl</label>
+          <input class="form-control" id="plz" type="number" name="plz" required><br>
+          <label for="ort">Ortschaft</label>
+          <input class="form-control" id="ort" type="text" name="ort" required><br>
+          <label for="land">Land (als Kürzel, wie zum Beispiel Deutschland: DE)</label>
+          <input class="form-control" id="land" type="text" name="land" required>
+          </div>
           <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
           </form>
 

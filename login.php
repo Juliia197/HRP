@@ -144,8 +144,8 @@ if (isset($_POST['email'], $_POST['password'])) {
             $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
             $bestandneu_hafer_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
             $bestandneu_heu_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
-            $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
-            $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+            $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
             $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
             $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
             $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
@@ -294,7 +294,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
       $register_password = $_POST['register_password'];
       ?>
 
-      <form id="form_register" action="register_neu.php" method="POST">
+      <form id="form_register" action="register.php" method="POST">
         <input type="hidden" value="<?php echo $register_email ?>"  name="register_email">
         <input type="hidden" value="<?php echo $register_password ?>"  name="register_password">
       </form>
@@ -330,7 +330,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
   <meta name="pferdeverwalter" content="" />
   <meta name="JanFreymuth" content="hrp-projekt.de" />
 	
-  <title>Admin Login</title>
+  <title>HRP - Login</title>
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>

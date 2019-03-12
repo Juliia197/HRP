@@ -40,7 +40,17 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      $personname_sql = "SELECT vorname, nachname FROM person WHERE id_person = ?";
+      $personname_result = $conn->prepare($personname_sql);
+      $personname_result->bind_param('i', $_GET['id_person']);
+      $personname_result->execute();
+      $personname_result = $personname_result->get_result();
+      $personname_result = $personname_result->fetch_assoc();
+      $name = $personname_result['vorname'] . " " . $personname_result['nachname'];
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -125,7 +135,7 @@ if($_SESSION["logged"] == true) {
 
           //Daten zur Person werden abgerufen
 
-          $personquery = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = ?";
+          $personquery = "SELECT *, DATE_FORMAT(person.geburtsdatum, '%d.%m.%Y') as geburtsdatum FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = ?";
           $person_sql = $conn->prepare($personquery);
           $person_sql->bind_param("i",$_GET["id_person"]);
           $person_sql->execute();
@@ -174,7 +184,7 @@ if($_SESSION["logged"] == true) {
                <div class=\"form-group\">
                 <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                 <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+                <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
   
@@ -228,7 +238,7 @@ if($_SESSION["logged"] == true) {
                 <div class=\"form-group\">
                   <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                   <a class=\"btn btn-outline-danger disabled\" href=\"#\" onclick='return checkDelete()'>Löschen nicht möglich*</a>
-                  <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a></div>
+                  <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a></div>
                   *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.";
           
             }

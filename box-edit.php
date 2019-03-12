@@ -29,7 +29,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Box hinzufügen</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -141,9 +141,11 @@ if($_SESSION["logged"] == true) {
             <div>
             <br />
             <div class="form-group">
-            <label>Boxenpreis:</label><br>
+            <label>Boxenpreis (€/Monat):</label><br>
             <input type="number" min="0" max="2000" name="boxenpreis" step="0.01" required>
-            </div><br />
+            </div>
+            <br />
+            <hr>
             <div class="form-group">
             <button type="submit" class="btn btn-success">Abschicken</button>
             <a class="btn btn-secondary" href="gehoeft.php">Abbrechen</a>

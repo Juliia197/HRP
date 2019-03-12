@@ -45,7 +45,17 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
+      $pferdename_result = $conn->prepare($pferdename_sql);
+      $pferdename_result->bind_param("i", $_GET['id_pferd']);
+      $pferdename_result->execute();
+      $pferdename_result = $pferdename_result->get_result();
+      $pferdename_result = $pferdename_result->fetch_assoc();
+      $name = $pferdename_result['pferdename'];
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -178,7 +188,7 @@ if($_SESSION["logged"] == true) {
             $box_result = $box_sql->get_result();
             while ($box_fetch = $box_result->fetch_assoc()) {  
               echo "<p>Boxentyp: " . $box_fetch['boxenbez'] . "</p>
-                    <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €</p>";
+                    <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €/Monat</p>";
             }
             
             echo "
@@ -269,7 +279,7 @@ if($_SESSION["logged"] == true) {
             <div class=\"form-group\">
             <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $id_pferd . "\" >Bearbeiten</a>
             <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
-            <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
+            <a class=\"btn btn-secondary\" href=\"pferd.php\" >Zurück zur Übersicht</a></div>";
           
           }
 
