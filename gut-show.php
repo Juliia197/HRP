@@ -218,7 +218,7 @@ chart.render();
           
           </div>
           </div>
-          <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>
+          <a class="btn btn-secondary" href="gueter.php" >Zurück zur Übersicht</a>
           <br>
         <!-- /.container-fluid -->
 

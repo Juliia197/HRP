@@ -41,7 +41,21 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      if ($_GET['id_verbrauchsgut'] == 0){
+        $lieferungname = "Lieferung erstellen";
+      } else {
+        $lieferungname_sql = "SELECT verbrauchsgutbez FROM verbrauchsgut WHERE id_verbrauchsgut = ?";
+        $lieferungname_result = $conn->prepare($lieferungname_sql);
+        $lieferungname_result->bind_param('i', $_GET['id_verbrauchsgut']);
+        $lieferungname_result->execute();
+        $lieferungname_result = $lieferungname_result->get_result();
+        $lieferungname_result = $lieferungname_result->fetch_assoc();
+        $lieferungname = $lieferungname_result['verbrauchsgutbez'] . "bearbeiten";
+      }
+
+    ?>
+    <title>HRP - <?php echo $lieferungname; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
