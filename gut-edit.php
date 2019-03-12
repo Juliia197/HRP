@@ -158,7 +158,7 @@ if($_SESSION["logged"] == true) {
                         <hr>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
-                  echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\" required>";
+                  echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\" required>";
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
                   if($verbrauchsguttyp_result->num_rows > 0){
@@ -179,7 +179,7 @@ if($_SESSION["logged"] == true) {
                   echo "<div class=\"form-group\"><label>Lieferdatum</label>";
                   echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div>";
                   echo "<div class=\"form-group\"><label>Lieferant</label>";
-                  echo "<select required class=\"form-control\" name=\"id_person\">";
+                  echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
@@ -224,7 +224,7 @@ if($_SESSION["logged"] == true) {
                         <hr>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
-                echo "<select required class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                echo "<select required class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
                 if ($verbrauchsguttypall_result->num_rows > 0){
@@ -238,7 +238,7 @@ if($_SESSION["logged"] == true) {
                 echo "<div class=\"form-group\"><label>Lieferdatum</label>";
                 echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferant</label>";
-                echo "<select required class=\"form-control\" name=\"id_person\">";
+                echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person";
                 $lieferantall_result = $conn->query($lieferantall_sql);
                 if($lieferantall_result->num_rows > 0){
