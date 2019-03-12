@@ -28,7 +28,17 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
+      $pferdename_result = $conn->prepare($pferdename_sql);
+      $pferdename_result->bind_param("i", $_GET['id_pferd']);
+      $pferdename_result->execute();
+      $pferdename_result = $pferdename_result->get_result();
+      $pferdename_result = $pferdename_result->fetch_assoc();
+      $name = $pferdename_result['pferdename'];
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -159,7 +169,7 @@ if($_SESSION["logged"] == true) {
 
 
 
-          ?>
+          
 
 
         </div>
