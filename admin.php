@@ -168,7 +168,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             <td>'. $adresse_fetch["ort"] .'</td>
             <td>
               <div class="d-sm-flex flex-row">
-                <div><a class="btn btn-sm btn-primary" role="button" href="admin-benutzer.php?id_gehoeft=' . $gehoeft_fetch['id_gehoeft'] . '">Gehöftverwalter</a></div>
+                <div><a class="btn btn-sm btn-primary" role="button" href="admin-verwalter.php?id_gehoeft=' . $gehoeft_fetch['id_gehoeft'] . '">Gehöftverwalter</a></div>
               </div>
             </td>
             
