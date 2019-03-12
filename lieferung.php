@@ -140,7 +140,7 @@ if($_SESSION["logged"] == true) {
             <tbody>
             <?php  
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT * FROM verbrauchsgut WHERE id_gehoeft = $id_gehoeft";
+              $verbrauchsgut = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_gehoeft = $id_gehoeft";
               
               $query = $conn->query($verbrauchsgut) or die(mysql_error());
 
