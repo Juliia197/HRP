@@ -279,7 +279,7 @@ if($_SESSION["logged"] == true) {
             <div class=\"form-group\">
             <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $id_pferd . "\" >Bearbeiten</a>
             <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
-            <a class=\"btn btn-secondary\" href=\"pferd.php\" >zurück zur Übersicht</a></div>";
+            <a class=\"btn btn-secondary\" href=\"pferd.php\" >Zurück zur Übersicht</a></div>";
           
           }
 

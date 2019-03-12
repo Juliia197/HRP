@@ -149,7 +149,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           <h1 class="float-left">Güter</h1>
           <div class="float-right">
           <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferungen hinzufügen</a>
-          <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">zu den Lieferungen</a>
+          <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Zu den Lieferungen</a>
           </div>
           <br>
           <br>

@@ -184,7 +184,7 @@ if($_SESSION["logged"] == true) {
                <div class=\"form-group\">
                 <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                 <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a> </div>";
+                <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
   
@@ -238,7 +238,7 @@ if($_SESSION["logged"] == true) {
                 <div class=\"form-group\">
                   <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                   <a class=\"btn btn-outline-danger disabled\" href=\"#\" onclick='return checkDelete()'>Löschen nicht möglich*</a>
-                  <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a></div>
+                  <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a></div>
                   *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.";
           
             }
