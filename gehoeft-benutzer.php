@@ -119,9 +119,9 @@ if($_SESSION["logged"] == true) {
 
           <h1>Gehöftverwaltung</h1>
           <hr>
+          <br>
 
-          <h2>Benutzer zum Gehöft hinzufügen</h1>
-          <hr>
+          <h2>Benutzer zum Gehöft hinzufügen</h2>
 
           <form action= "gehoeft-benutzer-added.php" method="post">
           <div class="form-group">
@@ -131,10 +131,10 @@ if($_SESSION["logged"] == true) {
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
 
           </form>
+          <hr>
           <br>
 
           <h2>Übersicht Gehöftverwalter</h2>
-          <hr>
 
           <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -168,10 +168,10 @@ if($_SESSION["logged"] == true) {
             </tbody>
             </table>
             </div>
+            <hr>
             <br>
 
             <h2>Benutzer entfernen</h2>
-            <hr>
             <p>Um einen Benutzer als Gehöftverwalter zu entfernen, schreiben Sie uns an 
               <a href="mailto:info@hrp-projekt.de?subject=Benutzer als Gehöftverwalter entfernen">info@hrp-projekt.de</a>
             </p>

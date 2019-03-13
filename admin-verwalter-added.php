@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
-$admin_mail  = $_SESSION["admin_mail"];
+$admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
 ?>
