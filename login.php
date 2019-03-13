@@ -83,7 +83,7 @@ if (isset($_POST['email'], $_POST['password'])) {
             $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
             $heute_datum = date("Y-m-d");
           
-          if ($letzteaenderung_datum != $heute_datum){
+          if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
             $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
             $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
             $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
