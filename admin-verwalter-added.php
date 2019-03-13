@@ -127,7 +127,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
             }
 
-            echo '<a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >zurück zur Übersicht</a>';
+            echo '<a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
 
           }
 

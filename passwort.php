@@ -335,7 +335,7 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
 
-  <!-- JavaScript for Delete-Confirmation -->
+  <!-- JavaScript for Change-Confirmation -->
   <script>
     function checkChange(){
       return confirm('Passwort ändern?')

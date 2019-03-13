@@ -89,39 +89,29 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <?php 
           if (in_array($admin_mail, $admin_mail_array)) {
 
-          if (isset($_GET['id_benutzer']) && isset($_GET['id_gehoeft'])) {
+          if (isset($_GET['id_benutzer'])) {
             $id_benutzer = $_GET['id_benutzer'];
-            $id_gehoeft = $_GET["id_gehoeft"];
 
-            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
-            $check = $conn->query($check_sql);
-            $check = $check->fetch_assoc();
+            $verwalter_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ?";
+            $verwalter_sql = $conn->prepare($verwalter_query);
+            $verwalter_sql->bind_param("i", $id_benutzer);
+            $verwalter_sql->execute();
 
-            if ($check['count'] >= 1) {
-              $delete_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ? AND id_gehoeft = ?";
-              $delete_sql = $conn->prepare($delete_query);
-              $delete_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
-              $delete_sql->execute();
+            $benutzer_query = "DELETE FROM benutzer WHERE id_benutzer = ?";
+            $benutzer_sql = $conn->prepare($benutzer_query);
+            $benutzer_sql->bind_param("i", $id_benutzer);
+            $benutzer_sql->execute();
 
-              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde als Gehöftverwalter entfernt!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
+              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde entfernt!</div>
+              <a class="btn btn-secondary" href="admin.php">Zurück zur Übersicht</a>';
             }
             
             else {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist diesem Gehöft nicht zugeordnet!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
+              echo '<div class="alert alert-danger" role="alert">Der Benutzer existiert nicht!</div>
+              <a class="btn btn-secondary" href="admin.php">Zurück zur Übersicht</a>';
             }
           
-          }
-
-          else {
-            echo '
-            <div class="alert alert-danger" role="alert">Keine gültigen Parameter!</div>
-            <hr>
-            <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>'; 
-          }
-
-          }
+          }       
 
           else {
             echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';

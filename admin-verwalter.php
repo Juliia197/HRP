@@ -148,7 +148,7 @@ if (isset($_GET["id_gehoeft"])) {
           <hr>
 
           <div class="form-group">
-          <a class="btn btn-secondary" href="admin.php">zurück zur Übersicht</a>
+          <a class="btn btn-secondary" href="admin.php">Zurück zur Übersicht</a>
           </div>
           
           <?php

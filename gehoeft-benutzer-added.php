@@ -144,7 +144,7 @@ if($_SESSION["logged"] == true) {
 
             ?>
             <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >zurück zur Übersicht</a>
+              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >Zurück zur Übersicht</a>
             </div>
             
 

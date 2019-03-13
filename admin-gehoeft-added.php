@@ -151,7 +151,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             }
             ?>
             
-            <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>
+            <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>
             
             <?php
           }

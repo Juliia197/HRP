@@ -11,10 +11,34 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+$changed = false;
+
 session_start();
 
-$admin_mail  = $_SESSION["mail"];
-$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+if($_SESSION["logged"] == true) {
+
+  $id_gehoeft = $_SESSION["id_gehoeft"];
+
+  $hafer = $_POST["typ_1"];
+  $heu = $_POST["typ_2"];
+  $stroh = $_POST["typ_3"];
+  $saegespaene = $_POST["typ_4"];
+
+  $typen = [$hafer, $heu, $stroh, $saegespaene];
+  $typ=1;
+  $datum = date("Y-m-d");
+
+  foreach ($typen as $bestand) {
+    $bestand_update_query = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = ?, datum = ? WHERE id_gehoeft = ? AND id_verbrauchsguttyp = ?";
+    $bestand_update_sql = $conn->prepare($bestand_update_query);
+    $bestand_update_sql->bind_param("isii", $bestand, $datum, $id_gehoeft, $typ);
+    $bestand_update_sql->execute();
+
+    $typ++;
+  }
+
+  $changed =  true;
+
 
 ?>
 <!DOCTYPE html>
@@ -28,7 +52,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Güter</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -70,10 +94,34 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="admin.php">
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Admin</span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="gehoeft.php">
+            <i class="fas fa-fw fa-home"></i>
+            <span>Gehöft</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="gueter.php">
+            <i class="fas fa-fw fa-calculator"></i>
+            <span>Güter</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pferd.php">
+            <i class="fas fa-fw fa-book"></i>
+            <span>Pferde</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="person.php">
+            <i class="fas fa-fw fa-address-book"></i>
+            <span>Personen</span>
           </a>
         </li>
       </ul>
@@ -83,51 +131,26 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Admin</h1>
-          <hr>
-
-          <?php 
-          if (in_array($admin_mail, $admin_mail_array)) {
-
-          if (isset($_GET['id_benutzer']) && isset($_GET['id_gehoeft'])) {
-            $id_benutzer = $_GET['id_benutzer'];
-            $id_gehoeft = $_GET["id_gehoeft"];
-
-            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
-            $check = $conn->query($check_sql);
-            $check = $check->fetch_assoc();
-
-            if ($check['count'] >= 1) {
-              $delete_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ? AND id_gehoeft = ?";
-              $delete_sql = $conn->prepare($delete_query);
-              $delete_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
-              $delete_sql->execute();
-
-              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde als Gehöftverwalter entfernt!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
-            }
-            
-            else {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist diesem Gehöft nicht zugeordnet!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
-            }
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gueter.php">Güter</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Bestände bearbeiten
+            </li>            
+          </ol>
           
-          }
+          <?php
 
-          else {
-            echo '
-            <div class="alert alert-danger" role="alert">Keine gültigen Parameter!</div>
-            <hr>
-            <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>'; 
-          }
+          if ($changed) {
+              echo '<div class="alert alert-success" role="alert">Die Bestände wurden überschrieben!</div>
+              <a class="btn btn-secondary" href="gueter.php">Zurück zur Übersicht</a>';
+            }
+          ?>
 
-          }
-
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
-          }
-
-        ?>
         </div>
         <!-- /.container-fluid -->
 
@@ -135,7 +158,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -177,9 +200,43 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-  </body>
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
+    <!-- JavaScript for Save-Confirmation -->
+    <script>
+      function checkSave(){
+        return confirm('Bestände überschreiben?')
+      }
+    </script>
+
+  </body>
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>
