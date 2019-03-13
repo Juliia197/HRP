@@ -11,6 +11,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+session_start();
+
+$admin_mail  = $_SESSION["admin_mail"];
+$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,15 +108,23 @@ if ($conn->connect_error) {
           <hr>
 
           <?php 
+          if (in_array($admin_mail, $admin_mail_array)) {
+
             $email = $_POST['email'];
             $id_gehoeft = $_POST["id_gehoeft"];
 
             $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
-            $id_benutzer_sql = $mysqli->prepare($id_benutzer_query);
+            $id_benutzer_sql = $conn->prepare($id_benutzer_query);
             $id_benutzer_sql->bind_param("s", $email);
             $id_benutzer_sql->execute();
             $id_benutzer_result = $id_benutzer_sql->get_result();
             $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
+
+            if ($id_benutzer_result->num_rows == 0) {
+              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
+            }
+
+            else {
 
             $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
@@ -124,15 +137,26 @@ if ($conn->connect_error) {
             }
             
             else {
-              $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
-              $insert = $conn->query($insert_sql);
+
+              $insert_query = "INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES (?, ?)";
+              $insert_sql = $conn->prepare($insert_query);
+              $insert_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
+              $insert_sql->execute();
 
               echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
             }
 
-            echo '<a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>';
+            }
 
-            ?>
+            echo '<a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >zurück zur Übersicht</a>';
+
+          }
+
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
+          }
+
+        ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -170,7 +194,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.php">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>

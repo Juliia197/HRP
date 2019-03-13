@@ -18,16 +18,6 @@ session_start();
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
 
-/*if (isset($_POST['id_box'])){
-  
-    $boxbelegen_sql = "UPDATE box SET id_pferd = " . $_GET['id_pferd'] . " WHERE id_box = " . $_POST['id_box'];
-    $boxbelegen_result = $conn->query($boxbelegen_sql);
-    if ($_GET['id_pferd'] > 0){
-    $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = " . $_GET['id_pferd'] . " AND id_box != " . $_POST['id_box'];
-    $boxleeren_result = $conn->query($boxleeren_sql);
-}
-}*/
-
   
 ?>
 
@@ -42,7 +32,21 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      if ($_GET['id_pferd'] == 0){
+        $pferdename = "Pferd erstellen";
+      } else {
+        $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
+        $pferdename_result = $conn->prepare($pferdename_sql);
+        $pferdename_bind = [$_GET['id_pferd']];
+        $pferdename_result->execute($pferdename_bind);
+        $pferdename_result = $pferdename_result->fetch();
+        $pferdename = $pferdename_result['pferdename'] . " bearbeiten";
+      }
+
+    ?>
+
+    <title>HRP - <?php echo $pferdename; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -337,8 +341,8 @@ if($_SESSION["logged"] == true) {
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
                 <label>Pferdename</label>
                 <input class="form-control" type="text" maxlength="45" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
-                <label>Geschlecht</label>
-                <select name="geschlecht">
+                <label>Geschlecht</label><br />
+                <select class="custom-select" name="geschlecht">
                     <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">Stute</option>
                     <option <?php if ($geschlecht === 'h') {echo 'selected';} ?> value="h">Hengst</option>
                     <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">Wallach</option>
@@ -395,7 +399,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Besitzer</td>
                           <td>
-                            <select name="besitzerId">  
+                            <select class="custom-select" name="besitzerId">  
                             <?php
                               foreach($allepersonen_result as $person){?>
                                 <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_besitzer){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
@@ -408,7 +412,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Reitbeteiligung</td>
                           <td>
-                            <select name="rbId">
+                            <select class="custom-select" name="rbId">
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
@@ -421,7 +425,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Tierarzt</td>
                           <td>
-                            <select name="tierarztId">
+                            <select class="custom-select" name="tierarztId">
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
@@ -434,7 +438,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Hufschmied</td>
                           <td>
-                            <select name="hufschmiedId">
+                            <select class="custom-select" name="hufschmiedId">
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
@@ -481,7 +485,7 @@ if($_SESSION["logged"] == true) {
                 <hr>
 
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
-                <a class="btn btn-secondary" href="pferd.php">Abbrechen</a><br />
+                <a class="btn btn-secondary" href="pferd.php">Abbrechen</a>
             </form>
 
         </div>

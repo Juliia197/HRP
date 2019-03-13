@@ -3,6 +3,7 @@ $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
@@ -12,8 +13,13 @@ if ($conn->connect_error) {
 
 session_start();
 
+
 $admin_mail  = $_SESSION["admin_mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+
+if (isset($_GET["id_gehoeft"])) {
+  $id_gehoeft = $_GET["id_gehoeft"];
+}
 
 ?>
 <!DOCTYPE html>
@@ -27,7 +33,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Admin Gehöft hinzufügen</title>
+    <title>HRP - Admin Benutzer</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -108,73 +114,64 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
           <?php 
           if (in_array($admin_mail, $admin_mail_array)) {
+          ?>
 
-            $gehoeftname = $_POST["gehoeftname"];
-            $strasse = $_POST['strasse'];
-            $hausnr = $_POST['hausnr'];
-            $plz = $_POST['plz'];
-            $ort = $_POST['ort'];
-            $land = $_POST['land'];
+          <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
+          <hr>
 
-            $adresse_vorhanden_query = "SELECT id_adresse FROM adresse WHERE strasse = ? AND  hausnr = ? AND plz = ? AND ort = ? AND land = ?";
-            $adresse_vorhanden_sql = $conn->prepare($adresse_vorhanden_query);
-            $adresse_vorhanden_sql->bind_param("siiss", $strasse, $hausnr, $plz, $ort, $land);
-            $adresse_vorhanden_sql->execute();
-            $adresse_vorhanden_result = $adresse_vorhanden_sql->get_result();
-            $adresse_vorhanden_fetch = $adresse_vorhanden_result->fetch_assoc();
+          <form action= "admin-verwalter-added.php" method="post">
+          <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input class="form-control" id="email" name="email" type="email">
+          </div>
+          <input value="<?php echo $id_gehoeft ?>" name="id_gehoeft" type="hidden">
+          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
+          </form>
+          <br>
 
-            if ($adresse_vorhanden_result->num_rows == 0) {
-              $adresse_insert_query = "INSERT INTO adresse (strasse, hausnr, plz, ort, land) VALUES (?, ?, ?, ?, ?)";
-              $adresse_insert_sql = $conn->prepare($adresse_insert_query);
-              $adresse_insert_sql->bind_param("siiss", $strasse, $hausnr, $plz, $ort, $land);
-              $adresse_insert_sql->execute();
+          <h2>Gehöftverwalter</h2>
+          <hr>
+          <div class="table-responsive">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>E-Mail</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
 
-              $id_adresse = $adresse_insert_sql->insert_id;
+              <?php
 
-              $gehoeft_insert_query = "INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES (?, ?)";
-              $gehoeft_insert_sql = $conn->prepare($gehoeft_insert_query);
-              $gehoeft_insert_sql->bind_param("si", $gehoeftname, $id_adresse);
-              $gehoeft_insert_sql->execute();
-              $id_gehoeft = $gehoeft_insert_sql->insert_id;
+              $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
+              $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
+              $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
+              $gehoeftverwalter_sql->execute();
+              $gehoeftverwalter_result = $gehoeftverwalter_sql->get_result();
+
+              $nummer=1;
+              while ($gehoeftverwalter_fetch = $gehoeftverwalter_result->fetch_assoc()) {
+                echo '<tr>
+                <td>' . $nummer . '</td>
+                <td>' . $gehoeftverwalter_fetch['email'] . '</td>
+                <td> <a class="btn btn-sm btn-danger" href="admin-verwalter-delete.php?id_benutzer=' . $gehoeftverwalter_fetch["id_benutzer"] . '&id_gehoeft='. $id_gehoeft .'" onclick="return checkDelete()">Benutzer entfernen</a></td>
+                </tr>';
+                $nummer += 1;
+              } 
               
-              for ($i=1; $i<=4; $i++) {
-              $insert_bestand_sql = " INSERT INTO gehoeft_besitzt_verbrauchsguttyp (id_verbrauchsguttyp, id_gehoeft, bestand, datum) VALUES ('$i', '$id_gehoeft', '0', '0000-00-00') ";
-              $insert_bestand = $conn->query($insert_bestand_sql);
-              }
-              echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
-            }
+              ?>
 
-            else {
-              $id_adresse = $adresse_vorhanden_fetch["id_adresse"];
+            </tbody>
+          </table>
+          </div>
+          <hr>
 
-              $check_sql = "SELECT COUNT(id_adresse) AS count FROM gehoeft WHERE id_adresse =  $id_adresse ";
-              $check = $conn->query($check_sql);
-              $check = $check->fetch_assoc();
-              
-              if ($check['count'] > 0) {
-                echo '<div class="alert alert-danger" role="alert">Zu dieser Adresse gibt es bereits ein Gehöft!</div><hr>';
-              }
-              
-              else {
-                $gehoeft_insert_query = "INSERT INTO gehoeft (gehoeftname, id_adresse) VALUES (?, ?)";
-                $gehoeft_insert_sql = $conn->prepare($gehoeft_insert_query);
-                $gehoeft_insert_sql->bind_param("si", $gehoeftname, $id_adresse);
-                $gehoeft_insert_sql->execute();
-                $id_gehoeft = $gehoeft_insert_sql->insert_id;
-                
-                for ($i=1; $i<=4; $i++) {
-                $insert_bestand_sql = " INSERT INTO gehoeft_besitzt_verbrauchsguttyp (id_verbrauchsguttyp, id_gehoeft, bestand, datum) VALUES ('$i', '$id_gehoeft', '0', '0000-00-00') ";
-                $insert_bestand = $conn->query($insert_bestand_sql);
-                }
-                echo '<div class="alert alert-success" role="alert">Das Gehöft wurde hinzugefügt</div><hr>';
-              }
-              
-            }
-            ?>
-            
-            <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>
-            
-            <?php
+          <div class="form-group">
+          <a class="btn btn-secondary" href="admin.php">zurück zur Übersicht</a>
+          </div>
+          
+          <?php
           }
 
           else {
@@ -232,8 +229,32 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
+
+  <!-- JavaScript for Delete-Confirmation -->
+  <script>
+    function checkDelete(){
+      return confirm('Benutzer als Gehöftverwalter entfernen?')
+    }
+  </script>
 
   </body>
 

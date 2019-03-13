@@ -27,7 +27,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Gehöft Benutzer hinzugefügt</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -117,6 +117,12 @@ if($_SESSION["logged"] == true) {
             $id_benutzer_result = $id_benutzer_sql->get_result();
             $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
 
+            if ($id_benutzer_result->num_rows == 0) {
+              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
+            }
+
+            else {
+
             $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
@@ -133,6 +139,9 @@ if($_SESSION["logged"] == true) {
 
               echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
             }
+
+            }
+
             ?>
             <div class="form-group">
               <a class="btn btn-secondary" href="gehoeft-benutzer.php" >zurück zur Übersicht</a>
@@ -175,7 +184,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.php">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>

@@ -29,7 +29,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Benutzer Gehöft hinzufügen</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -178,7 +178,7 @@ if($_SESSION["logged"] == true) {
             
             <hr>
             <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft.php">zurück zur Übersicht</a>
+              <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
             </div>
 
 
@@ -218,7 +218,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.php">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>

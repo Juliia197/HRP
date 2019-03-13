@@ -45,7 +45,21 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      if ($_GET['id_person'] == 0){
+        $name = "Person hinzufügen";
+      } else {
+        $personname_sql = "SELECT vorname, nachname FROM person WHERE id_person = ?";
+        $personname_result = $conn->prepare($personname_sql);
+        $personname_result->bind_param('i', $_GET['id_person']);
+        $personname_result->execute();
+        $personname_result = $personname_result->get_result();
+        $personname_result = $personname_result->fetch_assoc();
+        $name = $personname_result['vorname'] . " " . $personname_result['nachname'] . " bearbeiten";
+      }
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -212,7 +226,8 @@ if($_SESSION["logged"] == true) {
                     while($row_i = $id_adresse_result->fetch_assoc()){
 
                       $id_adresse_übergabe = $row_i['id_adresse'];
-                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresse_übergabe')";
+                      $personnew_sql = "INSERT INTO person (vorname, nachname, email, telefonnr, geburtsdatum, id_adresse, id_gehoeft) VALUES ('$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', $id_adresse_übergabe, $id_gehoeft)";
+                      echo $personnew_sql;
                       $personnew_result = $conn->query($personnew_sql);
 
                       $erfolg = 2;
@@ -228,7 +243,8 @@ if($_SESSION["logged"] == true) {
 
                     while($row_a = $id_adresse_result1->fetch_assoc()){   
                       $id_adresseh = $row_a['id_adresse'];
-                      $personnew_sql = "INSERT INTO person (id_person, vorname, nachname, email, telefonnr, geburtsdatum, id_adresse) VALUES (NULL, '$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', '$id_adresseh')";
+                      $personnew_sql = "INSERT INTO person (vorname, nachname, email, telefonnr, geburtsdatum, id_adresse, id_gehoeft) VALUES ('$vorname', '$nachname', '$email', $telefonnr, '$geburtsdatum', $id_adresseh, $id_gehoeft)";
+                      echo $personnew_sql;
                       $personnew_result = $conn->query($personnew_sql);
 
                       $erfolg = 2;
