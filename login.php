@@ -89,7 +89,7 @@ if (isset($_POST['email'], $_POST['password'])) {
           $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
           $heute_datum = date("Y-m-d");
           
-          if ($letzteaenderung_datum != $heute_datum){
+          if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
             $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
             $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
             $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
@@ -192,7 +192,7 @@ if (isset($_POST['email'], $_POST['password'])) {
                 $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
                 $heute_datum = date("Y-m-d");
               
-              if ($letzteaenderung_datum != $heute_datum){
+              if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
                 $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
                 $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
                 $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
@@ -262,7 +262,7 @@ if (isset($_POST['email'], $_POST['password'])) {
               
               
               }
-              
+
                 header('location:dashboard.php');
                 exit();
               }
@@ -288,7 +288,7 @@ if (isset($_POST['email'], $_POST['password'])) {
               $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
               $heute_datum = date("Y-m-d");
             
-              if ($letzteaenderung_datum != $heute_datum){
+              if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
                 $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
                 $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
                 $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
@@ -483,7 +483,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                 </div><!-- ./brand-logo -->
                 <p style="text-align: center;">Horse-Resource-Planning</p> <br /> <br /> <br /><br /><br /><br /><br /> 
                 <p style="text-align: center; margin-bottom: -20px;">Copyright &copy; HRP 2019</p> <br />
-                <p style="text-align: center;"><a href="impressum.html">Impressum & Datenschutz</a></p>
+                <p style="text-align: center;"><a href="impressum.html" target="_blank">Impressum & Datenschutz</a></p>
               </div>
             </div>
           </div>
@@ -604,7 +604,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                           </div>
                         </div>
                         <div class="form-group">
-                          <p class="term-policy text-muted small">Ich stimme den <a href="#">AGB</a> und der <a href="impressum.html">Datenschutzerklärung</a> zu.</p>
+                          <p class="term-policy text-muted small">Ich stimme der <a href="impressum.html#datenschutz" target="_blank">Datenschutzerklärung</a> zu.</p>
                         </div>
                         <div class="form-group">
                           <button class="btn btn-lg btn-primary btn-block" type="submit">Registrierung abschließen</button>
