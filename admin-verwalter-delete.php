@@ -48,7 +48,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -104,12 +104,12 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
               $delete_sql->execute();
 
               echo '<div class="alert alert-success" role="alert">Der Benutzer wurde als Gehöftverwalter entfernt!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >zurück zur Übersicht</a>';
+              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
             }
             
             else {
               echo '<div class="alert alert-danger" role="alert">Der Benutzer ist diesem Gehöft nicht zugeordnet!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >zurück zur Übersicht</a>';
+              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
             }
           
           }
@@ -118,7 +118,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             echo '
             <div class="alert alert-danger" role="alert">Keine gültigen Parameter!</div>
             <hr>
-            <a class="btn btn-secondary" href="admin.php" >zurück zur Übersicht</a>'; 
+            <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>'; 
           }
 
           }

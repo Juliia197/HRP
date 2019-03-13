@@ -11,9 +11,34 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+$changed = false;
+
 session_start();
 
 if($_SESSION["logged"] == true) {
+
+  $id_gehoeft = $_SESSION["id_gehoeft"];
+
+  $hafer = $_POST["typ_1"];
+  $heu = $_POST["typ_2"];
+  $stroh = $_POST["typ_3"];
+  $saegespaene = $_POST["typ_4"];
+
+  $typen = [$hafer, $heu, $stroh, $saegespaene];
+  $typ=1;
+  $datum = date("Y-m-d");
+
+  foreach ($typen as $bestand) {
+    $bestand_update_query = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = ?, datum = ? WHERE id_gehoeft = ? AND id_verbrauchsguttyp = ?";
+    $bestand_update_sql = $conn->prepare($bestand_update_query);
+    $bestand_update_sql->bind_param("isii", $bestand, $datum, $id_gehoeft, $typ);
+    $bestand_update_sql->execute();
+
+    $typ++;
+  }
+
+  $changed =  true;
+
 
 ?>
 <!DOCTYPE html>
@@ -27,7 +52,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Gehöft Benutzer hinzugefügt</title>
+    <title>HRP - Güter</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -47,7 +72,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">Gehöftverwaltung</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Bestände</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -55,6 +80,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -72,13 +100,13 @@ if($_SESSION["logged"] == true) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -103,50 +131,25 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Benutzer zum Gehöft hinzufügen</h1>
-          <hr>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gueter.php">Güter</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Bestände bearbeiten
+            </li>            
+          </ol>
+          
+          <?php
 
-          <?php 
-            $email = $_POST['email'];
-            $id_gehoeft = $_SESSION['id_gehoeft'];
-
-            $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
-            $id_benutzer_sql = $conn->prepare($id_benutzer_query);
-            $id_benutzer_sql->bind_param("s", $email);
-            $id_benutzer_sql->execute();
-            $id_benutzer_result = $id_benutzer_sql->get_result();
-            $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
-
-            if ($id_benutzer_result->num_rows == 0) {
-              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
+          if ($changed) {
+              echo '<div class="alert alert-success" role="alert">Die Bestände wurden überschrieben!</div>
+              <a class="btn btn-secondary" href="gueter.php">Zurück zur Übersicht</a>';
             }
-
-            else {
-
-            $id_benutzer = $id_benutzer_fetch["id_benutzer"];
-
-            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
-            $check = $conn->query($check_sql);
-            $check = $check->fetch_assoc();
-
-            if ($check['count'] > 0) {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
-            }
-            
-            else {
-              $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
-              $insert = $conn->query($insert_sql);
-
-              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
-            }
-
-            }
-
-            ?>
-            <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >Zurück zur Übersicht</a>
-            </div>
-            
+          ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -155,7 +158,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -197,11 +200,34 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-  </body>
+      <!-- Demo scripts for this page-->
+  <script src="js/demo/datatables-demo.js"></script>
 
+    <!-- JavaScript for Save-Confirmation -->
+    <script>
+      function checkSave(){
+        return confirm('Bestände überschreiben?')
+      }
+    </script>
+
+  </body>
 </html>
 
 <?php

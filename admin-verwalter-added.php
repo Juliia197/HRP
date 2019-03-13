@@ -48,7 +48,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -127,7 +127,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
             }
 
-            echo '<a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >zurück zur Übersicht</a>';
+            echo '<a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
 
           }
 
