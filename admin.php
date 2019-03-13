@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
-$admin_mail  = $_SESSION["admin_mail"];
+$admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
 ?>
@@ -57,6 +57,9 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -67,7 +70,13 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item active">
+          <a class="nav-link" href="admin.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Admin</span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
           <a class="nav-link" href="dashboard.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
@@ -96,12 +105,14 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
           </a>
-        </li>
+        </li> -->
       </ul>
 
       <div id="content-wrapper">
 
         <div class="container-fluid">
+          
+          <!--<div class="container">-->
 
           <!-- Page Content -->
           <h1>Admin</h1>
@@ -248,7 +259,9 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           }
 
         ?>
-
+        
+        <!-- </div> -->
+        <!-- /.container -->
         </div>
         <!-- /.container-fluid -->
 

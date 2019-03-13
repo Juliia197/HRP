@@ -1,4 +1,5 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
@@ -11,17 +12,77 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+$user = false;
+$admin = false;
+$hans = true;
+$peter = false;
+$wiederholung = false;
+$passwort_falsch = false;
+
 session_start();
 
-
-$admin_mail  = $_SESSION["mail"];
+$mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
-if (isset($_GET["id_gehoeft"])) {
-  $id_gehoeft = $_GET["id_gehoeft"];
+if(isset($_SESSION["logged"]) && $_SESSION["logged"] == true) {
+  $user = true;
+}
+
+else if (in_array($mail, $admin_mail_array)) {
+  $admin = true;
+}
+
+else {
+  header('location:login.php');
+}
+
+if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_POST['passwort_confirm'])) {
+
+  if ($_POST['passwort_neu'] === $_POST['passwort_confirm']) {
+    $wiederholung = false;
+
+    $passwort_alt = $_POST["passwort_alt"];
+    $passwort_neu = $_POST["passwort_neu"];
+    $passwort_confirm = $_POST["passwort_confirm"];
+
+    $passwort_query = "SELECT passwort FROM benutzer WHERE email = ?";
+    $passwort_sql = $conn->prepare($passwort_query);
+    $passwort_sql->bind_param("s", $mail);
+    $passwort_sql->execute();
+    $passwort_result = $passwort_sql->get_result();
+
+      $passwort_fetch = $passwort_result->fetch_assoc();
+
+      $passwort = $passwort_fetch["passwort"];
+      $passwort_alt_hash = md5($passwort_alt);
+
+      if ($passwort === $passwort_alt_hash) {
+
+        $passwort_falsch = false;
+
+        $passwort_neu_hash = md5($passwort_neu);
+
+        $passwort_change_query = "UPDATE benutzer SET passwort = ? WHERE email = ?";
+        $passwort_change_sql = $conn->prepare($passwort_change_query);
+        $passwort_change_sql->bind_param("ss", $passwort_neu_hash, $mail);
+        $passwort_change_sql->execute();
+
+        $hans = false;
+        $peter = true;
+        session_destroy();
+      }
+
+      else {
+        $passwort_falsch = true;
+    }
+  }
+  else {
+    $wiederholung = true;
+  }
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +94,7 @@ if (isset($_GET["id_gehoeft"])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Admin Benutzer</title>
+    <title>HRP - Passwort ändern</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -61,6 +122,9 @@ if (isset($_GET["id_gehoeft"])) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item active no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -70,7 +134,11 @@ if (isset($_GET["id_gehoeft"])) {
 
     <div id="wrapper">
 
-      <!-- Sidebar -->
+    <?php
+    if ($user) {
+    ?>
+
+      <!-- Sidebar User -->
       <ul class="sidebar navbar-nav">
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">
@@ -103,84 +171,102 @@ if (isset($_GET["id_gehoeft"])) {
           </a>
         </li>
       </ul>
+      
+    <?php 
+    }
+
+    if ($admin) {
+    ?>
+
+    <!-- Sidebar Admin -->
+    <ul class="sidebar navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="admin.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Admin</span>
+          </a>
+        </li>
+    </ul>
+
+    <?php
+    }
+    ?>
 
       <div id="content-wrapper">
 
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Admin</h1>
+          
+          <!-- Überschrift -->
+          <h1>Passwort ändern</h1>
           <hr>
 
-          <?php 
-          if (in_array($admin_mail, $admin_mail_array)) {
+          <?php
+          if ($hans) {
+
+          if ($wiederholung) {
+            echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr>';
+          }
+
+          if ($passwort_falsch) {
+            echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr>';
+          }
           ?>
 
-          <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
-          <hr>
+          <form action="passwort.php" method="post">
+            <div class="form-group">
+            <label for="passwort_alt">
+              Altes Passwort
+            </label>
+            <input class="form-control" type="password" id="passwort_alt" name="passwort_alt" required><br>
+            <label for="passwort_neu">
+              Neues Passwort
+            </label>
+            <input class="form-control" type="password" id="passwort_neu" name="passwort_neu" required><br>
+            <label for="passwort_confirm">
+              Neues Passwort wiederholen
+            </label>
+            <input class="form-control" type="password" id="passwort_confirm" name="passwort_confirm" required>
+            </div>
+            
+            <div class="form-group">
 
-          <form action= "admin-verwalter-added.php" method="post">
-          <div class="form-group">
-            <label for="email">E-Mail</label>
-            <input class="form-control" id="email" name="email" type="email">
-          </div>
-          <input value="<?php echo $id_gehoeft ?>" name="id_gehoeft" type="hidden">
-          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
-          </form>
-          <br>
+              <button class="btn btn-success" onclick="return checkChange()">
+                Passwort ändern
+              </button>
+              <?php 
+              if ($user) {
+                echo '<a class="btn btn-secondary" href="dashboard.php" >Abbrechen</a>';
+              }
 
-          <h2>Gehöftverwalter</h2>
-          <hr>
-          <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead class="thead-light">
-              <tr>
-                <th>#</th>
-                <th>E-Mail</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-
-              <?php
-
-              $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
-              $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
-              $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
-              $gehoeftverwalter_sql->execute();
-              $gehoeftverwalter_result = $gehoeftverwalter_sql->get_result();
-
-              $nummer=1;
-              while ($gehoeftverwalter_fetch = $gehoeftverwalter_result->fetch_assoc()) {
-                echo '<tr>
-                <td>' . $nummer . '</td>
-                <td>' . $gehoeftverwalter_fetch['email'] . '</td>
-                <td> <a class="btn btn-sm btn-danger" href="admin-verwalter-delete.php?id_benutzer=' . $gehoeftverwalter_fetch["id_benutzer"] . '&id_gehoeft='. $id_gehoeft .'" onclick="return checkDelete()">Benutzer entfernen</a></td>
-                </tr>';
-                $nummer += 1;
-              } 
-              
+              if ($admin) {
+                echo '<a class="btn btn-secondary" href="admin.php" >Abbrechen</a>';
+              }
               ?>
+            </div>
 
-            </tbody>
-          </table>
-          </div>
-          <hr>
+          </form>
 
-          <div class="form-group">
-          <a class="btn btn-secondary" href="admin.php">zurück zur Übersicht</a>
-          </div>
-          
           <?php
           }
 
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
-          }
+          if ($peter) {
+          ?>
 
-        ?>
+          <div class="alert alert-success" role="alert">Das Passwort wurde geändert</div>
+          
+          <div class="form-group">
+          <a class="btn btn-secondary" href="login.php">Zum Login</a>
+          </div>
+
+          <?php
+          }
+          ?>
+
 
         </div>
+        
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
@@ -251,11 +337,11 @@ if (isset($_GET["id_gehoeft"])) {
 
   <!-- JavaScript for Delete-Confirmation -->
   <script>
-    function checkDelete(){
-      return confirm('Benutzer als Gehöftverwalter entfernen?')
+    function checkChange(){
+      return confirm('Passwort ändern?')
     }
   </script>
-
+    
   </body>
 
 </html>
