@@ -21,8 +21,11 @@ $error_register_password = false;
 $error_register_email = false;
 $gehoeft_auswaehlen = false;
 $activated = false;
+$admin = false;
+$ein_gehoeft = false;
 $mail = '';
 $register_email = '';
+$passwort = '';
 
 // Create connection
 $mysqli = new mysqli($servername, $username, $password, $dbname);
@@ -61,6 +64,8 @@ if (isset($_POST['email'], $_POST['password'])) {
     $user = $user->fetch();
 
     if (isset($user['passwort']) && $user['passwort'] === $password) {
+
+      $passwort = $_POST['password'];
       
       $id_gehoeft_count_sql = " SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer =  '" . $user['id_benutzer'] . "'";
       $id_gehoeft_count = $conn->query($id_gehoeft_count_sql);
@@ -75,15 +80,16 @@ if (isset($_POST['email'], $_POST['password'])) {
           $id_gehoeft = $_POST['gehoeftauswaehlen'];
 
           $_SESSION['id_gehoeft'] = $id_gehoeft;
+          $_SESSION['mail'] = $mail;
           $_SESSION['logged'] = true;
 
           $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
-            $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
-            $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
-            $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
-            $heute_datum = date("Y-m-d");
+          $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
+          $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
+          $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
+          $heute_datum = date("Y-m-d");
           
-          if ($letzteaenderung_datum != $heute_datum){
+          if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
             $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
             $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
             $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
@@ -153,110 +159,227 @@ if (isset($_POST['email'], $_POST['password'])) {
           
           }
           
-          header('location:dashboard.php');
-          exit();
+            header('location:dashboard.php');
+            exit();
           
         }
 
         else {
 
           if ($id_gehoeft_count['count'] == 1) {
-            
-            $id_gehoeft_sql = " SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = '" . $id_benutzer . "'";
-            $id_gehoeft = $conn->query($id_gehoeft_sql);
-            $id_gehoeft_fetch = $id_gehoeft->fetch();
-            
-            $id_gehoeft = $id_gehoeft_fetch["id_gehoeft"];
 
-            $_SESSION['id_gehoeft'] = $id_gehoeft;
-            $_SESSION['logged'] = true;
+            $gehoeft_auswaehlen = false;
 
-            $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
-            $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
-            $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
-            $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
-            $heute_datum = date("Y-m-d");
+            $_SESSION['mail'] = $mail;
+            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+            if (in_array($mail, $admin_mail_array)) {
+              $ein_gehoeft = true;
+              $admin = true;
+              if (isset($_POST['ein_gehoeft']) && $admin = true) {
+                $id_gehoeft_sql = " SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = '" . $id_benutzer . "'";
+                $id_gehoeft = $conn->query($id_gehoeft_sql);
+                $id_gehoeft_fetch = $id_gehoeft->fetch();
+                
+                $id_gehoeft = $id_gehoeft_fetch["id_gehoeft"];
+
+                $_SESSION['id_gehoeft'] = $id_gehoeft;
+                $_SESSION['mail'] = $mail;
+                $_SESSION['logged'] = true;
+
+                $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
+                $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
+                $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
+                $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
+                $heute_datum = date("Y-m-d");
+              
+              if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
+                $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
+                $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
+                $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
+                $heute_datum_jahr = intval(substr($heute_datum,0,4));
+                $heute_datum_monat = intval(substr($heute_datum,5,2));
+                $heute_datum_tag = intval(substr($heute_datum,8,2));
+                $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
+                $bestand_veraenderung = 0;
+                $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+                $gewichtpferd_result = $conn->query($gewichtpferd_sql);
+                $gewichtpferd_result = $gewichtpferd_result->fetch();
+                $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
+                $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = $id_gehoeft AND id_pferd IS NOT NULL";
+                $anzahlbox_result = $conn->query($anzahlbox_sql);
+                $anzahlbox_result = $anzahlbox_result->fetch();
+                $anzahlboxen = $anzahlbox_result['anzahlbox'];
+                $haferkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 1";
+                $haferkoeff_result = $conn->query($haferkoeff_sql);
+                $haferkoeff_result = $haferkoeff_result->fetch();
+                $koeffhafer = $haferkoeff_result['koeffizient'];
+
+                $heukoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
+                $heukoeff_result = $conn->query($heukoeff_sql);
+                $heukoeff_result = $heukoeff_result->fetch();
+                $koeffheu = $heukoeff_result['koeffizient'];
+                $strohkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
+                $strohkoeff_result = $conn->query($strohkoeff_sql);
+                $strohkoeff_result = $strohkoeff_result->fetch();
+                $koeffstroh = $strohkoeff_result['koeffizient'];
+                $spaenekoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
+                $spaenekoeff_result = $conn->query($spaenekoeff_sql);
+                $spaenekoeff_result = $spaenekoeff_result->fetch();
+                $koeffspaene = $spaenekoeff_result['koeffizient'];
+                $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+                $haferbestand_result = $conn->query($haferbestand_sql);
+                $haferbestand_result = $haferbestand_result->fetch();
+                $bestand_hafer = $haferbestand_result['bestand'];
+                $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+                $heubestand_result = $conn->query($heubestand_sql);
+                $heubestand_result = $heubestand_result->fetch();
+                $bestand_heu = $heubestand_result['bestand'];
+                $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+                $strohbestand_result = $conn->query($strohbestand_sql);
+                $strohbestand_result = $strohbestand_result->fetch();
+                $bestand_stroh = $strohbestand_result['bestand'];
+                $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+                $spaenebestand_result = $conn->query($spaenebestand_sql);
+                $spaenebestand_result = $spaenebestand_result->fetch();
+                $bestand_spaene = $spaenebestand_result['bestand'];
+                $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
+                $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
+                $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
+                $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
+                
+                $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
+                $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
+                $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
+                $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
+                $bestandneu_hafer_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_heu_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
+                $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
+                $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
+                $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+              
+              
+              }
+
+                header('location:dashboard.php');
+                exit();
+              }
+            }
+
+            else {
+              $ein_gehoeft = false;
+              $admin = false;
+
+              $id_gehoeft_sql = " SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = '" . $id_benutzer . "'";
+              $id_gehoeft = $conn->query($id_gehoeft_sql);
+              $id_gehoeft_fetch = $id_gehoeft->fetch();
+              
+              $id_gehoeft = $id_gehoeft_fetch["id_gehoeft"];
+
+              $_SESSION['id_gehoeft'] = $id_gehoeft;
+              $_SESSION['mail'] = $mail;
+              $_SESSION['logged'] = true;
+
+              $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
+              $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
+              $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
+              $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
+              $heute_datum = date("Y-m-d");
+            
+              if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
+                $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
+                $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
+                $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
+                $heute_datum_jahr = intval(substr($heute_datum,0,4));
+                $heute_datum_monat = intval(substr($heute_datum,5,2));
+                $heute_datum_tag = intval(substr($heute_datum,8,2));
+                $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
+                $bestand_veraenderung = 0;
+                $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+                $gewichtpferd_result = $conn->query($gewichtpferd_sql);
+                $gewichtpferd_result = $gewichtpferd_result->fetch();
+                $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
+                $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = $id_gehoeft AND id_pferd IS NOT NULL";
+                $anzahlbox_result = $conn->query($anzahlbox_sql);
+                $anzahlbox_result = $anzahlbox_result->fetch();
+                $anzahlboxen = $anzahlbox_result['anzahlbox'];
+                $haferkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 1";
+                $haferkoeff_result = $conn->query($haferkoeff_sql);
+                $haferkoeff_result = $haferkoeff_result->fetch();
+                $koeffhafer = $haferkoeff_result['koeffizient'];
+
+                $heukoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
+                $heukoeff_result = $conn->query($heukoeff_sql);
+                $heukoeff_result = $heukoeff_result->fetch();
+                $koeffheu = $heukoeff_result['koeffizient'];
+                $strohkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
+                $strohkoeff_result = $conn->query($strohkoeff_sql);
+                $strohkoeff_result = $strohkoeff_result->fetch();
+                $koeffstroh = $strohkoeff_result['koeffizient'];
+                $spaenekoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
+                $spaenekoeff_result = $conn->query($spaenekoeff_sql);
+                $spaenekoeff_result = $spaenekoeff_result->fetch();
+                $koeffspaene = $spaenekoeff_result['koeffizient'];
+                $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+                $haferbestand_result = $conn->query($haferbestand_sql);
+                $haferbestand_result = $haferbestand_result->fetch();
+                $bestand_hafer = $haferbestand_result['bestand'];
+                $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+                $heubestand_result = $conn->query($heubestand_sql);
+                $heubestand_result = $heubestand_result->fetch();
+                $bestand_heu = $heubestand_result['bestand'];
+                $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+                $strohbestand_result = $conn->query($strohbestand_sql);
+                $strohbestand_result = $strohbestand_result->fetch();
+                $bestand_stroh = $strohbestand_result['bestand'];
+                $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+                $spaenebestand_result = $conn->query($spaenebestand_sql);
+                $spaenebestand_result = $spaenebestand_result->fetch();
+                $bestand_spaene = $spaenebestand_result['bestand'];
+                $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
+                $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
+                $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
+                $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
+                
+                $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
+                $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
+                $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
+                $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
+                $bestandneu_hafer_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_heu_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
+                $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
+                $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
+                $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
+                $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+              }
+
+              header('location:dashboard.php');
+              exit();
           
-          if ($letzteaenderung_datum != $heute_datum){
-            $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
-            $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
-            $letzteaenderung_datum_tag = intval(substr($letzteaenderung_datum,8,2));
-            $heute_datum_jahr = intval(substr($heute_datum,0,4));
-            $heute_datum_monat = intval(substr($heute_datum,5,2));
-            $heute_datum_tag = intval(substr($heute_datum,8,2));
-            $anzahl_tage = ($heute_datum_jahr - $letzteaenderung_datum_jahr) * 365 + ($heute_datum_monat - $letzteaenderung_datum_monat) * 30 + ($heute_datum_tag - $letzteaenderung_datum_tag);
-            $bestand_veraenderung = 0;
-            $gewichtpferd_sql = "SELECT SUM(pferd.gewicht) as gesamtgewicht FROM pferd,box WHERE pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-            $gewichtpferd_result = $conn->query($gewichtpferd_sql);
-            $gewichtpferd_result = $gewichtpferd_result->fetch();
-            $gesamtgewichtpferd = $gewichtpferd_result['gesamtgewicht'];
-            $anzahlbox_sql = "SELECT COUNT(id_box) as anzahlbox FROM box WHERE id_gehoeft = $id_gehoeft AND id_pferd IS NOT NULL";
-            $anzahlbox_result = $conn->query($anzahlbox_sql);
-            $anzahlbox_result = $anzahlbox_result->fetch();
-            $anzahlboxen = $anzahlbox_result['anzahlbox'];
-            $haferkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 1";
-            $haferkoeff_result = $conn->query($haferkoeff_sql);
-            $haferkoeff_result = $haferkoeff_result->fetch();
-            $koeffhafer = $haferkoeff_result['koeffizient'];
-
-            $heukoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 2";
-            $heukoeff_result = $conn->query($heukoeff_sql);
-            $heukoeff_result = $heukoeff_result->fetch();
-            $koeffheu = $heukoeff_result['koeffizient'];
-            $strohkoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 3";
-            $strohkoeff_result = $conn->query($strohkoeff_sql);
-            $strohkoeff_result = $strohkoeff_result->fetch();
-            $koeffstroh = $strohkoeff_result['koeffizient'];
-            $spaenekoeff_sql = "SELECT koeffizient FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = 4";
-            $spaenekoeff_result = $conn->query($spaenekoeff_sql);
-            $spaenekoeff_result = $spaenekoeff_result->fetch();
-            $koeffspaene = $spaenekoeff_result['koeffizient'];
-            $haferbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
-            $haferbestand_result = $conn->query($haferbestand_sql);
-            $haferbestand_result = $haferbestand_result->fetch();
-            $bestand_hafer = $haferbestand_result['bestand'];
-            $heubestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
-            $heubestand_result = $conn->query($heubestand_sql);
-            $heubestand_result = $heubestand_result->fetch();
-            $bestand_heu = $heubestand_result['bestand'];
-            $strohbestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
-            $strohbestand_result = $conn->query($strohbestand_sql);
-            $strohbestand_result = $strohbestand_result->fetch();
-            $bestand_stroh = $strohbestand_result['bestand'];
-            $spaenebestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
-            $spaenebestand_result = $conn->query($spaenebestand_sql);
-            $spaenebestand_result = $spaenebestand_result->fetch();
-            $bestand_spaene = $spaenebestand_result['bestand'];
-            $bestand_veraenderung_heu = $anzahl_tage * $koeffheu * ($gesamtgewichtpferd / 100);
-            $bestand_veraenderung_hafer = $anzahl_tage * $koeffhafer * ($gesamtgewichtpferd / 100);
-            $bestand_veraenderung_spaene = $anzahl_tage * $koeffspaene * $anzahlboxen;
-            $bestand_veraenderung_stroh = $anzahl_tage * $koeffstroh * $anzahlboxen;
-            
-            $bestandneu_hafer = $bestand_hafer - $bestand_veraenderung_hafer;
-            $bestandneu_heu = $bestand_heu - $bestand_veraenderung_heu;
-            $bestandneu_spaene = $bestand_spaene - $bestand_veraenderung_spaene;
-            $bestandneu_stroh = $bestand_stroh - $bestand_veraenderung_stroh;
-            $bestandneu_hafer_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_hafer . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft";
-            $bestandneu_heu_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_heu . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft";
-            $bestandneu_spaene_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_spaene . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft";
-            $bestandneu_stroh_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestandneu_stroh . ", datum = '" . $heute_datum . "' WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft";
-            $bestandneu_hafer_result = $conn->query($bestandneu_hafer_sql);
-            $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
-            $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
-            $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
-          
-          }
-
-            header('location:dashboard.php');
-            exit();
-          }
+        }
+        }
           
           else if ($id_gehoeft_count['count'] > 1) {
             $gehoeft_auswaehlen = true;
+            $_SESSION['mail'] = $mail;
+            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+            if (in_array($mail, $admin_mail_array)) {
+              $admin = true;
+            }
           }
     
           else {
             $error_gehoeft = true;
+            $_SESSION['mail'] = $mail;
+            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+            if (in_array($mail, $admin_mail_array)) {
+              $admin = true;
+            }
+
           }
           
         }
@@ -360,7 +483,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                 </div><!-- ./brand-logo -->
                 <p style="text-align: center;">Horse-Resource-Planning</p> <br /> <br /> <br /><br /><br /><br /><br /> 
                 <p style="text-align: center; margin-bottom: -20px;">Copyright &copy; HRP 2019</p> <br />
-                <p style="text-align: center;"><a href="impressum.html">Impressum & Datenschutz</a></p>
+                <p style="text-align: center;"><a href="impressum.html" target="_blank">Impressum & Datenschutz</a></p>
               </div>
             </div>
           </div>
@@ -395,7 +518,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                         </div>
                         <div class="form-group wrap-input">
                           <div class="pwdMask">
-                            <input type="password" name="password" id="inputPassword" class="form-control password" placeholder="Passwort" required="required">
+                            <input type="password" value="<?php echo $passwort; ?>" name="password" id="inputPassword" class="form-control password" placeholder="Passwort" required="required">
                             <span class="focus-input"></span>
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
@@ -403,30 +526,51 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                         <?php if ($gehoeft_auswaehlen) { ?>
                         <p>Bitte ein Gehöft auswählen</p>
                         <div class="form-group">
-                        <select name="gehoeftauswaehlen">
+                        <select class="form-control" name="gehoeftauswaehlen" style="border: 1px solid #4E2B17;">
                           <?php
                             //$gehoeft_auswählen_query = "SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft  WHERE id_benutzer = ?";
-                            $gehoeft_auswählen_query = 
+                            $gehoeft_auswaehlen_query = 
                             "SELECT id_gehoeft, gehoeftname
                              FROM gehoeft 
                              WHERE id_gehoeft IN (SELECT id_gehoeft
                                                   FROM benutzer_verwaltet_gehoeft
                                                   WHERE id_benutzer = ?)";
-                            $gehoeft_auswaehlen_sql = $mysqli->prepare($gehoeft_auswählen_query);
+                            $gehoeft_auswaehlen_sql = $mysqli->prepare($gehoeft_auswaehlen_query);
                             $gehoeft_auswaehlen_sql->bind_param("i", $id_benutzer);
                             $gehoeft_auswaehlen_sql->execute();
                             $gehoeft_auswaehlen_result = $gehoeft_auswaehlen_sql->get_result();
-                            while ($gehoeft_auswaehlen_fetch = $gehoeft_auswaehlen_result->fetch_assoc()){ ?>
-                              <option value = "<?php echo $gehoeft_auswaehlen_fetch['id_gehoeft']?>"><?php echo $gehoeft_auswaehlen_fetch['gehoeftname'];?></option>
-                          <?php } ?>
+                            while ($gehoeft_auswaehlen_fetch = $gehoeft_auswaehlen_result->fetch_assoc()){
+                              
+                              $id_gehoeft = $gehoeft_auswaehlen_fetch['id_gehoeft'];
+
+                              $adresse_query = "SELECT ort FROM adresse, gehoeft WHERE adresse.id_adresse = gehoeft.id_adresse AND gehoeft.id_gehoeft = ?";
+                              $adresse_sql = $mysqli->prepare($adresse_query);
+                              $adresse_sql->bind_param("i", $id_gehoeft);
+                              $adresse_sql->execute();
+                              $adresse_result = $adresse_sql->get_result();
+                              $adresse_fetch = $adresse_result->fetch_assoc();
+
+                              echo '<option value = "'.  $id_gehoeft .'">'. $gehoeft_auswaehlen_fetch['gehoeftname'] .', '. $adresse_fetch['ort'] .'</option>';
+                              
+                         } ?>
                         </select>
                         </div>
                         <br />
+                        <?php } ?>
+                        <?php if ($ein_gehoeft) { ?>
+                            <input type="hidden" name="ein_gehoeft">
                         <?php } ?>
                         <div class="form-group">
                           <button class="btn btn-lg btn-primary btn-block">Mit E-Mail einloggen</button>
                         </div>
                       </form>
+                        <?php if ($admin) { ?>
+                          <form action="admin.php">
+                          <div class="form-group">
+                            <button class="btn btn-lg btn-primary btn-block">Zum Adminbereich</button>
+                          </div>
+                          </form>
+                        <?php } ?>
                     </div>
                   </div>
                 </div> <!-- ./panel-login -->
@@ -442,25 +586,25 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                     <div class="col-xs-12 col-sm-12">
                       <form name="signupForm" class="signupForm" action="login.php" method="POST">
                         <div class="form-group wrap-input">
-                          <input type="email" class="form-control email" name="register_email" value="<?php echo $register_email; ?>" placeholder="E-Mail Adresse">
+                          <input type="email" class="form-control email" name="register_email" value="<?php echo $register_email; ?>" placeholder="E-Mail Adresse" required>
                           <span class="focus-input"></span>
                         </div>
                         <div class="form-group wrap-input">
                           <div class="pwdMask">
-                            <input type="password" class="form-control password" name="register_password" placeholder="Passwort">
+                            <input type="password" class="form-control password" name="register_password" placeholder="Passwort" required>
                             <span class="focus-input"></span>
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
                         </div>
                         <div class="form-group wrap-input">
                           <div class="pwdMask">
-                            <input type="password" class="form-control password" name="register_confirm_password" placeholder="Passwort wiederholen">
+                            <input type="password" class="form-control password" name="register_confirm_password" placeholder="Passwort wiederholen" required>
                             <span class="focus-input"></span>
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
                         </div>
                         <div class="form-group">
-                          <p class="term-policy text-muted small">Ich stimme den <a href="#">AGB</a> und der <a href="impressum.html">Datenschutzerklärung</a> zu.</p>
+                          <p class="term-policy text-muted small">Ich stimme der <a href="impressum.html#datenschutz" target="_blank">Datenschutzerklärung</a> zu.</p>
                         </div>
                         <div class="form-group">
                           <button class="btn btn-lg btn-primary btn-block" type="submit">Registrierung abschließen</button>

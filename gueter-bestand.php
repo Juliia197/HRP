@@ -14,7 +14,8 @@ if ($conn->connect_error) {
 session_start();
 
 if($_SESSION["logged"] == true) {
-  $id_gehoeft = $_SESSION['id_gehoeft'];
+
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
 ?>
 <!DOCTYPE html>
@@ -28,7 +29,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Box löschen</title>
+    <title>HRP - Güter</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +49,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Bestände</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -56,6 +57,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -73,13 +77,13 @@ if($_SESSION["logged"] == true) {
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="gehoeft.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -104,59 +108,51 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item">
-              <a href="gehoeft.php">Gehöft</a>
+              <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Box löschen
-            </li>
+              Bestände bearbeiten
+            </li>            
           </ol>
-
-          <h1>Box löschen</h1>
+          
+          <h1>Bestände bearbeiten</h1>
           <hr>
-          <?php
-            if (isset($_GET['id_box'])){
-              $id_box = $_GET['id_box'];
-              $boxdelete_sql = "DELETE FROM box WHERE id_box = ?";
-              $boxdelete_prepare = $conn->prepare($boxdelete_sql);
-              $boxdelete_prepare->bind_param('i', $id_box);
-              $boxdelete_prepare->execute();
-              $boxdelete_prepare->close();
-              echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div><hr>';
-            }
+          <br>
+          
+          <form action="gueter-bestand-edit.php" method="post">
+            <div class="form-group">
+            
+            <?php  
+              // SQL-Abfrage
+              $verbrauchsguttyp = "SELECT verbrauchsguttyp.id_verbrauchsguttyp, verbrauchsguttyp.verbrauchsguttypbez, gehoeft_besitzt_verbrauchsguttyp.bestand FROM verbrauchsguttyp, gehoeft_besitzt_verbrauchsguttyp WHERE gehoeft_besitzt_verbrauchsguttyp.id_gehoeft = $id_gehoeft AND verbrauchsguttyp.id_verbrauchsguttyp = gehoeft_besitzt_verbrauchsguttyp.id_verbrauchsguttyp";
+              $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
 
-          ?>
-          <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-          <thead class="thead-light">
-            <tr>
-              <th>Boxentyp</th>
-              <th>Boxenpreis</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-          <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=$id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
-            $boxfrei_result = $conn->query($boxfrei_sql);
-            if($boxfrei_result->num_rows > 0){
-              while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-sm btn-danger\" href=\"box-delete.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
+              while($fetch = mysqli_fetch_assoc($query)){
+                echo '
+                <label for="'. $fetch['id_verbrauchsguttyp'] .'">
+                '. $fetch['verbrauchsguttypbez'] .'
+                </label>
+                <input class="form-control" id="'. $fetch['id_verbrauchsguttyp'] .'" name="typ_'. $fetch['id_verbrauchsguttyp'] .'" type="number" value="'. $fetch['bestand'] .'" required><br>
+                ';             
+                  
               }
-            }
-          ?>
-          </tbody>
-          </table>
+            ?>
+          
           </div>
           <hr>
+          
           <div class="form-group">
-            <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
-          </div>
+          <button class="btn btn-success" type="submit" onclick="return checkSave()">Abschicken</button>
+          
+        </form>
+          
+        <a href="gueter.php" class="btn btn-secondary">Abbrechen</a>
+        </div>
 
         </div>
         <!-- /.container-fluid -->
@@ -207,9 +203,7 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>
-
+    <!-- Page level plugin JavaScript-->
     <script src="vendor/datatables/jquery.dataTables.js"></script>
     <script>
     $(document).ready(function() {
@@ -220,12 +214,23 @@ if($_SESSION["logged"] == true) {
     } );
 } );
     </script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
+
+      <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
-<script> function checkDelete(){ return confirm('Box endgültig löschen?') } </script>
+
+    <!-- JavaScript for Save-Confirmation -->
+    <script>
+      function checkSave(){
+        return confirm('Bestände überschreiben?')
+      }
+    </script>
 
   </body>
-
 </html>
 
 <?php

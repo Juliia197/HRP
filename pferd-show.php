@@ -84,6 +84,9 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="logout.php" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -297,7 +300,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -326,7 +329,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.php">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>

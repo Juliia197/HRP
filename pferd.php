@@ -60,6 +60,9 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -223,7 +226,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

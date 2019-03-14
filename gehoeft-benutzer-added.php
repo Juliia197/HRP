@@ -47,7 +47,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">Gehöftverwaltung</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -117,6 +117,12 @@ if($_SESSION["logged"] == true) {
             $id_benutzer_result = $id_benutzer_sql->get_result();
             $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
 
+            if ($id_benutzer_result->num_rows == 0) {
+              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
+            }
+
+            else {
+
             $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
@@ -133,9 +139,12 @@ if($_SESSION["logged"] == true) {
 
               echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
             }
+
+            }
+
             ?>
             <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >zurück zur Übersicht</a>
+              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >Zurück zur Übersicht</a>
             </div>
             
 
@@ -146,7 +155,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -175,7 +184,7 @@ if($_SESSION["logged"] == true) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.php">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>

@@ -148,13 +148,23 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           
           <h1 class="float-left">Güter</h1>
           <div class="float-right">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferungen hinzufügen</a>
+          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferung hinzufügen</a>
           <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Zu den Lieferungen</a>
           </div>
           <br>
           <br>
           <hr>
           <br>
+
+          <p class="float-left">Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: </p>
+          <div class="float-right">
+          <a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a>
+          </div>
+          <br>
+          <br>
+          <hr>
+          <br>
+
           
           <p>
           <div class="table-responsive">
@@ -208,7 +218,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

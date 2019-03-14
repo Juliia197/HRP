@@ -109,7 +109,7 @@ if ($conn->connect_error) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -138,7 +138,7 @@ if ($conn->connect_error) {
           <div class="modal-body">Möchten Sie sich wirklich ausloggen?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Nein</button>
-            <a class="btn btn-primary" href="login.html">Ja</a>
+            <a class="btn btn-primary" href="logout.php">Ja</a>
           </div>
         </div>
       </div>
