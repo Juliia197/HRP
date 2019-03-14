@@ -45,7 +45,21 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      if ($_GET['id_person'] == 0){
+        $name = "Person hinzufügen";
+      } else {
+        $personname_sql = "SELECT vorname, nachname FROM person WHERE id_person = ?";
+        $personname_result = $conn->prepare($personname_sql);
+        $personname_result->bind_param('i', $_GET['id_person']);
+        $personname_result->execute();
+        $personname_result = $personname_result->get_result();
+        $personname_result = $personname_result->fetch_assoc();
+        $name = $personname_result['vorname'] . " " . $personname_result['nachname'] . " bearbeiten";
+      }
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -344,8 +358,8 @@ if($_SESSION["logged"] == true) {
               echo "<label>Ortschaft</label>";
               echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\"><br>";
 
-              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\"><br>";
+              echo "<label>Land</label>";
+              echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"A\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
 
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
@@ -417,8 +431,8 @@ if($_SESSION["logged"] == true) {
             echo "<label>Ortschaft</label>";
             echo "<input class=\"form-control\" type=\"text\"  name=\"ort\"><br>";
 
-            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"land\"><br>";
+            echo "<label>Land</label>";
+            echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"A\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
           
             echo "<hr>";
 
@@ -443,7 +457,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

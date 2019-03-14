@@ -167,7 +167,7 @@ chart.render();
               echo "<h3> Lieferungen </h3>";
               echo "                
               <div class='table-responsive'>
-              <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+              <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
               <thead class='thead-light'>
                 <tr>
                 <th>Lieferung</th>
@@ -175,6 +175,7 @@ chart.render();
                 <th>Menge in kg</th>
                 <th>Einkaufpreis je kg</th>
                 <th>Lieferant</th>
+                <th></th>
                 </tr>
               </thead>              
               <tbody>";
@@ -200,12 +201,19 @@ chart.render();
               while($lief = mysqli_fetch_assoc($lieferant)){
                 echo "<td>" . $lief["vorname"] . " " . $lief["nachname"] . "</td>";
               }
+              echo '<td>
+              <div class="d-sm-flex flex-row">
+                <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $row_v['id_verbrauchsgut'] . '" >Bearbeiten</a></div>
+                <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $row_v['id_verbrauchsgut'] . '" onclick="return checkDelete()">Löschen</a></div>
+              </div>
+              </td>';
               echo "</tr>";
               
             }
           ?>
           </tbody>
           </table>
+          </div>
           <br>
           <hr>
           <h3> Preisentwicklung des Gutes</h3>
@@ -220,13 +228,14 @@ chart.render();
           </div>
           <a class="btn btn-secondary" href="gueter.php" >Zurück zur Übersicht</a>
           <br>
+          <br>
         <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
