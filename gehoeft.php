@@ -147,20 +147,27 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           axisY: {
             title: "Anzahl der Boxen"
           },
-          data: [{        
+          toolTip: {
+            shared: true
+          },
+          data: [{
             type: "column",
-            color: "#7e5738",
+            name: "Boxen gesamt",
+            showInLegend: true,
+            color: "#a4bf6b",
             dataPoints: [      
-              { y: anzahl_paddockbox, label: "Paddockboxen gesamt" },
-              { y: anzahl_innenbox,  label: "Innenboxen gesamt" }
+              { y: anzahl_paddockbox, label: "Paddockboxen" },
+              { y: anzahl_innenbox,  label: "Innenboxen" }
             ]
           },
           {
             type: "column",
-            color: "#a4bf6b",
+            name: "Boxen belegt",
+            showInLegend: true,
+            color: "#7e5738",
             dataPoints: [
-              { y: anzahl_boxbelegt_paddock,  label: "Paddockboxen belegt" },
-              { y: anzahl_boxbelegt_innen,  label: "Innenboxen belegt" }
+              { y: anzahl_boxbelegt_paddock,  label: "Paddockboxen" },
+              { y: anzahl_boxbelegt_innen,  label: "Innenboxen" }
             ]
           }]
         });
