@@ -358,8 +358,8 @@ if($_SESSION["logged"] == true) {
               echo "<label>Ortschaft</label>";
               echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\"><br>";
 
-              echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\"><br>";
+              echo "<label>Land</label>";
+              echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
 
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
@@ -431,8 +431,8 @@ if($_SESSION["logged"] == true) {
             echo "<label>Ortschaft</label>";
             echo "<input class=\"form-control\" type=\"text\"  name=\"ort\"><br>";
 
-            echo "<label>Land (als kürzel, wie zum Beispiel Deutschland DE)</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"land\"><br>";
+            echo "<label>Land</label>";
+            echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
           
             echo "<hr>";
 
@@ -457,7 +457,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

@@ -106,8 +106,12 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <input class="form-control" id="plz" type="number" name="plz" required><br>
           <label for="ort">Ortschaft</label>
           <input class="form-control" id="ort" type="text" name="ort" required><br>
-          <label for="land">Land (als Kürzel, wie zum Beispiel Deutschland: DE)</label>
-          <input class="form-control" id="land" type="text" name="land" required>
+          <label for="land">Land</label>
+          <select class="custom-select" id="land" name="land">
+            <option value="DE">Deutschland</option>
+            <option value="AT">Österreich</option>
+            <option value="CH">Schweiz</option>
+          </select>
           </div>
           <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
           </form>
@@ -240,7 +244,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
