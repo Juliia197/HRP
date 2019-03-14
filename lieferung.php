@@ -134,6 +134,7 @@ if($_SESSION["logged"] == true) {
           <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead class="thead-light">
             <tr>
+              <th>Gut</th>
               <th>Lieferung</th>  
               <th>Lieferdatum</th>
               <th>Menge in kg</th>
@@ -145,12 +146,12 @@ if($_SESSION["logged"] == true) {
             <tbody>
             <?php  
               // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_gehoeft = $id_gehoeft";
-              
+              $verbrauchsgut = "SELECT verbrauchsguttyp.verbrauchsguttypbez, verbrauchsgut.verbrauchsgutbez, verbrauchsgut.menge, verbrauchsgut.einkaufspreis, verbrauchsgut.id_person, verbrauchsgut.id_verbrauchsgut, DATE_FORMAT(verbrauchsgut.lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
               $query = $conn->query($verbrauchsgut) or die(mysql_error());
 
               while($fetch = mysqli_fetch_assoc($query)){
                 echo '<tr>';
+                  echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
                   echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
                   echo '<td>' . $fetch['lieferdatum'] . '</td>';
                   echo '<td>' . $fetch['menge'] . '</td>';
