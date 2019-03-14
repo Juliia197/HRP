@@ -19,8 +19,8 @@ $error = false;
 $error_gehoeft = false;
 $error_register_password = false;
 $error_register_email = false;
+$error_activated = false;
 $gehoeft_auswaehlen = false;
-$activated = false;
 $admin = false;
 $ein_gehoeft = false;
 $mail = '';
@@ -43,46 +43,43 @@ catch(PDOException $e)
   echo "Connection failed: " . $e->getMessage();
 }
 
-
+// Prüfung, ob beide Felder gefüllt sind
 if (isset($_POST['email'], $_POST['password'])) {
     $mail = trim($_POST['email']);
-    $password = md5($_POST['password']);
+    $passwort_hash = md5($_POST['password']);
 
-    /*$sql = "SELECT 
-              benutzer.passwort, benutzer.id_benutzer 
-            FROM
-              benutzer 
-            LEFT JOIN 
-              person
-            ON 
-              benutzer.id_person = person.id_person
-            WHERE 
-              person.email = '".$mail."'"; */
+    // SQL-Abfrage der Benutzerdaten für Eingabe-E-Mail
     $sql = "SELECT passwort, id_benutzer, aktiviert FROM benutzer WHERE email = '".$mail."'";
 
     $user = $conn->query($sql);
     $user = $user->fetch();
 
-    if (isset($user['passwort']) && $user['passwort'] === $password) {
+    // Prüfung, ob Eingabe-Passwort mit DB-Passwort übereinstimmt
+    if (isset($user['passwort']) && $user['passwort'] === $passwort_hash) {
 
       $passwort = $_POST['password'];
-      
-      $id_gehoeft_count_sql = " SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer =  '" . $user['id_benutzer'] . "'";
+
+      // Abfrage, wie vielen Gehöften ein User zugeordnet ist
+      $id_gehoeft_count_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer =  '" . $user['id_benutzer'] . "'";
       $id_gehoeft_count = $conn->query($id_gehoeft_count_sql);
       $id_gehoeft_count = $id_gehoeft_count->fetch();
 
+      // Prüfung, ob User aktiviert ist
       if ($user['aktiviert'] == 1) {
 
         $id_benutzer = $user['id_benutzer'];
       
+        // Auswahl des Gehöftes aus dem Select, wenn >1 Gehöft dem User zugeordnet ist
         if (isset($_POST['gehoeftauswaehlen'])) {
 
           $id_gehoeft = $_POST['gehoeftauswaehlen'];
-
+          
+          // Gehöft-ID, E-Mail des Benutzers und der Boolean logged wird in die Session übergeben
           $_SESSION['id_gehoeft'] = $id_gehoeft;
           $_SESSION['mail'] = $mail;
           $_SESSION['logged'] = true;
 
+          // Durchführung der Bestandsveränderung
           $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
           $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
           $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
@@ -170,11 +167,14 @@ if (isset($_POST['email'], $_POST['password'])) {
 
             $gehoeft_auswaehlen = false;
 
+            // Überprüfung, ob Benutzer ein Admin ist
             $_SESSION['mail'] = $mail;
             $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
             if (in_array($mail, $admin_mail_array)) {
+              // Setzen eines Booleans, wenn ein Admin einem Gehöft zugeordnet ist
               $ein_gehoeft = true;
               $admin = true;
+              // Drückt der Admin nun auf "Einloggen", und nicht auf "Adminzugang", wird der boolean mitgeschickt und der Admin eingeloggt und zum Gehöft weitergeleitet
               if (isset($_POST['ein_gehoeft']) && $admin = true) {
                 $id_gehoeft_sql = " SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = '" . $id_benutzer . "'";
                 $id_gehoeft = $conn->query($id_gehoeft_sql);
@@ -182,10 +182,12 @@ if (isset($_POST['email'], $_POST['password'])) {
                 
                 $id_gehoeft = $id_gehoeft_fetch["id_gehoeft"];
 
+                // Gehöft-ID, E-Mail des Benutzers und der Boolean logged wird in die Session übergeben
                 $_SESSION['id_gehoeft'] = $id_gehoeft;
                 $_SESSION['mail'] = $mail;
                 $_SESSION['logged'] = true;
 
+                // Durchführung der Bestandsveränderung
                 $bestandsaenderungnoetig_sql = "SELECT datum FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_gehoeft = $id_gehoeft LIMIT 1";
                 $bestandsaenderungnoetig_result = $conn->query($bestandsaenderungnoetig_sql);
                 $bestandsaenderungnoetig_result = $bestandsaenderungnoetig_result->fetch();
@@ -278,6 +280,7 @@ if (isset($_POST['email'], $_POST['password'])) {
               
               $id_gehoeft = $id_gehoeft_fetch["id_gehoeft"];
 
+              // Gehöft-ID, E-Mail des Benutzers und der Boolean logged wird in die Session übergeben
               $_SESSION['id_gehoeft'] = $id_gehoeft;
               $_SESSION['mail'] = $mail;
               $_SESSION['logged'] = true;
@@ -288,6 +291,7 @@ if (isset($_POST['email'], $_POST['password'])) {
               $letzteaenderung_datum = $bestandsaenderungnoetig_result['datum'];
               $heute_datum = date("Y-m-d");
             
+              // Durchführung der Bestandsveränderung
               if ($letzteaenderung_datum != $heute_datum && $heute_datum != "0000-00-00"){
                 $letzteaenderung_datum_jahr = intval(substr($letzteaenderung_datum, 0,4));
                 $letzteaenderung_datum_monat = intval(substr($letzteaenderung_datum,5,2));
@@ -362,7 +366,8 @@ if (isset($_POST['email'], $_POST['password'])) {
           
         }
         }
-          
+
+          // Triggern des Select-Feldes, wenn >1 Gehöft dem User zugeordnet ist
           else if ($id_gehoeft_count['count'] > 1) {
             $gehoeft_auswaehlen = true;
             $_SESSION['mail'] = $mail;
@@ -372,6 +377,7 @@ if (isset($_POST['email'], $_POST['password'])) {
             }
           }
     
+          // Kein Gehöft zugeordnet, Fehlermeldung und Admin-Überprüfung
           else {
             $error_gehoeft = true;
             $_SESSION['mail'] = $mail;
@@ -386,7 +392,7 @@ if (isset($_POST['email'], $_POST['password'])) {
     
     }
     else {
-      $activated = true;
+      $error_activated = true;
     }
       
     } 
@@ -396,12 +402,13 @@ if (isset($_POST['email'], $_POST['password'])) {
 
 }
 
-
+// Prüfung, ob in der Registrierung alle Felder gesetzt sind
 if (isset($_POST['register_email'], $_POST['register_password'], $_POST['register_confirm_password'])) {
-  
+  // Prüfung, ob in der Registrieung Passwort und Passwortwiederholung übereinstimmen
   if ($_POST['register_password'] == $_POST['register_confirm_password']) {
     $register_email = $_POST['register_email'];
 
+    // Prüfung, ob E-Mail bereits vergeben ist
     $email_vergeben_query = "SELECT COUNT(email) as count FROM benutzer WHERE email = ?";
     $email_vergeben_sql = $mysqli->prepare($email_vergeben_query);
     $email_vergeben_sql->bind_param("s", $register_email);
@@ -413,6 +420,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
       $error_register_email = true;
     }
 
+    // Wenn nicht, Übergabe der Parameter an register.php
     else {
       $register_password = $_POST['register_password'];
       ?>
@@ -432,9 +440,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
   else {
     $error_register_password = true;
   }
-
 }
-
 
 ?>
 
@@ -506,7 +512,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                     <p>Kein Gehöft zugeordnet!</p>
                     <p>Wenden Sie sich hierzu an einen Gehöftverwalter.</p>
                     <?php } ?>
-                    <?php if ($activated) { ?>
+                    <?php if ($error_activated) { ?>
                     <p>Die E-Mail-Adresse ist noch nicht bestätigt!</p>
                     <p><a href="activate.php">Jetzt bestätigen!</a></p>
                     <?php } ?>
@@ -523,12 +529,12 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
                         </div>
+                        <!-- Auswahl des Gehöfts, wenn mehrere Gehöfte zugeordnet sind -->
                         <?php if ($gehoeft_auswaehlen) { ?>
                         <p>Bitte ein Gehöft auswählen</p>
                         <div class="form-group">
                         <select class="form-control" name="gehoeftauswaehlen" style="border: 1px solid #4E2B17;">
                           <?php
-                            //$gehoeft_auswählen_query = "SELECT id_gehoeft FROM benutzer_verwaltet_gehoeft  WHERE id_benutzer = ?";
                             $gehoeft_auswaehlen_query = 
                             "SELECT id_gehoeft, gehoeftname
                              FROM gehoeft 
@@ -557,6 +563,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                         </div>
                         <br />
                         <?php } ?>
+                        <!-- Hidden-Input, für Admins die genau einem Gehöft angehören -->
                         <?php if ($ein_gehoeft) { ?>
                             <input type="hidden" name="ein_gehoeft">
                         <?php } ?>
@@ -564,12 +571,11 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                           <button class="btn btn-lg btn-primary btn-block">Mit E-Mail einloggen</button>
                         </div>
                       </form>
+                      <!-- Link zum Adminzugang -->
                         <?php if ($admin) { ?>
-                          <form action="admin.php">
                           <div class="form-group">
-                            <button class="btn btn-lg btn-primary btn-block">Zum Adminbereich</button>
+                            <a href="admin.php" class="btn btn-lg btn-primary btn-block">Zum Adminbereich</a>
                           </div>
-                          </form>
                         <?php } ?>
                     </div>
                   </div>
@@ -586,7 +592,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                     <div class="col-xs-12 col-sm-12">
                       <form name="signupForm" class="signupForm" action="login.php" method="POST">
                         <div class="form-group wrap-input">
-                          <input type="email" class="form-control email" name="register_email" value="<?php echo $register_email; ?>" placeholder="E-Mail Adresse" required>
+                          <input type="email" class="form-control email" name="register_email" value="<?php echo $register_email; ?>" placeholder="E-Mail Adresse" autofocus="autofocus" required>
                           <span class="focus-input"></span>
                         </div>
                         <div class="form-group wrap-input">

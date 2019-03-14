@@ -24,18 +24,22 @@ session_start();
 $mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
+// Prüfung, ob User eingeloggt ist
 if(isset($_SESSION["logged"]) && $_SESSION["logged"] == true) {
   $user = true;
 }
 
+// Oder ob User ein Admin ist
 else if (in_array($mail, $admin_mail_array)) {
   $admin = true;
 }
 
+// Ansonsten Weiterleitung auf login
 else {
   header('location:login.php');
 }
 
+// Prüfung, ob alle Felder gesetzt sind
 if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_POST['passwort_confirm'])) {
 
   if ($_POST['passwort_neu'] === $_POST['passwort_confirm']) {
