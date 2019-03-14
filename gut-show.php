@@ -167,7 +167,7 @@ chart.render();
               echo "<h3> Lieferungen </h3>";
               echo "                
               <div class='table-responsive'>
-              <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+              <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
               <thead class='thead-light'>
                 <tr>
                 <th>Lieferung</th>
@@ -175,7 +175,7 @@ chart.render();
                 <th>Menge in kg</th>
                 <th>Einkaufpreis je kg</th>
                 <th>Lieferant</th>
-                <th> <th>
+                <th></th>
                 </tr>
               </thead>              
               <tbody>";
@@ -213,6 +213,7 @@ chart.render();
           ?>
           </tbody>
           </table>
+          </div>
           <br>
           <hr>
           <h3> Preisentwicklung des Gutes</h3>
