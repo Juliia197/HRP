@@ -175,6 +175,7 @@ chart.render();
                 <th>Menge in kg</th>
                 <th>Einkaufpreis je kg</th>
                 <th>Lieferant</th>
+                <th> <th>
                 </tr>
               </thead>              
               <tbody>";
@@ -200,6 +201,12 @@ chart.render();
               while($lief = mysqli_fetch_assoc($lieferant)){
                 echo "<td>" . $lief["vorname"] . " " . $lief["nachname"] . "</td>";
               }
+              echo '<td>
+              <div class="d-sm-flex flex-row">
+                <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $row_v['id_verbrauchsgut'] . '" >Bearbeiten</a></div>
+                <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $row_v['id_verbrauchsgut'] . '" onclick="return checkDelete()">Löschen</a></div>
+              </div>
+              </td>';
               echo "</tr>";
               
             }
@@ -219,6 +226,7 @@ chart.render();
           </div>
           </div>
           <a class="btn btn-secondary" href="gueter.php" >Zurück zur Übersicht</a>
+          <br>
           <br>
         <!-- /.container-fluid -->
 
