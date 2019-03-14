@@ -166,7 +166,16 @@ if($_SESSION["logged"] == true) {
 
             echo "<p>" . $row_p['strasse'] . " " . $row_p['hausnr'] . "</p>";
             echo "<p>" . $row_p['plz'] . " " . $row_p['ort'] . "</p>";
-            echo "<p>" . $row_p['land'] . "</p>"; 
+            echo "<p>"; 
+            if ($row_p['land'] == 'DE'){
+              $land = 'Deutschland';
+            } elseif ($row_p['land'] == 'AT'){
+              $land = 'Österreich';
+            } else {
+              $land = 'Schweiz';
+            };
+            echo $land;
+            echo "</p>"; 
             
             echo "<hr>";
 
