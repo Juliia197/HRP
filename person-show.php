@@ -190,11 +190,12 @@ if($_SESSION["logged"] == true) {
             $query1 = $funktion_sql->get_result();
 
               if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
-               echo "<div class=\"form-group\"></div>
-               <div class=\"form-group\">
-                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
-                <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
+               echo "
+                <div class=\"form-group\">
+                  <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                  <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
+                  <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a>
+                </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
   
@@ -204,7 +205,7 @@ if($_SESSION["logged"] == true) {
 
                 echo "
                 <div class='table-responsive'>
-                <table class='table table-bordered table-hover' id='dataTable2' width='100%' cellspacing='0'>
+                <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
                 <thead class='thead-light'>
                   <tr>
                   <th>Pferdename</th>
@@ -319,18 +320,25 @@ if($_SESSION["logged"] == true) {
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
+
+    <!-- JavaScript für Delete-Confirm -->
     <script>
-    $(document).ready(function() {
-    $('#dataTable').DataTable( {
+      function checkDelete(){
+        return confirm('Person endgültig löschen?')
+      }
+    </script>
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
+    <script>
+      $(document).ready(function() {
+      $('table.display').DataTable({
         "language": {
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
         }
-    } );
-} );
+      });
+      });
     </script>
-
-    <!-- For this Page -->
-    <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   </body>
 
