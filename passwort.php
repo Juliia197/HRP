@@ -14,8 +14,7 @@ if ($conn->connect_error) {
 
 $user = false;
 $admin = false;
-$hans = true;
-$peter = false;
+$changed = false;
 $wiederholung = false;
 $passwort_falsch = false;
 
@@ -42,6 +41,7 @@ else {
 // Prüfung, ob alle Felder gesetzt sind
 if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_POST['passwort_confirm'])) {
 
+  // Prüfung, ob Passwort und Passwort-Wiederholung übereinstimmen
   if ($_POST['passwort_neu'] === $_POST['passwort_confirm']) {
     $wiederholung = false;
 
@@ -49,6 +49,7 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
     $passwort_neu = $_POST["passwort_neu"];
     $passwort_confirm = $_POST["passwort_confirm"];
 
+    // SQL-Abfrage für aktuelles Passwort
     $passwort_query = "SELECT passwort FROM benutzer WHERE email = ?";
     $passwort_sql = $conn->prepare($passwort_query);
     $passwort_sql->bind_param("s", $mail);
@@ -60,10 +61,12 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
       $passwort = $passwort_fetch["passwort"];
       $passwort_alt_hash = md5($passwort_alt);
 
+      // Prüfung, ob eingebenes aktuelles Passwort mit aktuellem Passwort übereinstimmt
       if ($passwort === $passwort_alt_hash) {
 
         $passwort_falsch = false;
 
+        // Hashen des Passworts und Update in der DB
         $passwort_neu_hash = md5($passwort_neu);
 
         $passwort_change_query = "UPDATE benutzer SET passwort = ? WHERE email = ?";
@@ -71,8 +74,8 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
         $passwort_change_sql->bind_param("ss", $passwort_neu_hash, $mail);
         $passwort_change_sql->execute();
 
-        $hans = false;
-        $peter = true;
+        $changed = true;
+        // Löschen der Session und Logout
         session_destroy();
       }
 
@@ -207,7 +210,21 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           <hr>
 
           <?php
-          if ($hans) {
+          if ($changed == true) {
+          ?>
+
+          <div class="alert alert-success" role="alert">Das Passwort wurde geändert</div>
+          
+          <div class="form-group">
+          <a class="btn btn-secondary" href="login.php">Zum Login</a>
+          </div>
+
+          <?php
+          }
+          ?>
+
+          <?php
+          if ($changed == false) {
 
           if ($wiederholung) {
             echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr>';
@@ -248,26 +265,13 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
                 echo '<a class="btn btn-secondary" href="admin.php" >Abbrechen</a>';
               }
               ?>
+
             </div>
 
           </form>
-
-          <?php
-          }
-
-          if ($peter) {
-          ?>
-
-          <div class="alert alert-success" role="alert">Das Passwort wurde geändert</div>
-          
-          <div class="form-group">
-          <a class="btn btn-secondary" href="login.php">Zum Login</a>
-          </div>
-
           <?php
           }
           ?>
-
 
         </div>
         
