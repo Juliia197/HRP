@@ -62,6 +62,9 @@ if (isset($_GET["id_gehoeft"])) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
