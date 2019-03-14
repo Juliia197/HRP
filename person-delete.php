@@ -18,13 +18,48 @@ if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION['id_gehoeft'];
   $auth = false;
-    
-  $auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
-  $auth_result =  $conn->query($auth_sql);
-  $auth_result = $auth_result->fetch_assoc();
+
+  $query = "SELECT id_gehoeft FROM person WHERE id_person = ?";
+  $auth_sql = $conn->prepare($query);
+  $auth_sql->bind_param("i", $_GET['id_person']);
+  $auth_sql->execute();
+  $result = $auth_sql->get_result();
+  $auth_result = $result->fetch_assoc();
     
   if ($auth_result['id_gehoeft'] == $id_gehoeft) {
       $auth = true;
+
+      //id_adresse der Person herausfinden
+      $id_adresse_query = "SELECT id_adresse FROM person WHERE id_person=?";
+      $id_adresse_sql = $conn->prepare($id_adresse_query);
+      $id_adresse_sql->bind_param("i", $_GET['id_person']);
+      $id_adresse_sql->execute();
+      $id_adresse = $id_adresse_sql->get_result();
+
+      //Löschen der Person aus der Datenbank
+      $personloeschen_query = "DELETE FROM person WHERE id_person=?";
+      $personloeschen_sql = $conn->prepare($personloeschen_query);
+      $personloeschen_sql->bind_param("i", $_GET['id_person']);
+      $personloeschen_sql->execute();
+      $personloeschen_result = $personloeschen_sql->get_result();
+
+      while($row_x = $id_adresse->fetch_assoc()){   
+        $wieoftda_query = "SELECT id_person FROM person WHERE id_adresse = ?";
+        $wieoftda_sql = $conn->prepare($wieoftda_query);
+        $wieoftda_sql->bind_param("i", $row_x["id_adresse"]);
+        $wieoftda_sql->execute();
+        $wieoftda = $wieoftda_sql->get_result();
+
+        if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
+          $adresseloeschen_query = "DELETE FROM adresse WHERE id_adresse=? ";
+          $adresseloeschen_sql = $conn->prepare($adresseloeschen_query);
+          $adresseloeschen_sql->bind_param("i", $row_x["id_adresse"]);
+          $adresseloeschen_sql->execute();
+          $adresseloeschen_result = $adresseloeschen_sql->get_result();
+        }
+        else{
+        }
+      }
   }
 
 ?>
@@ -40,17 +75,8 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <?php
-      $personname_sql = "SELECT vorname, nachname FROM person WHERE id_person = ? LIMIT 1";
-      $personname_result = $conn->prepare($personname_sql);
-      $personname_result->bind_param("i", $_GET['id_person']);
-      $personname_result->execute();
-      $personname_result = $personname_result->get_result();
-      $personname_result = $personname_result->fetch_assoc();
-      $name = $personname_result['vorname'] . " " . $personname_result['nachname'];
-    ?>
 
-    <title>HRP - <?php echo $name ?> löschen</title>
+    <title> HRP - Pferd gelöscht </title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -139,81 +165,15 @@ if($_SESSION["logged"] == true) {
               Person löschen
             </li>
           </ol>
-
           <?php  
-
-          if ($auth ==  true)  {
-            //Übergebene Daten werden in Variablen gespeichert
-            $id_person = $_GET['id_person'];
-            $id_delete = $_GET['id_delete'];
-
-            //Daten zur Person werden aufgerufen          
-            $personsql = "SELECT * FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = " . $_GET['id_person'];
-            $person = $conn->query($personsql);
-
-            if($id_delete==1){ //wird ausgeführt wenn die Person gelöscht werden kann
-
-              //success Balken 
-              echo '<div class="alert alert-success" role="alert"> Diese Person kann gelöscht werden!</div><hr>';
-
-              while($row_p = $person->fetch_assoc()){
-                echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-                
-                echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-                echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-                echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
-    
-                echo "<br><h3> Adresse </h3>";    
-                echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-                echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-                echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-                echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-                echo "<p>Land: " . $row_p['land'] . "</p>"; 
-                
-                echo "<hr>";
-
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-danger\" href=\"person-deleted.php?id_person=" . $row_p['id_person'] . "\" >Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
-              }       
-              
-
-
-            }
-            else{ //wird ausgeführt wenn die Person nicht gelöscht werden kann (wegen Beziehungen zu Pferden oder Lieferungen)
-              //Fehlermeldung
-              echo '<div class="alert alert-danger" role="alert"> Diese Person kann nicht gelöscht werden, da ihr Pferde oder Lieferungen zugeordnet sind!</div><hr>';
-    
-              while($row_p = $person->fetch_assoc()){
-
-                echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
-                
-                echo "<p>E-Mail: " . $row_p['email'] . "</p>";
-                echo "<p>Telefonnummer: " . $row_p['telefonnr'] . "</p>";
-                echo "<p>Geburtsdatum: " . $row_p['geburtsdatum'] . "</p>";
-    
-                echo "<br><h3> Adresse </h3>";
-    
-                echo "<p>Straße: " . $row_p['strasse'] . "</p>";
-                echo "<p>Hausnummer: " . $row_p['hausnr'] . "</p>";
-                echo "<p>Postleitzahl: " . $row_p['plz'] . "</p>";
-                echo "<p>Ortschaft: " . $row_p['ort'] . "</p>";
-                echo "<p>Land: " . $row_p['land'] . "</p>"; 
-                
-                echo "<hr>";
-
-                echo "<div class=\"form-group\"></div>
-                <div class=\"form-group\">
-                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $row_p['id_person'] . "\" >Person bearbeiten</a>
-                <a class=\"btn btn-secondary\" href=\"person-pferd.php?id_person=" . $row_p['id_person'] . "\" >Pferde anzeigen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a> </div>";
-
-              }
-            }
+          if ($auth == true) {
+            //Success Balken
+            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+            echo "<div class=\"form-group\"></div>
+            <div class=\"form-group\">
+            <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>
+            </div";
           }
-
           else {
             echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
           }
