@@ -194,7 +194,7 @@ if($_SESSION["logged"] == true) {
 
                 echo "
                 <div class='table-responsive'>
-                <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+                <table class='table table-bordered table-hover' id='dataTable2' width='100%' cellspacing='0'>
                 <thead class='thead-light'>
                   <tr>
                   <th>Pferdename</th>
