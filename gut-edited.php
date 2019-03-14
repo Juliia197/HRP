@@ -136,14 +136,27 @@ if($_SESSION["logged"] == true) {
                   $update_result = $conn->query($update_sql);
                   if($update_result->num_rows > 0){
                     while($row_u = $update_result->fetch_assoc()){
-                      $gutupdate_sql = "UPDATE verbrauchsgut SET verbrauchsgutbez = '$verbrauchsgutbez', lieferdatum = '$lieferdatum', menge ='$menge', einkaufspreis = '$einkaufspreis', id_gehoeft = '$id_gehoeft', id_person='$id_person',id_verbrauchsguttyp='$id_verbrauchsguttyp' WHERE id_verbrauchsgut=$update AND id_gehoeft=$id_gehoeft";
+                      $mengenveraenderung = $menge - $row_u['menge'];
+                      $bestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = " . $row_u['id_verbrauchsguttyp'] . " AND id_gehoeft = $id_gehoeft";
+                      $bestand_result = $conn->query($bestand_sql);
+                      $bestand_result = $bestand_result->fetch_assoc();
+                      $bestandsveraenderung = $bestand_result['bestand'] + $mengenveraenderung;
+                      $bestandsupdate_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = $bestandsveraenderung WHERE id_gehoeft = $id_gehoeft AND id_verbrauchsguttyp = " . $row_u['id_verbrauchsguttyp'];
+                      $bestandsupdate_result = $conn->query($bestandsupdate_sql);
+                      $gutupdate_sql = "UPDATE verbrauchsgut SET verbrauchsgutbez = '$verbrauchsgutbez', lieferdatum = '$lieferdatum', menge =$menge, einkaufspreis = $einkaufspreis, id_gehoeft = $id_gehoeft, id_person=$id_person, id_verbrauchsguttyp=$id_verbrauchsguttyp WHERE id_verbrauchsgut=$update AND id_gehoeft=$id_gehoeft";
                       $gutupdate_result = $conn->query($gutupdate_sql);
                       
                     }
                   }
                 }
               else {
-                $gutnew_sql = "INSERT INTO verbrauchsgut (id_verbrauchsgut, verbrauchsgutbez, lieferdatum, id_person, menge, einkaufspreis, id_gehoeft, id_verbrauchsguttyp) VALUES (NULL, '$verbrauchsgutbez', '$lieferdatum', '$id_person', '$menge', '$einkaufspreis', '$id_gehoeft', '$id_verbrauchsguttyp')";
+                $bestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
+                $bestand_result = $conn->query($bestand_sql);
+                $bestand_result = $bestand_result->fetch_assoc();
+                $bestandsveraenderung = $bestand_result['bestand'] + $menge;
+                $bestandsupdate_sql = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = $bestandsveraenderung WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
+                $bestandsupdate_result = $conn->query($bestandsupdate_sql);
+                $gutnew_sql = "INSERT INTO verbrauchsgut (id_verbrauchsgut, verbrauchsgutbez, lieferdatum, id_person, menge, einkaufspreis, id_gehoeft, id_verbrauchsguttyp) VALUES (NULL, '$verbrauchsgutbez', '$lieferdatum', $id_person, $menge, '$einkaufspreis', $id_gehoeft, $id_verbrauchsguttyp)";
                 $gutnew_result = $conn->query($gutnew_sql);
               }
           ?>
