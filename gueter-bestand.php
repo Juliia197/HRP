@@ -145,10 +145,15 @@ if($_SESSION["logged"] == true) {
           
           </div>
           <hr>
+          
+          <div class="form-group">
           <button class="btn btn-success" type="submit" onclick="return checkSave()">Abschicken</button>
           
         </form>
-             
+          
+        <a href="gueter.php" class="btn btn-secondary">Abbrechen</a>
+        </div>
+
         </div>
         <!-- /.container-fluid -->
 
