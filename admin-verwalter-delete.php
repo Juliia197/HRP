@@ -13,7 +13,8 @@ if ($conn->connect_error) {
 
 session_start();
 
-if($_SESSION["logged"] == true) {
+$admin_mail  = $_SESSION["mail"];
+$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
 ?>
 <!DOCTYPE html>
@@ -27,7 +28,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Gehöft Benutzer hinzugefügt</title>
+    <title>HRP-Projekt</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -47,7 +48,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">Gehöftverwaltung</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -55,6 +56,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -66,34 +70,10 @@ if($_SESSION["logged"] == true) {
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="dashboard.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
         <li class="nav-item active">
-          <a class="nav-link" href="gehoeft.php">
-            <i class="fas fa-fw fa-home"></i>
-            <span>Gehöft</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="gueter.php">
-            <i class="fas fa-fw fa-calculator"></i>
-            <span>Güter</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pferd.php">
-            <i class="fas fa-fw fa-book"></i>
-            <span>Pferde</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="person.php">
-            <i class="fas fa-fw fa-address-book"></i>
-            <span>Personen</span>
+          <a class="nav-link" href="admin.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Admin</span>
           </a>
         </li>
       </ul>
@@ -103,51 +83,51 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Benutzer zum Gehöft hinzufügen</h1>
+          <h1>Admin</h1>
           <hr>
 
           <?php 
-            $email = $_POST['email'];
-            $id_gehoeft = $_SESSION['id_gehoeft'];
+          if (in_array($admin_mail, $admin_mail_array)) {
 
-            $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
-            $id_benutzer_sql = $conn->prepare($id_benutzer_query);
-            $id_benutzer_sql->bind_param("s", $email);
-            $id_benutzer_sql->execute();
-            $id_benutzer_result = $id_benutzer_sql->get_result();
-            $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
-
-            if ($id_benutzer_result->num_rows == 0) {
-              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
-            }
-
-            else {
-
-            $id_benutzer = $id_benutzer_fetch["id_benutzer"];
+          if (isset($_GET['id_benutzer']) && isset($_GET['id_gehoeft'])) {
+            $id_benutzer = $_GET['id_benutzer'];
+            $id_gehoeft = $_GET["id_gehoeft"];
 
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
             $check = $conn->query($check_sql);
             $check = $check->fetch_assoc();
 
-            if ($check['count'] > 0) {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
+            if ($check['count'] >= 1) {
+              $delete_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ? AND id_gehoeft = ?";
+              $delete_sql = $conn->prepare($delete_query);
+              $delete_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
+              $delete_sql->execute();
+
+              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde als Gehöftverwalter entfernt!</div>
+              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
             }
             
             else {
-              $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
-              $insert = $conn->query($insert_sql);
-
-              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde dem Gehöft zugeordnet!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist diesem Gehöft nicht zugeordnet!</div>
+              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
             }
+          
+          }
 
-            }
+          else {
+            echo '
+            <div class="alert alert-danger" role="alert">Keine gültigen Parameter!</div>
+            <hr>
+            <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>'; 
+          }
 
-            ?>
-            <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >Zurück zur Übersicht</a>
-            </div>
-            
+          }
 
+          else {
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
+          }
+
+        ?>
         </div>
         <!-- /.container-fluid -->
 
@@ -203,14 +183,3 @@ if($_SESSION["logged"] == true) {
   </body>
 
 </html>
-
-<?php
-}
-
-else {
-
-  header('location:login.php');
-
-}
-
-?>

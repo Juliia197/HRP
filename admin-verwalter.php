@@ -13,8 +13,13 @@ if ($conn->connect_error) {
 
 session_start();
 
+
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+
+if (isset($_GET["id_gehoeft"])) {
+  $id_gehoeft = $_GET["id_gehoeft"];
+}
 
 ?>
 <!DOCTYPE html>
@@ -28,7 +33,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Admin</title>
+    <title>HRP-Projekt</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -81,8 +86,6 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
       <div id="content-wrapper">
 
         <div class="container-fluid">
-          
-          <!--<div class="container">-->
 
           <!-- Page Content -->
           <h1>Admin</h1>
@@ -93,136 +96,62 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           if (in_array($admin_mail, $admin_mail_array)) {
           ?>
 
-          <h2>Gehöft hinzufügen</h2>
-          <form action= "admin-gehoeft-added.php" method="post">
+          <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
+
+          <form action= "admin-verwalter-added.php" method="post">
           <div class="form-group">
-          <label for="gehoeftname">Gehöftname</label>
-          <input class="form-control" id="gehoeftname" type="text" name="gehoeftname" required><br>
-          <label for="strasse">Straße</label>
-          <input class="form-control" id="strasse" type="text" name="strasse" required><br>
-          <label for="hausnr">Hausnummer</label>
-          <input class="form-control" id="hausnr" type="number" name="hausnr" required><br>
-          <label for="plz">Postleitzahl</label>
-          <input class="form-control" id="plz" type="number" name="plz" required><br>
-          <label for="ort">Ortschaft</label>
-          <input class="form-control" id="ort" type="text" name="ort" required><br>
-          <label for="land">Land (als Kürzel, wie zum Beispiel Deutschland: DE)</label>
-          <input class="form-control" id="land" type="text" name="land" required>
+            <label for="email">E-Mail</label>
+            <input class="form-control" id="email" name="email" type="email">
           </div>
-          <button type="submit" class="btn btn-success">Gehöft hinzufügen</button>
+          <input value="<?php echo $id_gehoeft ?>" name="id_gehoeft" type="hidden">
+          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
           </form>
-          
-          <hr>
-          <br>
-
-          <h2>Gehöfte</h2>
-          
-          <div class="table-responsive">
-          <table class="table table-bordered table-hover display" id="dataTable1" width="100%" cellspacing="0">
-            <thead class="thead-light">
-              <tr>
-                <th>Gehöft-ID</th>
-                <th>Gehöftname</th>
-                <th>Ortschaft</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-          <?php
-
-          $gehoeft_query = "SELECT id_gehoeft, gehoeftname, id_adresse FROM gehoeft";
-          $gehoeft_sql = $conn->query($gehoeft_query);
-
-          while ($gehoeft_fetch = $gehoeft_sql->fetch_assoc()) {
-            $id_adresse = $gehoeft_fetch["id_adresse"];
-            $adresse_query = "SELECT ort FROM adresse WHERE id_adresse = ?";
-            $adresse_sql = $conn->prepare($adresse_query);
-            $adresse_sql->bind_param("i", $id_adresse);
-            $adresse_sql->execute();
-            $adresse_result = $adresse_sql->get_result();
-            $adresse_fetch = $adresse_result->fetch_assoc();
-
-            echo '
-            <tr>
-            <td>'. $gehoeft_fetch["id_gehoeft"] .'</td>
-            <td>'. $gehoeft_fetch["gehoeftname"] .'</td>
-            <td>'. $adresse_fetch["ort"] .'</td>
-            <td>
-              <div class="d-sm-flex flex-row">
-                <div><a class="btn btn-sm btn-primary" role="button" href="admin-verwalter.php?id_gehoeft=' . $gehoeft_fetch['id_gehoeft'] . '">Gehöftverwalter</a></div>
-              </div>
-            </td>
-            
-            </tr>
-            ';
-            
-            $adresse_sql->close();
-          }
-          
-          ?>
-          
-            </tbody>
-          </table>
-          </div> 
 
           <hr>
           <br>
 
-          <h2>Benutzer</h2>
-
+          <h2>Gehöftverwalter</h2>
           <div class="table-responsive">
-          <table class="table table-bordered table-hover display" id="dataTable2" width="100%" cellspacing="0">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead class="thead-light">
               <tr>
-                <th>Benutzer-ID</th>
+                <th>#</th>
                 <th>E-Mail</th>
-                <th>Aktiviert</th>
-                <th>Registrierungsdatum</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-          <?php
 
-          $benutzer_query = "SELECT id_benutzer, email, aktiviert, registrierungsdatum FROM benutzer";
-          $benutzer_sql = $conn->query($benutzer_query);
+              <?php
 
-          while ($benutzer_fetch = $benutzer_sql->fetch_assoc()) {
+              $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
+              $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
+              $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
+              $gehoeftverwalter_sql->execute();
+              $gehoeftverwalter_result = $gehoeftverwalter_sql->get_result();
 
-            $registrierungsdatum = new DateTime($benutzer_fetch["registrierungsdatum"]);
+              $nummer=1;
+              while ($gehoeftverwalter_fetch = $gehoeftverwalter_result->fetch_assoc()) {
+                echo '<tr>
+                <td>' . $nummer . '</td>
+                <td>' . $gehoeftverwalter_fetch['email'] . '</td>
+                <td> <a class="btn btn-sm btn-danger" href="admin-verwalter-delete.php?id_benutzer=' . $gehoeftverwalter_fetch["id_benutzer"] . '&id_gehoeft='. $id_gehoeft .'" onclick="return checkDelete()">Benutzer entfernen</a></td>
+                </tr>';
+                $nummer += 1;
+              } 
+              
+              ?>
 
-            echo '
-            <tr>
-            <td>'. $benutzer_fetch["id_benutzer"] .'</td>
-            <td>'. $benutzer_fetch["email"] .'</td>
-            <td>';
-              if ($benutzer_fetch['aktiviert'] == 0) {
-                echo 'Nein';
-              }
-              else {
-                echo 'Ja';
-              }
-            echo '</td>
-            <td>'. $registrierungsdatum->format('d.m.Y') .'</td>
-            <td>
-              <div class="d-sm-flex flex-row">
-                <div><a class="btn btn-sm btn-danger" role="button" href="admin-benutzer-delete.php?id_benutzer=' . $benutzer_fetch['id_benutzer'] . '" onclick="return checkDelete()">Löschen</a></div>
-              </div>
-            </td>
-            
-            </tr>
-            ';
-            
-          }
-          
-          ?>
-          
             </tbody>
           </table>
-          </div> 
-          <br>
+          </div>
+          <hr>
 
-        <?php
+          <div class="form-group">
+          <a class="btn btn-secondary" href="admin.php">Zurück zur Übersicht</a>
+          </div>
+          
+          <?php
           }
 
           else {
@@ -230,9 +159,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           }
 
         ?>
-        
-        <!-- </div> -->
-        <!-- /.container -->
+
         </div>
         <!-- /.container-fluid -->
 
@@ -284,6 +211,15 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
     <!-- Page level plugin JavaScript-->
   <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
   <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
 
@@ -296,20 +232,9 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
   <!-- JavaScript for Delete-Confirmation -->
   <script>
     function checkDelete(){
-      return confirm('Benutzer endgültig löschen?')
+      return confirm('Benutzer als Gehöftverwalter entfernen?')
     }
   </script>
-
-  <!-- JavaScript für mehrere DataTables auf einer Seite -->
-  <script>
-      $(document).ready(function() {
-      $('table.display').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
-        }
-      });
-      });
-    </script>
 
   </body>
 

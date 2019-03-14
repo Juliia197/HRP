@@ -5,3 +5,8 @@ div.container-fluid {
 #myAlert{
 	display: block;
 }
+
+.authfy-login, 
+.authfy-panel-left .brand-col {
+  height: 550px;
+}

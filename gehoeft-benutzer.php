@@ -49,7 +49,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">Gehöftverwaltung</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -57,6 +57,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -119,9 +122,9 @@ if($_SESSION["logged"] == true) {
 
           <h1>Gehöftverwaltung</h1>
           <hr>
+          <br>
 
-          <h2>Benutzer zum Gehöft hinzufügen</h1>
-          <hr>
+          <h2>Benutzer zum Gehöft hinzufügen</h2>
 
           <form action= "gehoeft-benutzer-added.php" method="post">
           <div class="form-group">
@@ -131,10 +134,10 @@ if($_SESSION["logged"] == true) {
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
 
           </form>
+          <hr>
           <br>
 
           <h2>Übersicht Gehöftverwalter</h2>
-          <hr>
 
           <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -168,17 +171,17 @@ if($_SESSION["logged"] == true) {
             </tbody>
             </table>
             </div>
+            <hr>
             <br>
 
             <h2>Benutzer entfernen</h2>
-            <hr>
             <p>Um einen Benutzer als Gehöftverwalter zu entfernen, schreiben Sie uns an 
               <a href="mailto:info@hrp-projekt.de?subject=Benutzer als Gehöftverwalter entfernen">info@hrp-projekt.de</a>
             </p>
             
             <hr>
             <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft.php">zurück zur Übersicht</a>
+              <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
             </div>
 
 

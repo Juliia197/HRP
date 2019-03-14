@@ -341,8 +341,8 @@ if($_SESSION["logged"] == true) {
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
                 <label>Pferdename</label>
                 <input class="form-control" type="text" maxlength="45" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
-                <label>Geschlecht</label>
-                <select name="geschlecht">
+                <label>Geschlecht</label><br />
+                <select class="custom-select" name="geschlecht">
                     <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">Stute</option>
                     <option <?php if ($geschlecht === 'h') {echo 'selected';} ?> value="h">Hengst</option>
                     <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">Wallach</option>
@@ -399,7 +399,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Besitzer</td>
                           <td>
-                            <select name="besitzerId">  
+                            <select class="custom-select" name="besitzerId">  
                             <?php
                               foreach($allepersonen_result as $person){?>
                                 <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_besitzer){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
@@ -412,7 +412,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Reitbeteiligung</td>
                           <td>
-                            <select name="rbId">
+                            <select class="custom-select" name="rbId">
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
@@ -425,7 +425,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Tierarzt</td>
                           <td>
-                            <select name="tierarztId">
+                            <select class="custom-select" name="tierarztId">
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
@@ -438,7 +438,7 @@ if($_SESSION["logged"] == true) {
                         <tr>
                           <td>Hufschmied</td>
                           <td>
-                            <select name="hufschmiedId">
+                            <select class="custom-select" name="hufschmiedId">
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>

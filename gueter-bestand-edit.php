@@ -1,5 +1,4 @@
 <?php
-//Logindaten
 $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
@@ -12,58 +11,36 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+$changed = false;
+
 session_start();
 
 if($_SESSION["logged"] == true) {
 
-  $id_gehoeft = $_SESSION['id_gehoeft'];
-  $auth = false;
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
-  $query = "SELECT id_gehoeft FROM person WHERE id_person = ?";
-  $auth_sql = $conn->prepare($query);
-  $auth_sql->bind_param("i", $_GET['id_person']);
-  $auth_sql->execute();
-  $result = $auth_sql->get_result();
-  $auth_result = $result->fetch_assoc();
-    
-  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
-      $auth = true;
+  $hafer = $_POST["typ_1"];
+  $heu = $_POST["typ_2"];
+  $stroh = $_POST["typ_3"];
+  $saegespaene = $_POST["typ_4"];
 
-      //id_adresse der Person herausfinden
-      $id_adresse_query = "SELECT id_adresse FROM person WHERE id_person=?";
-      $id_adresse_sql = $conn->prepare($id_adresse_query);
-      $id_adresse_sql->bind_param("i", $_GET['id_person']);
-      $id_adresse_sql->execute();
-      $id_adresse = $id_adresse_sql->get_result();
+  $typen = [$hafer, $heu, $stroh, $saegespaene];
+  $typ=1;
+  $datum = date("Y-m-d");
 
-      //Löschen der Person aus der Datenbank
-      $personloeschen_query = "DELETE FROM person WHERE id_person=?";
-      $personloeschen_sql = $conn->prepare($personloeschen_query);
-      $personloeschen_sql->bind_param("i", $_GET['id_person']);
-      $personloeschen_sql->execute();
-      $personloeschen_result = $personloeschen_sql->get_result();
+  foreach ($typen as $bestand) {
+    $bestand_update_query = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = ?, datum = ? WHERE id_gehoeft = ? AND id_verbrauchsguttyp = ?";
+    $bestand_update_sql = $conn->prepare($bestand_update_query);
+    $bestand_update_sql->bind_param("isii", $bestand, $datum, $id_gehoeft, $typ);
+    $bestand_update_sql->execute();
 
-      while($row_x = $id_adresse->fetch_assoc()){   
-        $wieoftda_query = "SELECT id_person FROM person WHERE id_adresse = ?";
-        $wieoftda_sql = $conn->prepare($wieoftda_query);
-        $wieoftda_sql->bind_param("i", $row_x["id_adresse"]);
-        $wieoftda_sql->execute();
-        $wieoftda = $wieoftda_sql->get_result();
-
-        if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
-          $adresseloeschen_query = "DELETE FROM adresse WHERE id_adresse=? ";
-          $adresseloeschen_sql = $conn->prepare($adresseloeschen_query);
-          $adresseloeschen_sql->bind_param("i", $row_x["id_adresse"]);
-          $adresseloeschen_sql->execute();
-          $adresseloeschen_result = $adresseloeschen_sql->get_result();
-        }
-        else{
-        }
-      }
+    $typ++;
   }
 
-?>
+  $changed =  true;
 
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,8 +52,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-
-    <title> HRP - Pferd gelöscht </title>
+    <title>HRP - Güter</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -96,7 +72,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Bestände</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -104,6 +80,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -127,7 +106,7 @@ if($_SESSION["logged"] == true) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -139,7 +118,7 @@ if($_SESSION["logged"] == true) {
             <span>Pferde</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="person.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Personen</span>
@@ -152,33 +131,25 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-
-          <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item">
-              <a href="person.php">Personen</a>
+              <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Person löschen
-            </li>
+              Bestände bearbeiten
+            </li>            
           </ol>
-          <?php  
-          if ($auth == true) {
-            //Success Balken
-            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
-            echo "<div class=\"form-group\"></div>
-            <div class=\"form-group\">
-            <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>
-            </div";
-          }
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
-          }
-          ?>
+          
+          <?php
 
+          if ($changed) {
+              echo '<div class="alert alert-success" role="alert">Die Bestände wurden überschrieben!</div>
+              <a class="btn btn-secondary" href="gueter.php">Zurück zur Übersicht</a>';
+            }
+          ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -187,7 +158,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -229,15 +200,34 @@ if($_SESSION["logged"] == true) {
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+      <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
 
-  </body>
+    <!-- JavaScript for Save-Confirmation -->
+    <script>
+      function checkSave(){
+        return confirm('Bestände überschreiben?')
+      }
+    </script>
 
+  </body>
 </html>
 
 <?php
