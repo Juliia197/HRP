@@ -202,8 +202,13 @@ if($_SESSION["logged"] == true) {
               echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["ort"] . "\" name=\"ort\"><br>";
 
               echo "<label>Land</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["land"] . "\" name=\"land\"><br>";
-
+              echo "<select class=\"custom-select\" name=\"name\"><option value=\"DE\"";
+                    if($row_p['land'] == 'DE'){echo "selected";};
+              echo ">Deutschland</option><option value=\"A\"";
+                    if($row_p['land'] == 'A'){echo "selected";};
+              echo ">Österreich</option><option value=\"CH\"";
+                    if($row_p['land'] == 'CH'){echo "selected";}
+              echo ">Schweiz</option></select>";
 
               echo "<hr>";
 
@@ -267,7 +272,7 @@ if($_SESSION["logged"] == true) {
             echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"ort\"><br>";
 
             echo "<label>Land </label>";
-            echo "<input class=\"form-control\" type=\"text\" maxlength=\"2\" name=\"land\"><br>";
+            echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"A\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
           
             echo "<hr>";
 
