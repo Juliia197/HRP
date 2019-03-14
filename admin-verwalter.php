@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 session_start();
 
 
-$admin_mail  = $_SESSION["admin_mail"];
+$admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
 if (isset($_GET["id_gehoeft"])) {
@@ -53,7 +53,7 @@ if (isset($_GET["id_gehoeft"])) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -61,6 +61,9 @@ if (isset($_GET["id_gehoeft"])) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -72,34 +75,10 @@ if (isset($_GET["id_gehoeft"])) {
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="dashboard.php">
+        <li class="nav-item active">
+          <a class="nav-link" href="admin.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="gehoeft.php">
-            <i class="fas fa-fw fa-home"></i>
-            <span>Gehöft</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="gueter.php">
-            <i class="fas fa-fw fa-calculator"></i>
-            <span>Güter</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pferd.php">
-            <i class="fas fa-fw fa-book"></i>
-            <span>Pferde</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="person.php">
-            <i class="fas fa-fw fa-address-book"></i>
-            <span>Personen</span>
+            <span>Admin</span>
           </a>
         </li>
       </ul>
@@ -111,13 +90,13 @@ if (isset($_GET["id_gehoeft"])) {
           <!-- Page Content -->
           <h1>Admin</h1>
           <hr>
+          <br>
 
           <?php 
           if (in_array($admin_mail, $admin_mail_array)) {
           ?>
 
           <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
-          <hr>
 
           <form action= "admin-verwalter-added.php" method="post">
           <div class="form-group">
@@ -127,10 +106,11 @@ if (isset($_GET["id_gehoeft"])) {
           <input value="<?php echo $id_gehoeft ?>" name="id_gehoeft" type="hidden">
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
           </form>
+
+          <hr>
           <br>
 
           <h2>Gehöftverwalter</h2>
-          <hr>
           <div class="table-responsive">
           <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead class="thead-light">
@@ -168,7 +148,7 @@ if (isset($_GET["id_gehoeft"])) {
           <hr>
 
           <div class="form-group">
-          <a class="btn btn-secondary" href="admin.php">zurück zur Übersicht</a>
+          <a class="btn btn-secondary" href="admin.php">Zurück zur Übersicht</a>
           </div>
           
           <?php

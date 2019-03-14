@@ -47,7 +47,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">Gehöftverwaltung</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -144,7 +144,7 @@ if($_SESSION["logged"] == true) {
 
             ?>
             <div class="form-group">
-              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >zurück zur Übersicht</a>
+              <a class="btn btn-secondary" href="gehoeft-benutzer.php" >Zurück zur Übersicht</a>
             </div>
             
 

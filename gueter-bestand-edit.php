@@ -11,15 +11,34 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
+$changed = false;
+
 session_start();
 
+if($_SESSION["logged"] == true) {
 
-$admin_mail  = $_SESSION["mail"];
-$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
-if (isset($_GET["id_gehoeft"])) {
-  $id_gehoeft = $_GET["id_gehoeft"];
-}
+  $hafer = $_POST["typ_1"];
+  $heu = $_POST["typ_2"];
+  $stroh = $_POST["typ_3"];
+  $saegespaene = $_POST["typ_4"];
+
+  $typen = [$hafer, $heu, $stroh, $saegespaene];
+  $typ=1;
+  $datum = date("Y-m-d");
+
+  foreach ($typen as $bestand) {
+    $bestand_update_query = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = ?, datum = ? WHERE id_gehoeft = ? AND id_verbrauchsguttyp = ?";
+    $bestand_update_sql = $conn->prepare($bestand_update_query);
+    $bestand_update_sql->bind_param("isii", $bestand, $datum, $id_gehoeft, $typ);
+    $bestand_update_sql->execute();
+
+    $typ++;
+  }
+
+  $changed =  true;
+
 
 ?>
 <!DOCTYPE html>
@@ -33,7 +52,7 @@ if (isset($_GET["id_gehoeft"])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Admin Benutzer</title>
+    <title>HRP - Güter</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -53,7 +72,7 @@ if (isset($_GET["id_gehoeft"])) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Bestände</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -61,6 +80,9 @@ if (isset($_GET["id_gehoeft"])) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -84,7 +106,7 @@ if (isset($_GET["id_gehoeft"])) {
             <span>Gehöft</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="gueter.php">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Güter</span>
@@ -109,76 +131,25 @@ if (isset($_GET["id_gehoeft"])) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Admin</h1>
-          <hr>
-
-          <?php 
-          if (in_array($admin_mail, $admin_mail_array)) {
-          ?>
-
-          <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
-          <hr>
-
-          <form action= "admin-verwalter-added.php" method="post">
-          <div class="form-group">
-            <label for="email">E-Mail</label>
-            <input class="form-control" id="email" name="email" type="email">
-          </div>
-          <input value="<?php echo $id_gehoeft ?>" name="id_gehoeft" type="hidden">
-          <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
-          </form>
-          <br>
-
-          <h2>Gehöftverwalter</h2>
-          <hr>
-          <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead class="thead-light">
-              <tr>
-                <th>#</th>
-                <th>E-Mail</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-
-              <?php
-
-              $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
-              $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
-              $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
-              $gehoeftverwalter_sql->execute();
-              $gehoeftverwalter_result = $gehoeftverwalter_sql->get_result();
-
-              $nummer=1;
-              while ($gehoeftverwalter_fetch = $gehoeftverwalter_result->fetch_assoc()) {
-                echo '<tr>
-                <td>' . $nummer . '</td>
-                <td>' . $gehoeftverwalter_fetch['email'] . '</td>
-                <td> <a class="btn btn-sm btn-danger" href="admin-verwalter-delete.php?id_benutzer=' . $gehoeftverwalter_fetch["id_benutzer"] . '&id_gehoeft='. $id_gehoeft .'" onclick="return checkDelete()">Benutzer entfernen</a></td>
-                </tr>';
-                $nummer += 1;
-              } 
-              
-              ?>
-
-            </tbody>
-          </table>
-          </div>
-          <hr>
-
-          <div class="form-group">
-          <a class="btn btn-secondary" href="admin.php">zurück zur Übersicht</a>
-          </div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="gueter.php">Güter</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Bestände bearbeiten
+            </li>            
+          </ol>
           
           <?php
-          }
 
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für die Admin-Funktionen!</div>';
-          }
-
-        ?>
+          if ($changed) {
+              echo '<div class="alert alert-success" role="alert">Die Bestände wurden überschrieben!</div>
+              <a class="btn btn-secondary" href="gueter.php">Zurück zur Übersicht</a>';
+            }
+          ?>
 
         </div>
         <!-- /.container-fluid -->
@@ -187,7 +158,7 @@ if (isset($_GET["id_gehoeft"])) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="/impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>
@@ -230,8 +201,8 @@ if (isset($_GET["id_gehoeft"])) {
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Page level plugin JavaScript-->
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script>
     $(document).ready(function() {
     $('#dataTable').DataTable( {
         "language": {
@@ -240,7 +211,7 @@ if (isset($_GET["id_gehoeft"])) {
     } );
 } );
     </script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
 
     <!-- Custom scripts for all pages-->
@@ -249,13 +220,23 @@ if (isset($_GET["id_gehoeft"])) {
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
 
-  <!-- JavaScript for Delete-Confirmation -->
-  <script>
-    function checkDelete(){
-      return confirm('Benutzer als Gehöftverwalter entfernen?')
-    }
-  </script>
+    <!-- JavaScript for Save-Confirmation -->
+    <script>
+      function checkSave(){
+        return confirm('Bestände überschreiben?')
+      }
+    </script>
 
   </body>
-
 </html>
+
+<?php
+}
+
+else {
+
+  header('location:login.php');
+
+}
+
+?>
