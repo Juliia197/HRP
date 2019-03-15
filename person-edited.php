@@ -270,6 +270,17 @@ if($_SESSION["logged"] == true) {
                       $lieferant = $lieferant_sql ->get_result();                          
 
                     }
+                    else{
+                      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $id['id_person'];
+                      $istlieferant=$conn->query($istlieferant_query);
+                      echo $istlieferant_query;
+
+                      if($istlieferant->num_rows==1){
+                        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =" . $id['id_person'];
+                        $deletelieferant = $conn->query($deletelieferant_query);
+                        echo $deletelieferant_query;
+                      }
+                    }
                   }
               }
               
@@ -340,6 +351,7 @@ if($_SESSION["logged"] == true) {
 
                     }
                   }
+
                 }
                 else{
                   $erfolg = 3;
