@@ -328,41 +328,43 @@ if($_SESSION["logged"] == true) {
                 </li>
               </ol>";
           echo "<div class=\"alert alert-success\" role=\"alert\">Diese Person wurde geändert!</div>";
-              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr><br>";
               echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
 
 
               echo "<label>Vorname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\"><br>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\" required ><br>";
               
               echo "<label>Nachname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\"><br>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\" required ><br>";
               
               echo "<label>E-Mail</label>";
-              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\"><br>";
+              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\" required ><br>";
               
               echo "<label>Telefonnummer</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\"><br>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\" required ><br>";
               
               echo "<label>Geburtsdatum</label>";
-              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\"><br>";
+              echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\" required ><br>";
+
+              echo "<hr>";
 
               echo "<br><h3> Adresse </h3>";
 
               echo "<label>Straße</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\"><br>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\" required ><br>";
 
               echo "<label>Hausnummer</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\"><br>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\" required ><br>";
 
               echo "<label>Postleitzahl</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\"><br>";
+              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\" required ><br>";
 
               echo "<label>Ortschaft</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\"><br>";
+              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\" required ><br>";
 
               echo "<label>Land</label>";
-              echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
+              echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
 
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
@@ -376,8 +378,8 @@ if($_SESSION["logged"] == true) {
 
         else if($erfolg==3){
           while($row_v = $schonvorhanden->fetch_assoc()){
-            echo "<h1>Diese Person ist bereits vorhanden!</h1><hr>";
-            echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
+            echo "<h1>Diese Person ist bereits vorhanden!</h1><hr><br>";
+            echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr><br>";
 
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
@@ -401,41 +403,43 @@ if($_SESSION["logged"] == true) {
                 </li>
               </ol>";
             echo "<div class=\"alert alert-success\" role=\"alert\">" . $vorname . " " . $nachname . " wurde hinzugefügt</div>";
-            echo "<h1>Person hinzufügen </h1><hr>";
+            echo "<h1>Person hinzufügen </h1><hr><br>";
             echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
             
             
             echo "<label>Vorname</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\"><br>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\" required ><br>";
             
             echo "<label>Nachname</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\"><br>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\" required ><br>";
             
             echo "<label>E-Mail</label>";
-            echo "<input class=\"form-control\" type=\"email\" name=\"email\"><br>";
+            echo "<input class=\"form-control\" type=\"email\" name=\"email\" required ><br>";
             
             echo "<label>Telefonnummer</label>";
-            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\"><br>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\" required ><br>";
             
             echo "<label>Geburtsdatum</label>";
-            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\"><br>";
+            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\" required ><br>";
+
+            echo "<hr>";
 
             echo "<br><h3> Adresse </h3>";
 
             echo "<label>Straße</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\"><br>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\" required ><br>";
 
             echo "<label>Hausnummer</label>";
-            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\"><br>";
+            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\" required ><br>";
 
             echo "<label>Postleitzahl</label>";
-            echo "<input class=\"form-control\" type=\"number\" name=\"plz\"><br>";
+            echo "<input class=\"form-control\" type=\"number\" name=\"plz\" required ><br>";
 
             echo "<label>Ortschaft</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\"><br>";
+            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\" required ><br>";
 
             echo "<label>Land</label>";
-            echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
+            echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
           
             echo "<hr>";
 
@@ -448,7 +452,7 @@ if($_SESSION["logged"] == true) {
       }
 
       else {
-        echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+        echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><br>';
       }
       
         ?>

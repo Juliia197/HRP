@@ -298,6 +298,7 @@ if($_SESSION["logged"] == true) {
 
           <h1>Dashboard</h1>
           <hr>
+          <br>
           <div class="row">
             <!-- Diagramm: Anzahl der Hengste, Wallache und Stuten in Card -->
             <div class="col-md">

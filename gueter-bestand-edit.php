@@ -52,7 +52,7 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP - Güter</title>
+    <title>HRP - Bestände</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -72,7 +72,7 @@ if($_SESSION["logged"] == true) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Bestände</a>
+      <a class="navbar-brand mr-1" href="dashboard.php">HRP-Projekt</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -82,9 +82,6 @@ if($_SESSION["logged"] == true) {
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
           <a class="nav-link" href="passwort.php">Passwort ändern</a>
-        </li>
-        <li class="nav-item no-arrow mx-1">
-            <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
@@ -142,7 +139,7 @@ if($_SESSION["logged"] == true) {
               <a href="gueter.php">Güter</a>
             </li>
             <li class="breadcrumb-item active">
-              Bestände bearbeiten
+              Bestände aktualisieren
             </li>            
           </ol>
           

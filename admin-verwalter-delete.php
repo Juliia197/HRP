@@ -13,6 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
@@ -28,7 +29,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Admin</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +49,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
+    <a class="navbar-brand mr-1" href="admin.php">HRP-Projekt</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -58,9 +59,6 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
           <a class="nav-link" href="passwort.php">Passwort ändern</a>
-        </li>
-        <li class="nav-item no-arrow mx-1">
-            <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
@@ -75,7 +73,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
       <ul class="sidebar navbar-nav">
         <li class="nav-item active">
           <a class="nav-link" href="admin.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-cogs"></i>
             <span>Admin</span>
           </a>
         </li>
@@ -90,39 +88,48 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <hr>
 
           <?php 
+          // Prüfung ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
 
-          if (isset($_GET['id_benutzer']) && isset($_GET['id_gehoeft'])) {
-            $id_benutzer = $_GET['id_benutzer'];
-            $id_gehoeft = $_GET["id_gehoeft"];
+            // Prüfung ob Get-Parameter gesetzt sind
+            if (isset($_GET['id_benutzer']) && isset($_GET['id_gehoeft'])) {
+              // Setzen der Get-Parameter als Variablen
+              $id_benutzer = $_GET['id_benutzer'];
+              $id_gehoeft = $_GET["id_gehoeft"];
 
-            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
-            $check = $conn->query($check_sql);
-            $check = $check->fetch_assoc();
+              // SQL-Abfrage für Benutzer zu diesem Gehöft
+              $check_query = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ? AND id_gehoeft =  ?";
+              $check_sql = $conn->prepare($check_query);
+              $check_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
+              $check_sql->execute();
+              $check_result = $check_sql->get_result();
+              $check_fetch = $check_result->fetch_assoc();
 
-            if ($check['count'] >= 1) {
-              $delete_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ? AND id_gehoeft = ?";
-              $delete_sql = $conn->prepare($delete_query);
-              $delete_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
-              $delete_sql->execute();
+              // Prüfung, ob dieser Benutzer Gehöftverwalter von diesem Gehöft ist
+              if ($check_fetch['count'] >= 1) {
+                // Entfernen des Benutzers als Gehöftverwalters
+                $delete_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ? AND id_gehoeft = ?";
+                $delete_sql = $conn->prepare($delete_query);
+                $delete_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
+                $delete_sql->execute();
 
-              echo '<div class="alert alert-success" role="alert">Der Benutzer wurde als Gehöftverwalter entfernt!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
-            }
+                echo '<div class="alert alert-success" role="alert">Der Benutzer wurde als Gehöftverwalter entfernt!</div>
+                <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
+              }
+              
+              else {
+                echo '<div class="alert alert-danger" role="alert">Der Benutzer ist diesem Gehöft nicht zugeordnet!</div>
+                <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
+              }
             
-            else {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist diesem Gehöft nicht zugeordnet!</div>
-              <a class="btn btn-secondary" href="admin-verwalter.php?id_gehoeft='. $id_gehoeft .'" >Zurück zur Übersicht</a>';
             }
-          
-          }
 
-          else {
-            echo '
-            <div class="alert alert-danger" role="alert">Keine gültigen Parameter!</div>
-            <hr>
-            <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>'; 
-          }
+            else {
+              echo '
+              <div class="alert alert-danger" role="alert">Keine gültigen Parameter!</div>
+              <hr>
+              <a class="btn btn-secondary" href="admin.php" >Zurück zur Übersicht</a>'; 
+            }
 
           }
 
