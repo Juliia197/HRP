@@ -171,14 +171,14 @@ if($_SESSION["logged"] == true) {
           <?php  
           if ($auth == true) {
             //Success Balken
-            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr><br>';
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
             <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>
             </div";
           }
           else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
           }
           ?>
 

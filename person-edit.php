@@ -168,7 +168,7 @@ if($_SESSION["logged"] == true) {
                   </ol>";
 
               //Überschrift
-              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr><br>";
 
               //Formular
               echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
@@ -190,7 +190,7 @@ if($_SESSION["logged"] == true) {
               echo "<input class=\"form-control\" type=\"date\" min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\"><br>";
 
 
-              echo "<br><hr><br><h3> Adresse </h3>";
+              echo "<hr><br><h3> Adresse </h3>";
 
               echo "<label>Straße</label>";
               echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\"><br>";
@@ -213,7 +213,7 @@ if($_SESSION["logged"] == true) {
                     if($row_p['land'] == 'CH'){echo "selected";}
               echo ">Schweiz</option></select>";
 
-              echo "<hr>";
+              echo "<hr><br>";
 
               //Buttons
               echo "<div class=\"form-group\"></div>
@@ -240,7 +240,7 @@ if($_SESSION["logged"] == true) {
               </ol>";
 
             //Überschrift
-            echo "<h1>Person hinzufügen </h1><hr>";
+            echo "<h1>Person hinzufügen </h1><hr><br>";
 
             //Formular
             echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
@@ -260,7 +260,7 @@ if($_SESSION["logged"] == true) {
             echo "<label>Geburtsdatum</label>";
             echo "<input class=\"form-control\" type=\"date\" min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" name=\"geburtsdatum\"><br>";
 
-            echo "<br><hr><h3> Adresse </h3>";
+            echo "<hr><br><h3> Adresse </h3>";
 
             echo "<label>Straße</label>";
             echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"strasse\"><br>";
@@ -277,7 +277,7 @@ if($_SESSION["logged"] == true) {
             echo "<label>Land </label>";
             echo "<select class=\"custom-select\" name=\"land\"><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
           
-            echo "<hr>";
+            echo "<hr><br>";
 
             //Buttons
             echo "<div class=\"form-group\"></div>
@@ -289,7 +289,7 @@ if($_SESSION["logged"] == true) {
         }
 
         else {
-          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
         }
           ?>
           

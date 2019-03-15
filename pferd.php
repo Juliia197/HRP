@@ -123,7 +123,7 @@ if($_SESSION["logged"] == true) {
           
           <!-- Überschrift -->
           <h1>Übersicht Pferde</h1>
-          <hr>
+          <hr><br>
 
           <!-- Hinzufügebutton -->
           <div class="container-fluid">

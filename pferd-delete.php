@@ -165,11 +165,11 @@ if($_SESSION["logged"] == true) {
           <?php 
           
           if ($auth == true) {
-          echo '<div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr>
+          echo '<div class="alert alert-success" role="alert"> Das Pferd wurde gelöscht!</div><hr><br>
           <a class="btn btn-secondary" href="pferd.php">Zurück zur Übersicht</a>';
           }
           else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr><br>';
           }
           ?>
           

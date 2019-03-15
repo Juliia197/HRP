@@ -328,7 +328,7 @@ if($_SESSION["logged"] == true) {
                 </li>
               </ol>";
           echo "<div class=\"alert alert-success\" role=\"alert\">Diese Person wurde geändert!</div>";
-              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+              echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr><br>";
               echo "<form action=\"person-edited.php?id_person=" . $row_p["id_person"] . "&amp;id_adresse=" . $row_p["id_adresse"] . "\" method=\"post\">";
 
 
@@ -376,8 +376,8 @@ if($_SESSION["logged"] == true) {
 
         else if($erfolg==3){
           while($row_v = $schonvorhanden->fetch_assoc()){
-            echo "<h1>Diese Person ist bereits vorhanden!</h1><hr>";
-            echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr>";
+            echo "<h1>Diese Person ist bereits vorhanden!</h1><hr><br>";
+            echo "<p>" . $row_v['vorname'] ." " . $row_v['nachname'] . "<br>Geburtsdatum: " . $row_v['geburtsdatum'] . " </p> <hr><br>";
 
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
@@ -401,7 +401,7 @@ if($_SESSION["logged"] == true) {
                 </li>
               </ol>";
             echo "<div class=\"alert alert-success\" role=\"alert\">" . $vorname . " " . $nachname . " wurde hinzugefügt</div>";
-            echo "<h1>Person hinzufügen </h1><hr>";
+            echo "<h1>Person hinzufügen </h1><hr><br>";
             echo "<form action=\"person-edited.php?id_person=0&amp;id_adresse=0\" method=\"post\">";
             
             
@@ -448,7 +448,7 @@ if($_SESSION["logged"] == true) {
       }
 
       else {
-        echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+        echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><br>';
       }
       
         ?>

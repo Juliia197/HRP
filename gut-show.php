@@ -43,7 +43,7 @@ if($_SESSION["logged"] == true) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
     <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft . 'ORDER BY lieferdatum';
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft . ' ORDER BY lieferdatum';
       $lieferungen_result = $conn->query($lieferungen_sql);
       $dataPoints = '';
       if ($lieferungen_result->num_rows > 0){
@@ -166,7 +166,7 @@ chart.render();
 
             while ($fetch = $verbrauchsguttypbez ->fetch_assoc()){
               echo "<h1> " . $fetch['verbrauchsguttypbez'] . "</h1>";
-              echo "<hr>";
+              echo "<hr><br>";
               echo "<h3> Lieferungen </h3>";
               echo "                
               <div class='table-responsive'>
@@ -217,8 +217,8 @@ chart.render();
           </tbody>
           </table>
           </div>
-          <br>
           <hr>
+          <br>
           <h3> Preisentwicklung des Gutes</h3>
           
           <div class="card mb-3">

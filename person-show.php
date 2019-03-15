@@ -158,7 +158,7 @@ if($_SESSION["logged"] == true) {
                   </li>
                 </ol>";
             //Überschrift
-            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr><br>";
 
             //Darstellung der Person            
             echo "<p>E-Mail: " . $row_p['email'] . "</p>";
@@ -180,7 +180,7 @@ if($_SESSION["logged"] == true) {
             echo $land;
             echo "</p>"; 
             
-            echo "<hr>";
+            echo "<hr><br>";
 
             
             
@@ -260,7 +260,7 @@ if($_SESSION["logged"] == true) {
         }
 	
           else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
           }
 
         ?>

@@ -178,6 +178,7 @@ if($_SESSION["logged"] == true) {
             </tbody>                
 
           </table>
+          <br>
           </div>          
         
 

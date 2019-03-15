@@ -122,6 +122,7 @@ if($_SESSION["logged"] == true) {
 
           <h1>Box löschen</h1>
           <hr>
+          <br>
           <?php
             if (isset($_GET['id_box'])){
               $id_box = $_GET['id_box'];
@@ -130,7 +131,7 @@ if($_SESSION["logged"] == true) {
               $boxdelete_prepare->bind_param('i', $id_box);
               $boxdelete_prepare->execute();
               $boxdelete_prepare->close();
-              echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div><hr>';
+              echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div><hr><br>';
             }
 
           ?>

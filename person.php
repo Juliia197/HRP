@@ -125,6 +125,7 @@ if($_SESSION["logged"] == true) {
           <!-- Überschrift -->
           <h1>Übersicht Personen</h1>
           <hr>
+          <br>
 
           <!-- Hinzufügen Button -->
           <div class="container-fluid">
