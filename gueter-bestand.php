@@ -125,9 +125,8 @@ if($_SESSION["logged"] == true) {
           <br>
           <p>
             Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand manuell angepasst werden muss ist das hier möglich.<br>
-            Der bisherige automatisch errechnete Bestand wird dadurch überschrieben.
+            <strong>Der bisherige automatisch errechnete Bestand wird dadurch überschrieben.</strong>
           </p>
-          <br>
 
           <form action="gueter-bestand-edit.php" method="post">
             <div class="form-group">

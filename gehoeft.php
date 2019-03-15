@@ -267,7 +267,7 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
             }
             ?>
             </div>
-            <div class="p-2"><a class="btn btn-secondary" href="gehoeft-benutzer.php">Gehöftverwaltung</a></div>
+            <div class="p-2"><a class="btn btn-secondary" href="gehoeft-benutzer.php">Zur Gehöftverwaltung</a></div>
           </div>
           </p>
           <hr>
