@@ -196,6 +196,34 @@ if($_SESSION["logged"] == true) {
             $lieferung_sql->bind_param("i",$_GET["id_person"]);
             $lieferung_sql->execute();
             $lieferung = $lieferung_sql->get_result();
+        
+            if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
+               echo "
+                <div class=\"form-group\">
+                  <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                  <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
+                  <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a>
+                </div>";
+              }
+              else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
+  
+                //Tabelle wird erzeugt
+                echo "
+                <h3>Beziehungen zu dieser Person</h3><br>";
+
+                echo "
+                <div class='table-responsive'>
+                <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
+                <thead class='thead-light'>
+                  <tr>
+                  <th>Pferdename</th>
+                  <th>Funktion</th>
+                  <th></th>
+                  </tr>
+                </thead>
+                
+                <tbody>";
+
 
               if($query1->num_rows>0 ){
                 
@@ -385,6 +413,13 @@ if($_SESSION["logged"] == true) {
     <script src="js/demo/datatables-demo.js"></script>
 
     <!-- JavaScript für Delete-Confirm -->
+    <script>
+      function checkDelete(){
+        return confirm('Person endgültig löschen?')
+      }
+    </script>
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
+    <script>
     <script>
       function checkDelete(){
         return confirm('Person endgültig löschen?')

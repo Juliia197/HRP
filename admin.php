@@ -13,6 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
@@ -90,6 +91,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <br>
 
           <?php 
+          // Prüfung ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
           ?>
 
@@ -134,10 +136,12 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             <tbody>
           <?php
 
+          // SQL-Abfrage aller Gehöfte
           $gehoeft_query = "SELECT id_gehoeft, gehoeftname, id_adresse FROM gehoeft";
           $gehoeft_sql = $conn->query($gehoeft_query);
 
           while ($gehoeft_fetch = $gehoeft_sql->fetch_assoc()) {
+            // SQL Abfrage des Ortes aus der Tabelle Adresse für das aktuell gefetchte Gehöft
             $id_adresse = $gehoeft_fetch["id_adresse"];
             $adresse_query = "SELECT ort FROM adresse WHERE id_adresse = ?";
             $adresse_sql = $conn->prepare($adresse_query);
@@ -188,11 +192,13 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             <tbody>
           <?php
 
+          // SQL-Abfrage aller Benutzer
           $benutzer_query = "SELECT id_benutzer, email, aktiviert, registrierungsdatum FROM benutzer";
           $benutzer_sql = $conn->query($benutzer_query);
 
           while ($benutzer_fetch = $benutzer_sql->fetch_assoc()) {
 
+            // Setzen des Registrierungsdatums als darstellungsfähige Variable
             $registrierungsdatum = new DateTime($benutzer_fetch["registrierungsdatum"]);
 
             echo '
