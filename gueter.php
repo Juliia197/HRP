@@ -150,17 +150,16 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           </ol>
           
           <h1 class="float-left">Güter</h1>
-          <div class="float-right">
-          <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferung hinzufügen</a>
-          <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Zu den Lieferungen</a>
+          <div class="d-flex flex-row-reverse">
+            <div class="p-2"><a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Zu den Lieferungen</a></div>
+            <div class="p-2"><a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferung hinzufügen</a></div>
           </div>
           <hr>
           <br>
 
-          <!-- <p class="float-left">Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: </p> -->
-          <div class="float-right">
+          <p>Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich:
           <a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a>
-          </div>
+          </p>
           <hr>
           <br>
 
