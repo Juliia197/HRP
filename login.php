@@ -49,10 +49,13 @@ if (isset($_POST['email'], $_POST['password'])) {
     $passwort_hash = md5($_POST['password']);
 
     // SQL-Abfrage der Benutzerdaten für Eingabe-E-Mail
-    $sql = "SELECT passwort, id_benutzer, aktiviert FROM benutzer WHERE email = '".$mail."'";
 
-    $user = $conn->query($sql);
-    $user = $user->fetch();
+    $user_query = "SELECT passwort, id_benutzer, aktiviert FROM benutzer WHERE email = ?";
+    $user_sql = $mysqli->prepare($user_query);
+    $user_sql->bind_param("s", $mail);
+    $user_sql->execute();
+    $user_result = $user_sql->get_result();
+    $user = $user_result->fetch_assoc();
 
     // Prüfung, ob Eingabe-Passwort mit DB-Passwort übereinstimmt
     if (isset($user['passwort']) && $user['passwort'] === $passwort_hash) {
