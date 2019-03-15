@@ -535,6 +535,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                         <div class="form-group">
                         <select class="form-control" name="gehoeftauswaehlen" style="border: 1px solid #4E2B17;">
                           <?php
+                            // SQL-Abfrage der Gehöfte, denen dieser Benutzer zugeordnet ist
                             $gehoeft_auswaehlen_query = 
                             "SELECT id_gehoeft, gehoeftname
                              FROM gehoeft 
@@ -549,6 +550,7 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                               
                               $id_gehoeft = $gehoeft_auswaehlen_fetch['id_gehoeft'];
 
+                              //SQL-Abfrage für den Ort aus der Adressen-Tabelle für das aktuell gefetchte Gehöft
                               $adresse_query = "SELECT ort FROM adresse, gehoeft WHERE adresse.id_adresse = gehoeft.id_adresse AND gehoeft.id_gehoeft = ?";
                               $adresse_sql = $mysqli->prepare($adresse_query);
                               $adresse_sql->bind_param("i", $id_gehoeft);

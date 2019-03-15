@@ -13,6 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
@@ -87,11 +88,14 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <hr>
 
           <?php 
+          // Prüfung ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
 
+            // Setzen der Post-Paramter als Variabelen
             $email = $_POST['email'];
             $id_gehoeft = $_POST["id_gehoeft"];
 
+            // SQL-Abfrage für Benutzer zu dieser E-Mail
             $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
             $id_benutzer_sql = $conn->prepare($id_benutzer_query);
             $id_benutzer_sql->bind_param("s", $email);
@@ -99,6 +103,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             $id_benutzer_result = $id_benutzer_sql->get_result();
             $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
 
+            // Prüfung, ob Benuter mit dieser E-Mail existiert
             if ($id_benutzer_result->num_rows == 0) {
               echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
             }
@@ -107,16 +112,19 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
             $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
+            // SQL-Abfrage für Benutzer mit dieser E-Mail und dem Gehöft
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
             $check = $conn->query($check_sql);
             $check = $check->fetch_assoc();
 
+            // Prüfung, ob Benutzer bereits Gehöftverwalter ist
             if ($check['count'] > 0) {
               echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
             }
             
             else {
 
+              // Insert für diesen Benutzer als Gehöftverwalter zu diesem Gehöft
               $insert_query = "INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES (?, ?)";
               $insert_sql = $conn->prepare($insert_query);
               $insert_sql->bind_param("ii", $id_benutzer, $id_gehoeft);
