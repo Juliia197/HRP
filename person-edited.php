@@ -347,6 +347,8 @@ if($_SESSION["logged"] == true) {
               echo "<label>Geburtsdatum</label>";
               echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\" required ><br>";
 
+              echo "<hr>";
+
               echo "<br><h3> Adresse </h3>";
 
               echo "<label>Straße</label>";
@@ -419,6 +421,8 @@ if($_SESSION["logged"] == true) {
             
             echo "<label>Geburtsdatum</label>";
             echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\" required ><br>";
+
+            echo "<hr>";
 
             echo "<br><h3> Adresse </h3>";
 
