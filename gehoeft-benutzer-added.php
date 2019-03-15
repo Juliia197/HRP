@@ -111,9 +111,12 @@ if($_SESSION["logged"] == true) {
           <br>
 
           <?php 
+
+            // Setzen der Post-Parameter als Variablen
             $email = $_POST['email'];
             $id_gehoeft = $_SESSION['id_gehoeft'];
 
+            // SQL-Abfrage Benutzer-ID zu dieser E-Mail
             $id_benutzer_query = "SELECT id_benutzer FROM benutzer WHERE email = ?";
             $id_benutzer_sql = $conn->prepare($id_benutzer_query);
             $id_benutzer_sql->bind_param("s", $email);
@@ -121,6 +124,7 @@ if($_SESSION["logged"] == true) {
             $id_benutzer_result = $id_benutzer_sql->get_result();
             $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
 
+            // Prüfung, ob Benutzer zu dieser E-Mail vorhanden
             if ($id_benutzer_result->num_rows == 0) {
               echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><br>';
             }
@@ -129,15 +133,18 @@ if($_SESSION["logged"] == true) {
 
             $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
+            // SQL-Abfrage für diesen Benutzer und dieses Gehöft
             $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
             $check = $conn->query($check_sql);
             $check = $check->fetch_assoc();
 
+            // Prüfung, ob der Benutzer dem Gehöft bereits zugeordnet ist
             if ($check['count'] > 0) {
               echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr><br>';
             }
             
             else {
+              // Insert des Benutzers als Gehöftverwalter zu diesem Gehöft
               $insert_sql = " INSERT INTO benutzer_verwaltet_gehoeft (id_benutzer, id_gehoeft) VALUES ('$id_benutzer', '$id_gehoeft')";
               $insert = $conn->query($insert_sql);
 

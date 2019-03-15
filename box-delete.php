@@ -122,6 +122,8 @@ if($_SESSION["logged"] == true) {
 
           <h1>Box löschen</h1>
           <hr>
+
+          <!-- Box löschen, wenn GET-Parameter gesetzt ist -->
           <br>
           <?php
             if (isset($_GET['id_box'])){
@@ -135,27 +137,29 @@ if($_SESSION["logged"] == true) {
             }
 
           ?>
+          <!-- Tabelle der einzelnen Boxen zur Auswahl -->
           <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-          <thead class="thead-light">
-            <tr>
-              <th>Boxentyp</th>
-              <th>Boxenpreis</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-          <?php
-            $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=$id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
-            $boxfrei_result = $conn->query($boxfrei_sql);
-            if($boxfrei_result->num_rows > 0){
-              while ($row_bf = $boxfrei_result->fetch_assoc()){
-                echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-sm btn-danger\" href=\"box-delete.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
-              }
-            }
-          ?>
-          </tbody>
-          </table>
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
+                <tr>
+                  <th>Boxentyp</th>
+                  <th>Boxenpreis</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Einzelne Zeilen mit den Boxen und den Preisen -->
+                <?php
+                  $boxfrei_sql = "SELECT box.boxenpreis as boxenpreis, boxentyp.boxenbez as boxenbez, box.id_box as id_box FROM box, boxentyp WHERE box.id_gehoeft=$id_gehoeft AND box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp";
+                  $boxfrei_result = $conn->query($boxfrei_sql);
+                  if($boxfrei_result->num_rows > 0){
+                    while ($row_bf = $boxfrei_result->fetch_assoc()){
+                      echo "<tr><td>" . $row_bf["boxenbez"] . "</td><td> " . $row_bf["boxenpreis"] . "</td><td><a class=\"btn btn-sm btn-danger\" href=\"box-delete.php?id_box=" . $row_bf['id_box'] . "\" onclick='return checkDelete()'>Löschen</a></td></tr>";
+                    }
+                  }
+                ?>
+              </tbody>
+            </table>
           </div>
           <hr>
           <div class="form-group">
