@@ -599,14 +599,14 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                         </div>
                         <div class="form-group wrap-input">
                           <div class="pwdMask">
-                            <input type="password" class="form-control password" name="register_password" placeholder="Passwort" required>
+                            <input type="password" minlength="8" class="form-control password" name="register_password" placeholder="Passwort" required>
                             <span class="focus-input"></span>
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
                         </div>
                         <div class="form-group wrap-input">
                           <div class="pwdMask">
-                            <input type="password" class="form-control password" name="register_confirm_password" placeholder="Passwort wiederholen" required>
+                            <input type="password" minlength="8" class="form-control password" name="register_confirm_password" placeholder="Passwort wiederholen" required>
                             <span class="focus-input"></span>
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
