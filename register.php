@@ -33,37 +33,48 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 } 
 
-
+// Setzen der Post-Parameter als Variablen
 $register_email = $_POST['register_email'];
 $register_password = $_POST['register_password'];
+// Genererieren eines Aktivierungscodes
 $aktivierungscode = uniqid();
+// Variable aktiviert auf 0 setzen, da User noch nicht bestätigt sein wird
 $aktiviert = 0;
+// aktuelles Datum setzen
 $date = date('Y-m-d H:i:s');
 
+// Hashen der Passwörter und des Aktivierungscodes
 $register_password_hash = md5($register_password);
 $aktivierungscode_hash = md5($aktivierungscode);
 
+// Insert des neuen Benutzers in die Tabelle benutzer
 $register_query = "INSERT INTO benutzer (email, passwort, aktivierungscode, aktiviert, registrierungsdatum) VALUES (?, ?, ?, ?, ?)";
-
 $register_sql = $mysqli->prepare($register_query);
 $register_sql->bind_param("sssis", $register_email, $register_password_hash, $aktivierungscode_hash, $aktiviert, $date);
 $register_sql->execute();
 
+// Benutzer-ID über last-insert fetchen
 $id_benutzer = $mysqli->insert_id;
 
-//Nicht-Passende Links auskommentieren
+// Link-Basis setzen
+
+// Nicht-Passende Links auskommentieren für lokale Entwicklung
 
 $link_base = "https://www.hrp-projekt.de/activate.php";
 //$link_base = "localhost/HRP/activate.php";
 //$link_base = "henriks-macbook-pro.local/HRP/activate.php";
 
+// Link Parameter Benutzer-ID und Aktivierungscode setzen
 $link_parameter = "?id_benutzer=$id_benutzer&aktivierungscode=$aktivierungscode";
 
+//Aktivierungslink zusammensetzen
 $aktivierungslink = $link_base . $link_parameter;
 
+// Weitergabe der E-Mail und des Aktivierungslinks über Session an activate.php
 $_SESSION["register_email"] = $register_email;
 $_SESSION["aktivierungslink"] = $aktivierungslink;
 
+// Weiterleitung an activate.php
 header('location:activate.php');
 exit();
 
