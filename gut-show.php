@@ -223,6 +223,8 @@ chart.render();
           
           <div class="card mb-3">
           <div class="card-header">
+          <i class="fas fa-chart-line"></i>
+                  Preisentwicklung
           </div>
           <div class="card-body">
           <div id="preisentwicklung" style="height: 300px; width: 100%;"></div>

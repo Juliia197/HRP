@@ -17,63 +17,73 @@ if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION["id_gehoeft"];
 
-$gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_gehoeft=$id_gehoeft";
-$gehoeft_name_result = $conn->query($gehoeft_name_sql);
+  /* Gehöftname wird gespeichert */
+  $gehoeft_name_sql = "SELECT * FROM gehoeft WHERE id_gehoeft=$id_gehoeft";
+  $gehoeft_name_result = $conn->query($gehoeft_name_sql);
 
-$gehoeft_adresse_sql = "SELECT gehoeft.id_adresse, adresse.id_adresse, adresse.strasse, adresse.hausnr, adresse.plz, adresse.ort FROM adresse, gehoeft WHERE gehoeft.id_gehoeft=$id_gehoeft AND adresse.id_adresse=gehoeft.id_adresse";
-$gehoeft_adresse_result = $conn->query($gehoeft_adresse_sql);
+  /* Gehöftadresse wird ermittelt */
+  $gehoeft_adresse_sql = "SELECT gehoeft.id_adresse, adresse.id_adresse, adresse.strasse, adresse.hausnr, adresse.plz, adresse.ort FROM adresse, gehoeft WHERE gehoeft.id_gehoeft=$id_gehoeft AND adresse.id_adresse=gehoeft.id_adresse";
+  $gehoeft_adresse_result = $conn->query($gehoeft_adresse_sql);
 
-$anzahl_paddockbox_sql = "SELECT COUNT(id_box) as anzahl_paddockbox FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=2";
-$anzahl_paddockbox_result = $conn->query($anzahl_paddockbox_sql);
-if ($anzahl_paddockbox_result->num_rows > 0) {
-  while($row = $anzahl_paddockbox_result->fetch_assoc()) {
-    $anzahl_paddockbox = $row["anzahl_paddockbox"];
+  /* Anzahl der Paddockboxen wird ermittelt */
+  $anzahl_paddockbox_sql = "SELECT COUNT(id_box) as anzahl_paddockbox FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=2";
+  $anzahl_paddockbox_result = $conn->query($anzahl_paddockbox_sql);
+  if ($anzahl_paddockbox_result->num_rows > 0) {
+    while($row = $anzahl_paddockbox_result->fetch_assoc()) {
+      $anzahl_paddockbox = $row["anzahl_paddockbox"];
+    }
   }
-}
 
-$anzahl_innenbox_sql = "SELECT COUNT(id_box) as anzahl_innenbox FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=1";
-$anzahl_innenbox_result = $conn->query($anzahl_innenbox_sql);
-if ($anzahl_innenbox_result->num_rows > 0) {
-  while($row = $anzahl_innenbox_result->fetch_assoc()) {
-    $anzahl_innenbox = $row["anzahl_innenbox"];
+  /* Anzahl der Innenboxen wird ermittelt */
+  $anzahl_innenbox_sql = "SELECT COUNT(id_box) as anzahl_innenbox FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=1";
+  $anzahl_innenbox_result = $conn->query($anzahl_innenbox_sql);
+  if ($anzahl_innenbox_result->num_rows > 0) {
+    while($row = $anzahl_innenbox_result->fetch_assoc()) {
+      $anzahl_innenbox = $row["anzahl_innenbox"];
+    }
   }
-}
 
-$anzahl_boxbelegt_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_pferd IS NOT NULL";
-$anzahl_boxbelegt_result = $conn->query($anzahl_boxbelegt_sql);
-if ($anzahl_boxbelegt_result->num_rows > 0) {
-  while($row = $anzahl_boxbelegt_result->fetch_assoc()) {
-    $anzahl_boxbelegt = $row["anzahl_belegt"];
+  /* Anzahl der belegten Boxen */
+  $anzahl_boxbelegt_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_pferd IS NOT NULL";
+  $anzahl_boxbelegt_result = $conn->query($anzahl_boxbelegt_sql);
+  if ($anzahl_boxbelegt_result->num_rows > 0) {
+    while($row = $anzahl_boxbelegt_result->fetch_assoc()) {
+      $anzahl_boxbelegt = $row["anzahl_belegt"];
+    }
   }
-}
 
-$anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=$id_gehoeft AND id_pferd IS NULL";
-$anzahl_boxfrei_result = $conn->query($anzahl_boxfrei_sql);
-if ($anzahl_boxfrei_result->num_rows > 0) {
-  while($row = $anzahl_boxfrei_result->fetch_assoc()) {
-    $anzahl_boxfrei = $row["anzahl_frei"];
+  /* Anzahl der freien Boxen */
+  $anzahl_boxfrei_sql = "SELECT COUNT(id_box) as anzahl_frei FROM box WHERE id_gehoeft=$id_gehoeft AND id_pferd IS NULL";
+  $anzahl_boxfrei_result = $conn->query($anzahl_boxfrei_sql);
+  if ($anzahl_boxfrei_result->num_rows > 0) {
+    while($row = $anzahl_boxfrei_result->fetch_assoc()) {
+      $anzahl_boxfrei = $row["anzahl_frei"];
+    }
   }
-}
 
-$anzahl_boxbelegt_paddock_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=2 AND id_pferd IS NOT NULL";
-$anzahl_boxbelegt_paddock_result = $conn->query($anzahl_boxbelegt_paddock_sql);
-if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
-  while($row = $anzahl_boxbelegt_paddock_result->fetch_assoc()){
-    $anzahl_boxbelegt_paddock = $row["anzahl_belegt"];
+  /* Anzahl der belegten Paddockboxen */
+  $anzahl_boxbelegt_paddock_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=2 AND id_pferd IS NOT NULL";
+  $anzahl_boxbelegt_paddock_result = $conn->query($anzahl_boxbelegt_paddock_sql);
+  if ($anzahl_boxbelegt_paddock_result->num_rows > 0){
+    while($row = $anzahl_boxbelegt_paddock_result->fetch_assoc()){
+      $anzahl_boxbelegt_paddock = $row["anzahl_belegt"];
+    }
   }
-}
 
-$anzahl_boxfrei_paddock = $anzahl_paddockbox-$anzahl_boxbelegt_paddock;
+  /* Berechnung der freien Paddockboxen */
+  $anzahl_boxfrei_paddock = $anzahl_paddockbox-$anzahl_boxbelegt_paddock;
 
-$anzahl_boxbelegt_innen_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=1 AND id_pferd IS NOT NULL";
-$anzahl_boxbelegt_innen_result = $conn->query($anzahl_boxbelegt_innen_sql);
-if ($anzahl_boxbelegt_innen_result->num_rows > 0){
-  while($row = $anzahl_boxbelegt_innen_result->fetch_assoc()){
-    $anzahl_boxbelegt_innen = $row["anzahl_belegt"];
+  /* Anzahl der belegten Innenboxen */
+  $anzahl_boxbelegt_innen_sql = "SELECT COUNT(id_box) as anzahl_belegt FROM box WHERE id_gehoeft=$id_gehoeft AND id_boxentyp=1 AND id_pferd IS NOT NULL";
+  $anzahl_boxbelegt_innen_result = $conn->query($anzahl_boxbelegt_innen_sql);
+  if ($anzahl_boxbelegt_innen_result->num_rows > 0){
+    while($row = $anzahl_boxbelegt_innen_result->fetch_assoc()){
+      $anzahl_boxbelegt_innen = $row["anzahl_belegt"];
+    }
   }
-}
 
-$anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
+  /* Berechnung der freien Innenboxen */
+  $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
 
 ?>
 
@@ -102,8 +112,10 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <!-- Skript für Diagramme -->
     <script>
       window.onload = function() {
+        /* Belegung der Variablen */
         var anzahl_belegt = <?php echo $anzahl_boxbelegt ?>;
         var anzahl_frei = <?php echo $anzahl_boxfrei ?>;
         var anzahl_boxbelegt_paddock = <?php echo $anzahl_boxbelegt_paddock ?>;
@@ -113,8 +125,10 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         var anzahl_paddockbox = <?php echo $anzahl_paddockbox ?>;
         var anzahl_innenbox = <?php echo $anzahl_innenbox ?>;
 
+        /* Individuelles ColorSet festlegen */
         CanvasJS.addColorSet("customColors", ["#7e5738", "#a4bf6b", "#473221", "a09189", "240c01"]);
 
+        /* Diagramm: Boxen belegt und frei */
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
           colorSet: "customColors",
@@ -136,6 +150,7 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
         });
         boxen_belegt_frei.render();
         
+        /* Diagramm: Verhältnis von belegten zu freien Boxen nach Boxentyp */
         var verhaeltnis_frei_belegt_paddock_innen = new CanvasJS.Chart("verhaeltnis_frei_belegt_paddock_innen", {
           animationEnabled: true,
           theme: "light2",
@@ -238,20 +253,21 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
       <div id="content-wrapper">
 
         <div class="container-fluid">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="dashboard.php">Dashboard</a>
-          </li>
-          <li class="breadcrumb-item active">
-            Gehöft
-          </li>
-        </ol>
 
           <!-- Page Content -->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="dashboard.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Gehöft
+            </li>
+          </ol>
+
 
           <h1>Gehöft: 
+            <!-- Ausgabe des Gehöftnamen -->
             <?php if ($gehoeft_name_result->num_rows > 0) {
-                // output data of each row
                 while($row = $gehoeft_name_result->fetch_assoc()) {
                     echo $row["gehoeftname"];
                 }
@@ -261,24 +277,27 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           </h1>
           <hr>
           <p>
-          <div class="d-flex justify-content-between">
-            <div>
-              <?php if ($gehoeft_adresse_result->num_rows > 0) {
-              while($row = $gehoeft_adresse_result->fetch_assoc()) {
-                echo $row["strasse"] . " " . $row["hausnr"] . "<br>" . $row["plz"] . " " . $row["ort"];
+            <!-- Die Adresse des Gehöfts wird dargestellt -->
+            <div class="d-flex justify-content-between">
+              <div>
+                <?php if ($gehoeft_adresse_result->num_rows > 0) {
+                while($row = $gehoeft_adresse_result->fetch_assoc()) {
+                  echo $row["strasse"] . " " . $row["hausnr"] . "<br>" . $row["plz"] . " " . $row["ort"];
+                }
               }
-            }
-            ?>
+              ?>
+              </div>
+              <div class="p-2"><a class="btn btn-secondary" href="gehoeft-benutzer.php">Gehöftverwaltung</a></div>
             </div>
-            <div class="p-2"><a class="btn btn-secondary" href="gehoeft-benutzer.php">Gehöftverwaltung</a></div>
-          </div>
           </p>
           <hr>
+          <!-- Buttons zum Hinzufügen oder Löschen einer Box -->
           <div class="d-flex flex-row-reverse">
             <div class="p-2"><a class="btn btn-success" href="box-edit.php">Box hinzufügen</a></div>
             <div class="p-2"><a class="btn btn-danger" href="box-delete.php">Box löschen</a></div>
           </div>
           <hr>
+          <!-- Diagramm: Verhältnis von belegten zu freien Boxen -->
           <div class="card mb-3">
             <div class="card-header">
             <i class="fas fa-chart-pie"></i>
@@ -292,16 +311,14 @@ $anzahl_boxfrei_innen = $anzahl_innenbox-$anzahl_boxbelegt_innen;
           </div>
           <hr>
           <div class="card mb-3">
-          <div class="card-header">
-          <i class="fas fa-chart-area"></i>
-          Verhältnis der freien zu belegten Boxen
+            <div class="card-header">
+            <i class="fas fa-chart-area"></i>
+            Verhältnis der freien zu belegten Boxen
+            </div>
+            <div class="card-body">
+              <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
           </div>
-          <div class="card-body">
-            <div id="verhaeltnis_frei_belegt_paddock_innen" style="height: 300px; width: 100%"></div>
-          </div>
-          </div>
-
-        <!-- /.container-fluid -->
+        </div>
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">

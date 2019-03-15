@@ -13,79 +13,88 @@ if ($conn->connect_error) {
 session_start();
 
 if($_SESSION["logged"] == true) {
-$id_gehoeft = $_SESSION["id_gehoeft"];
+  $id_gehoeft = $_SESSION["id_gehoeft"];
 
-$anzahl_stuten_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 's' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-$anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
-if ($anzahl_stuten_result->num_rows > 0){
-  while($row_as = $anzahl_stuten_result->fetch_assoc()){
-    $anzahl_stuten = $row_as["anzahl"]; 
+  /* Anzahl der Stuten wird berechnet */
+  $anzahl_stuten_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 's' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+  $anzahl_stuten_result = $conn->query($anzahl_stuten_sql);
+  if ($anzahl_stuten_result->num_rows > 0){
+    while($row_as = $anzahl_stuten_result->fetch_assoc()){
+      $anzahl_stuten = $row_as["anzahl"]; 
+    }
   }
-}
 
-$anzahl_wallach_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'w' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-$anzahl_wallach_result = $conn->query($anzahl_wallach_sql);
-if ($anzahl_wallach_result->num_rows > 0){
-  while($row_aw = $anzahl_wallach_result->fetch_assoc()){
-    $anzahl_wallache = $row_aw["anzahl"]; 
+  /* Anzahl der Wallache wird berechnet */
+  $anzahl_wallach_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'w' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+  $anzahl_wallach_result = $conn->query($anzahl_wallach_sql);
+  if ($anzahl_wallach_result->num_rows > 0){
+    while($row_aw = $anzahl_wallach_result->fetch_assoc()){
+      $anzahl_wallache = $row_aw["anzahl"]; 
+    }
   }
-}
 
-$anzahl_hengste_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'h' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
-$anzahl_hengste_result = $conn->query($anzahl_hengste_sql);
-if ($anzahl_hengste_result->num_rows > 0){
-  while($row_ah = $anzahl_hengste_result->fetch_assoc()){
-    $anzahl_hengste = $row_ah["anzahl"]; 
+  /* Anzahl der Hengste wird berechnet */
+  $anzahl_hengste_sql = "SELECT COUNT(pferd.id_pferd) as anzahl FROM pferd, box WHERE pferd.geschlecht = 'h' AND pferd.id_pferd = box.id_pferd AND box.id_gehoeft = $id_gehoeft";
+  $anzahl_hengste_result = $conn->query($anzahl_hengste_sql);
+  if ($anzahl_hengste_result->num_rows > 0){
+    while($row_ah = $anzahl_hengste_result->fetch_assoc()){
+      $anzahl_hengste = $row_ah["anzahl"]; 
+    }
   }
-}
 
-$anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL AND id_gehoeft = $id_gehoeft";
-$anzahl_boxenfrei_result = $conn->query($anzahl_boxenfrei_sql);
-if ($anzahl_boxenfrei_result->num_rows > 0){
-  while($row_abf = $anzahl_boxenfrei_result->fetch_assoc()){
-    $anzahl_boxenfrei = $row_abf["anzahl"];
+  /* Anzahl der freien Boxen wird berechnet */
+  $anzahl_boxenfrei_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NULL AND id_gehoeft = $id_gehoeft";
+  $anzahl_boxenfrei_result = $conn->query($anzahl_boxenfrei_sql);
+  if ($anzahl_boxenfrei_result->num_rows > 0){
+    while($row_abf = $anzahl_boxenfrei_result->fetch_assoc()){
+      $anzahl_boxenfrei = $row_abf["anzahl"];
+    }
   }
-}
 
-$anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL AND id_gehoeft = $id_gehoeft";
-$anzahl_boxenbelegt_result = $conn->query($anzahl_boxenbelegt_sql);
-if ($anzahl_boxenbelegt_result->num_rows > 0){
-  while($row_abb = $anzahl_boxenbelegt_result->fetch_assoc()){
-    $anzahl_boxenbelegt = $row_abb["anzahl"];
+  /* Anzahl der belegten Boxen wird berechnet */
+  $anzahl_boxenbelegt_sql = "SELECT COUNT(id_box) as anzahl FROM box WHERE id_pferd IS NOT NULL AND id_gehoeft = $id_gehoeft";
+  $anzahl_boxenbelegt_result = $conn->query($anzahl_boxenbelegt_sql);
+  if ($anzahl_boxenbelegt_result->num_rows > 0){
+    while($row_abb = $anzahl_boxenbelegt_result->fetch_assoc()){
+      $anzahl_boxenbelegt = $row_abb["anzahl"];
+    }
   }
-}
 
-$bestand_hafer_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=1 AND id_gehoeft = $id_gehoeft";
-$bestand_hafer_result = $conn->query($bestand_hafer_sql);
-if ($bestand_hafer_result->num_rows > 0){
-  while($row_bh = $bestand_hafer_result->fetch_assoc()){
-    $bestand_hafer = $row_bh["bestand"];
+  /* Bestand von Hafer wird ermittelt */
+  $bestand_hafer_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=1 AND id_gehoeft = $id_gehoeft";
+  $bestand_hafer_result = $conn->query($bestand_hafer_sql);
+  if ($bestand_hafer_result->num_rows > 0){
+    while($row_bh = $bestand_hafer_result->fetch_assoc()){
+      $bestand_hafer = $row_bh["bestand"];
+    }
   }
-}
 
-$bestand_heu_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=2 AND id_gehoeft = $id_gehoeft";
-$bestand_heu_result = $conn->query($bestand_heu_sql);
-if ($bestand_heu_result->num_rows > 0){
-  while($row_bheu = $bestand_heu_result->fetch_assoc()){
-    $bestand_heu = $row_bheu["bestand"];
+  /* Bestand von Heu wird ermittelt */
+  $bestand_heu_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=2 AND id_gehoeft = $id_gehoeft";
+  $bestand_heu_result = $conn->query($bestand_heu_sql);
+  if ($bestand_heu_result->num_rows > 0){
+    while($row_bheu = $bestand_heu_result->fetch_assoc()){
+      $bestand_heu = $row_bheu["bestand"];
+    }
   }
-}
 
-$bestand_stroh_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=3 AND id_gehoeft = $id_gehoeft";
-$bestand_stroh_result = $conn->query($bestand_stroh_sql);
-if ($bestand_stroh_result->num_rows > 0){
-  while($row_bs = $bestand_stroh_result->fetch_assoc()){
-    $bestand_stroh = $row_bs["bestand"];
+  /* Bestand von Stroh wird ermittelt */
+  $bestand_stroh_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=3 AND id_gehoeft = $id_gehoeft";
+  $bestand_stroh_result = $conn->query($bestand_stroh_sql);
+  if ($bestand_stroh_result->num_rows > 0){
+    while($row_bs = $bestand_stroh_result->fetch_assoc()){
+      $bestand_stroh = $row_bs["bestand"];
+    }
   }
-}
 
-$bestand_saegespaene_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=4 AND id_gehoeft = $id_gehoeft";
-$bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
-if ($bestand_saegespaene_result->num_rows > 0){
-  while($row_bss = $bestand_saegespaene_result->fetch_assoc()){
-    $bestand_saegespaene = $row_bss["bestand"];
+  /* Bestand von Sägespäne wird ermittelt */
+  $bestand_saegespaene_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=4 AND id_gehoeft = $id_gehoeft";
+  $bestand_saegespaene_result = $conn->query($bestand_saegespaene_sql);
+  if ($bestand_saegespaene_result->num_rows > 0){
+    while($row_bss = $bestand_saegespaene_result->fetch_assoc()){
+      $bestand_saegespaene = $row_bss["bestand"];
+    }
   }
-}
 
 ?>
 <!DOCTYPE html>
@@ -115,8 +124,10 @@ if ($bestand_saegespaene_result->num_rows > 0){
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
+    <!-- Skript für die einzelnen Diagramme -->
     <script>
       window.onload = function () {
+        /* Zuordnung der Variablen */
         var boxen_belegt = <?php echo $anzahl_boxenbelegt ?>;
         var boxen_frei = <?php echo $anzahl_boxenfrei ?>;
         var stuten = <?php echo $anzahl_stuten ?>;
@@ -127,8 +138,10 @@ if ($bestand_saegespaene_result->num_rows > 0){
         var stroh = <?php echo $bestand_stroh ?>;
         var saegespaene = <?php echo $bestand_saegespaene ?>;
 
+        /* Individuelles ColorSet festlegen */
         CanvasJS.addColorSet("customColors", ["#7e5738", "#a4bf6b", "#473221", "a09189", "240c01"]);
         
+        /* Diagramm: Boxen belegt und frei */
         var boxen_belegt_frei = new CanvasJS.Chart("boxen_belegt_frei", {
           animationEnabled: true,
           colorSet: "customColors",
@@ -150,6 +163,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
         });
         boxen_belegt_frei.render();
 
+        /* Diagramm: Anzahl der Hengste, Wallache und Stuten */
         var anzahl_hws = new CanvasJS.Chart("anzahl_hws", {
           animationEnabled: true,
           
@@ -175,6 +189,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
         });
         anzahl_hws.render();
 
+        /* Diagramm: Aufstellung der Bestände von Hafer, Heu, Stroh und Sägespäne */
         var verbrauchsguttypen_bestand = new CanvasJS.Chart("verbrauchsguttypen_bestand", {
           animationEnabled: true,
           
@@ -264,7 +279,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
       </ul>
 
       <div id="content-wrapper">
-
+        <!-- Page Content -->
         <div class="container-fluid">
           <ol class="breadcrumb">
             <li class="breadcrumb-item active">
@@ -272,54 +287,54 @@ if ($bestand_saegespaene_result->num_rows > 0){
             </li>
           </ol>
 
-            <?php
-            if (isset($_GET['registered'])) {
-             echo '<div id="myAlert" class="alert alert-success collapse">
-                    <strong>Erfolgreich registriert!</strong>
-                </div>';
-            }
-            ?>
-
-          <!-- Page Content -->
+          <!-- Meldung über erfolgreiche Registrierung -->
+          <?php
+          if (isset($_GET['registered'])) {
+            echo '<div id="myAlert" class="alert alert-success collapse">
+                  <strong>Erfolgreich registriert!</strong>
+              </div>';
+          }
+          ?>
 
           <h1>Dashboard</h1>
           <hr>
           <div class="row">
-          <div class="col-md">
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fas fa-chart-pie"></i>
-                Pferd
+            <!-- Diagramm: Anzahl der Hengste, Wallache und Stuten in Card -->
+            <div class="col-md">
+              <div class="card mb-3">
+                <div class="card-header">
+                  <i class="fas fa-chart-bar"></i>
+                  Pferde
+                </div>
+                <div class="card-body">
+                  <div id="anzahl_hws" style="height: 300px; width: 100%;"></div>
+                </div>
               </div>
-              <div class="card-body">
-                <div id="anzahl_hws" style="height: 300px; width: 100%;"></div>
+            </div>
+            <!-- Diagramm: Boxen belegt und frei in Card -->
+            <div class="col-md">
+              <div class="card mb-3">
+                <div class="card-header">
+                  <i class="fas fa-chart-pie"></i>
+                  Boxen
+                </div>
+                <div class="card-body">
+                  <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md">
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fas fa-chart-pie"></i>
-                Boxen
-              </div>
-              <div class="card-body">
-                <div id="boxen_belegt_frei" style="height: 300px; width: 100%;"></div>
-              </div>
-            </div>
-          </div>
-          </div>
+          <!-- Diagramm: Aufstellung der Bestände von Hafer, Heu, Stroh und Sägespäne in Card -->
           <div class="card mb-3">
             <div class="card-header">
-              <i class="fas fa-chart-pie"></i>
+              <i class="fas fa-chart-bar"></i>
               Verbrauchsgüter
             </div>
             <div class="card-body">
               <div id="verbrauchsguttypen_bestand" style="height: 300px; width: 100%;"></div>
             </div>
           </div>
-
         </div>
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">
