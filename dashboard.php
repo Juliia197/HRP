@@ -284,6 +284,7 @@ if ($bestand_saegespaene_result->num_rows > 0){
 
           <h1>Dashboard</h1>
           <hr>
+          <br>
           <div class="row">
           <div class="col-md">
             <div class="card mb-3">

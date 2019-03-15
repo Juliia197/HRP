@@ -208,6 +208,7 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           <!-- Überschrift -->
           <h1>Passwort ändern</h1>
           <hr>
+          <br>
 
           <?php
           if ($changed == true) {
@@ -227,11 +228,11 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           if ($changed == false) {
 
           if ($wiederholung) {
-            echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr><br>';
           }
 
           if ($passwort_falsch) {
-            echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr><br>';
           }
           ?>
 

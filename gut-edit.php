@@ -158,7 +158,7 @@ if($_SESSION["logged"] == true) {
                           </li>
                         </ol>
                         <h1>Lieferung bearbeiten</h1>
-                        <hr>
+                        <hr><br>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\" required>";
@@ -224,7 +224,7 @@ if($_SESSION["logged"] == true) {
                           </li>
                         </ol>
                         <h1>Lieferung erstellen</h1>
-                        <hr>
+                        <hr><br>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
@@ -263,7 +263,7 @@ if($_SESSION["logged"] == true) {
             }
 
             else {
-              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr><br>';
             }
               ?>
           </form>

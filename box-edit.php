@@ -61,9 +61,6 @@ if($_SESSION["logged"] == true) {
           <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
-          <a class="nav-link" href="passwort.php">Passwort ändern</a>
-        </li>
-        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -124,6 +121,7 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
           <h1>Box hinzufügen</h1>
           <hr>
+          <br>
           <?php
             if (isset($_GET['saved']) && $_GET['saved'] == true){
               $boxenpreis = $_POST['boxenpreis'];
@@ -133,7 +131,7 @@ if($_SESSION["logged"] == true) {
               $boxadd_prepare->bind_param('dii', $boxenpreis, $id_gehoeft, $boxentyp);
               $boxadd_prepare->execute();
               $boxadd_prepare->close();
-              echo '<div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div><hr>';
+              echo '<div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div><br>';
             }
           ?>
           <form action="box-edit.php?saved=true" method="post">
