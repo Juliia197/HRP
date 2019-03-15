@@ -108,6 +108,7 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
           <h1>Benutzer zum Gehöft hinzufügen</h1>
           <hr>
+          <br>
 
           <?php 
             $email = $_POST['email'];
@@ -121,7 +122,7 @@ if($_SESSION["logged"] == true) {
             $id_benutzer_fetch = $id_benutzer_result->fetch_assoc();
 
             if ($id_benutzer_result->num_rows == 0) {
-              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><br>';
             }
 
             else {
@@ -133,7 +134,7 @@ if($_SESSION["logged"] == true) {
             $check = $check->fetch_assoc();
 
             if ($check['count'] > 0) {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr><br>';
             }
             
             else {

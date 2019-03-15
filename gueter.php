@@ -154,16 +154,13 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferung hinzufügen</a>
           <a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Zu den Lieferungen</a>
           </div>
-          <br>
-          <br>
           <hr>
+          <br>
 
           <!-- <p class="float-left">Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: </p> -->
           <div class="float-right">
           <a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a>
           </div>
-          <br>
-          <br>
           <hr>
           <br>
 
@@ -174,7 +171,7 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
             <thead class="thead-light">
             <tr>
               <th>Typ</th>
-              <th>Bestand</th>
+              <th>Bestand in kg</th>
               <th>Durchschnittspreis je kg</th>
               <th></th>
             </tr>

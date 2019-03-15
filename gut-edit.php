@@ -158,7 +158,7 @@ if($_SESSION["logged"] == true) {
                           </li>
                         </ol>
                         <h1>Lieferung bearbeiten</h1>
-                        <hr>
+                        <hr><br>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\" required>";
@@ -183,24 +183,24 @@ if($_SESSION["logged"] == true) {
                   echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div>";
                   echo "<div class=\"form-group\"><label>Lieferant</label>";
                   echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
-                  $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
+                  $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" .$row_g["id_person"] . "person.id_person = beziehung.id_person AND id_funktion = 5";
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
                     while($row_l = $lieferant_result->fetch_assoc()){
                       echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
                     }
                   }
-                  $notlieferant_sql = "SELECT * FROM person WHERE id_person IS NOT NULL AND NOT id_person = " . $row_g["id_person"];
-                  $notlieferant_result = $conn->query($notlieferant_sql);
-                  if($notlieferant_result->num_rows > 0){
-                    while($row_nl = $notlieferant_result->fetch_assoc()){
-                      echo "<option value=\"" . $row_nl["id_person"] . "\">" . $row_nl["vorname"] . " " . $row_nl["nachname"] . "</option>";
+                  $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5";
+                  $lieferanten_result = $conn->query($lieferanten_sql);
+                  if($lieferanten_result->num_rows > 0) {
+                    while($row_al = $lieferanten_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_al['id_person'] . "\">" . $row_al['vorname'] . " " . $row_al['nachname'] . "</option>";
                     }
                   }
                   echo "</select></div>";
-                  echo "<div class=\"form-group\"><label>Menge</label>";
+                  echo "<div class=\"form-group\"><label>Menge in kg</label>";
                   echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"></div>";
-                  echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
+                  echo "<div class=\"form-group\"><label>Einkaufspreis in €/kg</label>";
                   echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div>";
                   echo "
                       <div class=\"form-group\">
@@ -224,7 +224,7 @@ if($_SESSION["logged"] == true) {
                           </li>
                         </ol>
                         <h1>Lieferung erstellen</h1>
-                        <hr>
+                        <hr><br>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
@@ -242,17 +242,17 @@ if($_SESSION["logged"] == true) {
                 echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"></div>";
                 echo "<div class=\"form-group\"><label>Lieferant</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
-                $lieferantall_sql = "SELECT * FROM person";
-                $lieferantall_result = $conn->query($lieferantall_sql);
-                if($lieferantall_result->num_rows > 0){
-                  while($row_lall = $lieferantall_result->fetch_assoc()){
-                    echo "<option value=\"" . $row_lall["id_person"] . "\">" . $row_lall["vorname"] . " " . $row_lall["nachname"] . "</option>";
+                $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5";
+                  $lieferanten_result = $conn->query($lieferanten_sql);
+                  if($lieferanten_result->num_rows > 0) {
+                    while($row_al = $lieferanten_result->fetch_assoc()){
+                      echo "<option value=\"" . $row_al['id_person'] . "\">" . $row_al['vorname'] . " " . $row_al['nachname'] . "</option>";
+                    }
                   }
-                }
                 echo "</select></div>";
-                echo "<div class=\"form-group\"><label>Menge</label>";
+                echo "<div class=\"form-group\"><label>Menge in kg</label>";
                 echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"></div>";
-                echo "<div class=\"form-group\"><label>Einkaufspreis</label>";
+                echo "<div class=\"form-group\"><label>Einkaufspreis in €/kg</label>";
                 echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"></div>";
                 echo "
                     <div class=\"form-group\">
@@ -263,7 +263,7 @@ if($_SESSION["logged"] == true) {
             }
 
             else {
-              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr><br>';
             }
               ?>
           </form>

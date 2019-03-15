@@ -181,7 +181,7 @@ if($_SESSION["logged"] == true) {
                           </li>
                         </ol>
                         <h1>Lieferung bearbeiten</h1>
-                        <hr>";
+                        <hr><br>";
                   echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde geändert!</div>";
                   echo "<form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<label>Verbrauchsgütertyp</label>";
@@ -251,7 +251,7 @@ if($_SESSION["logged"] == true) {
                           </li>
                         </ol>
                         <h1>Lieferung erstellen</h1>
-                        <hr>";
+                        <hr><br>";
                 echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde hinzugefügt!</div>";
                 echo "<form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<label>Verbrauchsgütertyp:</label>";
@@ -292,7 +292,7 @@ if($_SESSION["logged"] == true) {
             }
 
             else {
-              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Lieferung!</div><hr><br>';
             }
               ?>
             </form>

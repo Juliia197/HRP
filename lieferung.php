@@ -141,7 +141,7 @@ if($_SESSION["logged"] == true) {
               <th>Lieferung</th>  
               <th>Lieferdatum</th>
               <th>Menge in kg</th>
-              <th>Einkaufspreis je kg</th>
+              <th>Einkaufspreis in €/kg</th>
               <th>Lieferant</th>
               <th></th>
             </tr>
@@ -178,6 +178,7 @@ if($_SESSION["logged"] == true) {
             </tbody>                
 
           </table>
+          <br>
           </div>          
         
 

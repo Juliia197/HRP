@@ -208,6 +208,7 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           <!-- Überschrift -->
           <h1>Passwort ändern</h1>
           <hr>
+          <br>
 
           <?php
           if ($changed == true) {
@@ -227,15 +228,15 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           if ($changed == false) {
 
           if ($wiederholung) {
-            echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr><br>';
           }
 
           if ($passwort_falsch) {
-            echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr><br>';
           }
           ?>
 
-          <form action="passwort.php" method="post">
+          <form action="passwort.php" method="post" onsubmit="return checkChange()">
             <div class="form-group">
             <label for="passwort_alt">
               Altes Passwort
@@ -244,16 +245,16 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
             <label for="passwort_neu">
               Neues Passwort
             </label>
-            <input class="form-control" type="password" id="passwort_neu" name="passwort_neu" required><br>
+            <input class="form-control" minlength="8" type="password" id="passwort_neu" name="passwort_neu" required><br>
             <label for="passwort_confirm">
               Neues Passwort wiederholen
             </label>
-            <input class="form-control" type="password" id="passwort_confirm" name="passwort_confirm" required>
+            <input class="form-control" minlength="8" type="password" id="passwort_confirm" name="passwort_confirm" required>
             </div>
             
             <div class="form-group">
 
-              <button class="btn btn-success" onclick="return checkChange()">
+              <button class="btn btn-success">
                 Passwort ändern
               </button>
               <?php 

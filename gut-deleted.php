@@ -158,7 +158,7 @@ if($_SESSION["logged"] == true) {
           </ol>
           <?php  
             //Success Balken
-            echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr>';
+            echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr><br>';
 
           ?>
 
