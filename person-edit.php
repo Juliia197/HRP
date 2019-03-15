@@ -213,7 +213,29 @@ if($_SESSION["logged"] == true) {
                     if($row_p['land'] == 'CH'){echo "selected";}
               echo ">Schweiz</option></select>";
 
-              echo "<hr><br>";
+              $checkbox_query = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $row_p['id_person'];
+              $checkbox=$conn->query($checkbox_query);
+
+              if ($checkbox->num_rows==1){
+                echo '<br><hr><br><div class="form-check">
+                <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion" checked>
+                <label class="form-check-label" for="id_funktion">
+                  Hat die Rolle eines Lieferanten
+                </label>
+                </div><br>';
+                echo "<hr><br>"; 
+              }
+              else{
+                echo '<br><hr><br><div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
+                  <label class="form-check-label" for="id_funktion">
+                    Hat die Rolle eines Lieferanten
+                  </label>
+                </div><br>';
+                echo "<hr><br>";
+              }
+
+
 
               //Buttons
               echo "<div class=\"form-group\"></div>
@@ -275,16 +297,23 @@ if($_SESSION["logged"] == true) {
             echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"ort\" required ><br>";
 
             echo "<label>Land </label>";
-            echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
+            echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
+
+            echo '<br><hr><br><div class="form-check">
+            <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
+            <label class="form-check-label" for="id_funktion">
+              Hat die Rolle eines Lieferanten
+            </label>
+          </div><br>';
           
             echo "<hr><br>";
 
             //Buttons
-            echo "<div class=\"form-group\"></div>
+            echo "<div class='form-group'></div>
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
               <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
-            </div>";
+            </div></form>";
           }
         }
 
@@ -292,8 +321,9 @@ if($_SESSION["logged"] == true) {
           echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
         }
           ?>
+        
           
-          </form>
+          
         </div>
         <!-- /.container-fluid -->
 
