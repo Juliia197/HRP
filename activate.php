@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+// Weiterleitung des Benutzers, wenn er bereits eingeloggt ist
 if (isset($_SESSION['logged']) && $_SESSION['logged']) {
     header('location:dashboard.php');
     exit();
@@ -34,11 +35,14 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 } 
 
+// Prüfung, ob Get-Paramter gesetzt sind
 if (isset($_GET["id_benutzer"]) && isset($_GET["aktivierungscode"])) {
 
+  // Setzen der Get-Parameter als Variablen
   $id_benutzer = $_GET["id_benutzer"];
   $aktivierungscode = $_GET["aktivierungscode"];
 
+  // SQL-Abfrage für Aktivierungscode aus der DB
   $check_activate_query = "SELECT aktivierungscode FROM benutzer WHERE id_benutzer = ?";
   $check_activate_sql = $mysqli->prepare($check_activate_query);
   $check_activate_sql->bind_param("i", $id_benutzer);
@@ -46,10 +50,12 @@ if (isset($_GET["id_benutzer"]) && isset($_GET["aktivierungscode"])) {
   $check_activate_result = $check_activate_sql->get_result();
   $check_activate_fetch = $check_activate_result->fetch_assoc();
 
+  // Prüfung, ob Aktivierungscode aus Get-Parameter mit Aktivierungscode aus DB übereinstimmt
   if ($check_activate_fetch["aktivierungscode"] == md5($aktivierungscode)) {
 
     $aktiviert = 1;
 
+    // Aktivieren des Benutzers
     $activate_query = "UPDATE benutzer SET aktiviert = ? WHERE id_benutzer = ?";
     $activate_sql = $mysqli->prepare($activate_query);
     $activate_sql->bind_param("ii", $aktiviert, $id_benutzer);
@@ -60,16 +66,19 @@ if (isset($_GET["id_benutzer"]) && isset($_GET["aktivierungscode"])) {
 
 }
 
+// wenn Get-Parameter nicht gesetzt sind, wird E-Mail mit Bestätigungslink verschickt
 else {
 
+  // Setzen der Variablen aus der Session
   $register_email = $_SESSION["register_email"];
   $aktivierungslink = $_SESSION["aktivierungslink"];
+
 
   // Ausgabe Aktivierungslink für localhost
   //echo $aktivierungslink;
 
-  // Mail wird gesendet 
-  
+
+  // Erstellen der nötigen Variablen Variablen für Mail-Versand
   $to = $register_email;
   $subject = "Bestätigung Ihres Accounts bei hrp-projekt.de";
   $message ='
@@ -111,6 +120,7 @@ else {
   $absender = "noreply@hrp-projekt.de";
   $header .= 'From: '. $absender."\r\nReply-To: ".$absender.'';
 
+  // Mail wird versendet
   mail($to, $subject, $message, $header);
   
   
