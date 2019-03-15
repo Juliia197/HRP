@@ -191,34 +191,6 @@ if($_SESSION["logged"] == true) {
             
             }
             
-            echo "
-            <hr><br>
-            <h3>Verbrauch</h3>";
-
-            $verbrauchsgut_query = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = ? AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
-            $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
-            $verbrauchsgut_sql->bind_param("i", $id_pferd);
-            $verbrauchsgut_sql->execute();
-            $verbrauchsgut_result = $verbrauchsgut_sql->get_result();
-
-            $bedarf_query = "SELECT id_verbrauchsguttyp, bedarf FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd = ? ";
-            $bedarf_sql = $conn->prepare($bedarf_query);
-            $bedarf_sql->bind_param("i", $id_pferd);
-            $bedarf_sql->execute();
-            $bedarf_result = $bedarf_sql->get_result();
-            
-            echo "
-            <div class='table-responsive'>
-            <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
-            <thead class='thead-light'>
-              <tr>
-                <th>Verbrauchsgut</th>
-                <th>Bedarf</th>
-              </tr>
-            </thead>
-            
-            <tbody>";
-
               // SQL-Abfrage für zugewiesene Box
               $box_query = "SELECT boxentyp.boxenbez, box.boxenpreis FROM box, boxentyp WHERE box.id_pferd = ? AND box.id_boxentyp = boxentyp.id_boxentyp";
               $box_sql = $conn->prepare($box_query);
@@ -323,71 +295,20 @@ if($_SESSION["logged"] == true) {
               <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
               <a class=\"btn btn-secondary\" href=\"pferd.php\" >Zurück zur Übersicht</a></div>";
             
-            }
+            
        
             echo "
             </tbody>
             </table>
-            </div>
-            
-            <hr><br>
-            <h3>Personen</h3>"; 
-                      
-            echo "
-            <div class='table-responsive'>
-            <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
-            <thead class='thead-light'>
-              <tr>
-                <th>Vorname</th>
-                <th>Nachname</th>
-                <th>Funktion</th>
-                <th></th>
-              </tr>
-            </thead>
-            
-            <tbody>";
-
-            $person_query = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = ? AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
-            $person_sql = $conn->prepare($person_query);
-            $person_sql->bind_param("i", $id_pferd);
-            $person_sql->execute();
-            $person_result = $person_sql->get_result();
-            while ($person_fetch = $person_result->fetch_assoc()) {  
-
-                echo "<tr>";
-                echo "<td>" . $person_fetch['vorname'] .  "</td>";
-                echo "<td>" . $person_fetch['nachname'] .  "</td>";
-                echo "<td>" . $person_fetch['funktionsbez'] . "</td>";
-
-                echo '<td>
-                  <div class="d-sm-flex flex-row">
-                  <div><a class="btn btn-sm btn-dark" role="button" href="person-show.php?id_person=' . $person_fetch["id_person"] . '" >Anzeigen</a></div>
-                  <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="person-edit.php?id_person=' . $person_fetch["id_person"] . '" >Bearbeiten</a></div>
-                  </div>
-                  </td>
-                  </tr>';
-                }
-                
-            echo "
-            </tbody>
-            </table>
             </div>";
-            
-            
-            echo "<hr><br>";
-
-            echo "
-            <div class=\"form-group\">
-            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $id_pferd . "\" >Bearbeiten</a>
-            <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
-            <a class=\"btn btn-secondary\" href=\"pferd.php\" >Zurück zur Übersicht</a></div>";
-          
+                
           }
+                
 
         else {
           echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr><br>';
           }
-          
+
         ?>
 
 
