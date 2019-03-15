@@ -122,8 +122,8 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active no-arrow mx-1">
-            <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
