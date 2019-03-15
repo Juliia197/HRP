@@ -236,7 +236,7 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           }
           ?>
 
-          <form action="passwort.php" method="post">
+          <form action="passwort.php" method="post" onsubmit="return checkChange()">
             <div class="form-group">
             <label for="passwort_alt">
               Altes Passwort
@@ -245,16 +245,16 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
             <label for="passwort_neu">
               Neues Passwort
             </label>
-            <input class="form-control" type="password" id="passwort_neu" name="passwort_neu" required><br>
+            <input class="form-control" minlength="8" type="password" id="passwort_neu" name="passwort_neu" required><br>
             <label for="passwort_confirm">
               Neues Passwort wiederholen
             </label>
-            <input class="form-control" type="password" id="passwort_confirm" name="passwort_confirm" required>
+            <input class="form-control" minlength="8" type="password" id="passwort_confirm" name="passwort_confirm" required>
             </div>
             
             <div class="form-group">
 
-              <button class="btn btn-success" onclick="return checkChange()">
+              <button class="btn btn-success">
                 Passwort ändern
               </button>
               <?php 
