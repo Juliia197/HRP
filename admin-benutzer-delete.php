@@ -13,6 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
@@ -86,17 +87,21 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <h1>Admin</h1>
           <hr>
 
-          <?php 
+          <?php
+          // Prüfung, ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
 
+          // Prüfung, ob Get-Parameter gesetzt ist
           if (isset($_GET['id_benutzer'])) {
             $id_benutzer = $_GET['id_benutzer'];
 
+            // Entfernen des Benutzers als Gehöftverwalter
             $verwalter_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ?";
             $verwalter_sql = $conn->prepare($verwalter_query);
             $verwalter_sql->bind_param("i", $id_benutzer);
             $verwalter_sql->execute();
 
+            // Löschen des Benutzers
             $benutzer_query = "DELETE FROM benutzer WHERE id_benutzer = ?";
             $benutzer_sql = $conn->prepare($benutzer_query);
             $benutzer_sql->bind_param("i", $id_benutzer);
