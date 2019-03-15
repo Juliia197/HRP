@@ -152,6 +152,7 @@ if($_SESSION["logged"] == true) {
           }?>
           </h1>
           <hr>
+          <br>
           <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
 
             <?php

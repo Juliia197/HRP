@@ -84,9 +84,6 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
-          <a class="nav-link" href="passwort.php">Passwort ändern</a>
-        </li>
-        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
@@ -159,7 +156,7 @@ if($_SESSION["logged"] == true) {
                     Pferd anzeigen
                   </li>
                 </ol>";
-            echo "<h1>" . $pferd_fetch['pferdename'] . "</h1> <hr>";
+            echo "<h1>" . $pferd_fetch['pferdename'] . "</h1> <hr> <br>";
             
             echo "<p>Geschlecht: ";
             if( $pferd_fetch['geschlecht'] =='s')
@@ -198,7 +195,7 @@ if($_SESSION["logged"] == true) {
             }
             
             echo "
-            <hr>
+            <hr><br>
             <h3>Verbrauch</h3>";
 
             $verbrauchsgut_query = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = ? AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
@@ -235,7 +232,7 @@ if($_SESSION["logged"] == true) {
             </table>
             </div>
             
-            <hr>
+            <hr><br>
             <h3>Personen</h3>"; 
                       
             echo "
@@ -279,7 +276,7 @@ if($_SESSION["logged"] == true) {
             </div>";
             
             
-            echo "<hr>";
+            echo "<hr><br>";
 
             echo "
             <div class=\"form-group\">
@@ -290,7 +287,7 @@ if($_SESSION["logged"] == true) {
           }
 
         else {
-          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr>';
+          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr><br>';
           }
           
         ?>

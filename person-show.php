@@ -158,7 +158,7 @@ if($_SESSION["logged"] == true) {
                   </li>
                 </ol>";
             //Überschrift
-            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr><br>";
 
             //Darstellung der Person            
             echo "<p>E-Mail: " . $row_p['email'] . "</p>";
@@ -180,7 +180,7 @@ if($_SESSION["logged"] == true) {
             echo $land;
             echo "</p>"; 
             
-            echo "<hr>";
+            echo "<hr><br>";
 
             
             
@@ -191,12 +191,19 @@ if($_SESSION["logged"] == true) {
             $funktion_sql->execute();
             $query1 = $funktion_sql->get_result();
 
-              if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
-               echo "<div class=\"form-group\"></div>
-               <div class=\"form-group\">
-                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
-                <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
+            $lieferung_query= "SELECT verbrauchsgutbez, lieferdatum, menge, einkaufspreis, id_verbrauchsguttyp FROM verbrauchsgut WHERE id_person =? AND id_gehoeft = $id_gehoeft";
+            $lieferung_sql = $conn->prepare($lieferung_query);
+            $lieferung_sql->bind_param("i",$_GET["id_person"]);
+            $lieferung_sql->execute();
+            $lieferung = $lieferung_sql->get_result();
+        
+            if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
+               echo "
+                <div class=\"form-group\">
+                  <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                  <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
+                  <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a>
+                </div>";
               }
               else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
   
@@ -206,7 +213,7 @@ if($_SESSION["logged"] == true) {
 
                 echo "
                 <div class='table-responsive'>
-                <table class='table table-bordered table-hover' id='dataTable2' width='100%' cellspacing='0'>
+                <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
                 <thead class='thead-light'>
                   <tr>
                   <th>Pferdename</th>
@@ -217,6 +224,8 @@ if($_SESSION["logged"] == true) {
                 
                 <tbody>";
 
+
+              if($query1->num_rows>0 ){
                 
                 $pferd_query= "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = ? AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
                 $pferd_sql = $conn->prepare($pferd_query);
@@ -225,6 +234,22 @@ if($_SESSION["logged"] == true) {
                 $pferd_bez = $pferd_sql->get_result();
   
                 while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
+                  //Tabelle wird erzeugt
+                  echo "
+                  <h3>Beziehungen zu dieser Person</h3><br>";
+  
+                  echo "
+                  <div class='table-responsive'>
+                  <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
+                  <thead class='thead-light'>
+                    <tr>
+                    <th>Pferdename</th>
+                    <th>Funktion</th>
+                    <th></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>";
                   echo '<tr>';
                   echo '<td>' . $fetch['pferdename'] .  '</td>';
                   echo '<td>' . $fetch['funktionsbez'] . '</td>';
@@ -239,28 +264,91 @@ if($_SESSION["logged"] == true) {
                   </td>
                   </tr>';
 
-                }
+              
                 echo "
                   </tbody>
                   </table>
                   </div>
-                  <hr>";
+                  <hr>
+                  <br>";
 
+                }
+              }
+              if($lieferung->num_rows>0){
+
+                echo "<h3 class='float-left'>Lieferungen zu dieser Person</h3>";
+
+                echo "
+                  <div class='table-responsive'>
+                  <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+                  <thead class='thead-light'>
+                    <tr>
+                    <th>Verbrauchsgut</th>
+                    <th>Bezeichnung</th>
+                    <th>Lieferdatum</th>
+                    <th>Menge</th>
+                    <th>Einkaufspreis in € pro kg</th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>";
+  
+
+                  while($lief = mysqli_fetch_assoc($lieferung)){ //für jede Lieferung wird eine Zeile erzeugt
+                    echo '<tr>';
+                    $verbrauchsguttyp_q = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = " . $lief['id_verbrauchsguttyp'];
+                    $verbrauchsguttyp = $conn->query($verbrauchsguttyp_q);
+
+                    while ($bez = mysqli_fetch_assoc($verbrauchsguttyp)){
+                      echo '<td>' . $bez['verbrauchsguttypbez'] . '</td>';
+                    }
+                    echo '<td>' . $lief['verbrauchsgutbez'] .  '</td>';
+                    echo '<td>' . $lief['lieferdatum'] .  '</td>';
+                    echo '<td>' . $lief['menge'] .  '</td>';
+                    echo '<td>' . $lief['einkaufspreis'] .  '</td>';
+
+    
+  
+                    echo '</tr>';
+  
+                  }
+                  echo "
+                    </tbody>
+                    </table>
+                    </div>
+                    <hr>";
+              }
+              if($lieferung->num_rows>0 or $query1->num_rows>0){
                 echo "
                 <div class=\"form-group\">
                   <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                   <a class=\"btn btn-outline-danger disabled\" href=\"#\" onclick='return checkDelete()'>Löschen nicht möglich*</a>
                   <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a></div>
-                  *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.";
-          
-            }
-            
+                  *Diese Person kann nicht gelöscht werden, da ihr entweder mindestens ein Pferd und/oder eine Lieferung zugeordnet ist.";
+               }
+                
+                
+                
+                
+                
+                
+
+              
+              else{ // wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
+               echo "<div class=\"form-group\"></div>
+               <div class=\"form-group\">
+                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
+  
+                
+            }           
           }
 
         }
 	
           else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
           }
 
         ?>
@@ -310,8 +398,8 @@ if($_SESSION["logged"] == true) {
       </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
+     <!-- Bootstrap core JavaScript-->
+     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -321,18 +409,32 @@ if($_SESSION["logged"] == true) {
     <script src="js/sb-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
+
+    <!-- JavaScript für Delete-Confirm -->
     <script>
-    $(document).ready(function() {
-    $('#dataTable').DataTable( {
+      function checkDelete(){
+        return confirm('Person endgültig löschen?')
+      }
+    </script>
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
+    <script>
+    <script>
+      function checkDelete(){
+        return confirm('Person endgültig löschen?')
+      }
+    </script>
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
+    <script>
+      $(document).ready(function() {
+      $('table.display').DataTable({
         "language": {
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
         }
-    } );
-} );
+      });
+      });
     </script>
-
-    <!-- For this Page -->
-    <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   </body>
 

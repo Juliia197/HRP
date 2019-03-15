@@ -13,6 +13,7 @@ if ($conn->connect_error) {
 
 session_start();
 
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
@@ -28,7 +29,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Admin</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +49,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
+    <a class="navbar-brand mr-1" href="admin.php">HRP-Projekt</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -58,9 +59,6 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
           <a class="nav-link" href="passwort.php">Passwort ändern</a>
-        </li>
-        <li class="nav-item no-arrow mx-1">
-            <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
@@ -75,7 +73,7 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
       <ul class="sidebar navbar-nav">
         <li class="nav-item active">
           <a class="nav-link" href="admin.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-cogs"></i>
             <span>Admin</span>
           </a>
         </li>
@@ -89,17 +87,21 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
           <h1>Admin</h1>
           <hr>
 
-          <?php 
+          <?php
+          // Prüfung, ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
 
+          // Prüfung, ob Get-Parameter gesetzt ist
           if (isset($_GET['id_benutzer'])) {
             $id_benutzer = $_GET['id_benutzer'];
 
+            // Entfernen des Benutzers als Gehöftverwalter
             $verwalter_query = "DELETE FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = ?";
             $verwalter_sql = $conn->prepare($verwalter_query);
             $verwalter_sql->bind_param("i", $id_benutzer);
             $verwalter_sql->execute();
 
+            // Löschen des Benutzers
             $benutzer_query = "DELETE FROM benutzer WHERE id_benutzer = ?";
             $benutzer_sql = $conn->prepare($benutzer_query);
             $benutzer_sql->bind_param("i", $id_benutzer);

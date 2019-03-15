@@ -13,13 +13,9 @@ if ($conn->connect_error) {
 
 session_start();
 
-
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
-
-if (isset($_GET["id_gehoeft"])) {
-  $id_gehoeft = $_GET["id_gehoeft"];
-}
 
 ?>
 <!DOCTYPE html>
@@ -33,7 +29,7 @@ if (isset($_GET["id_gehoeft"])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <title>HRP - Admin</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -53,7 +49,7 @@ if (isset($_GET["id_gehoeft"])) {
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="dashboard.php">HRP - Admin</a>
+    <a class="navbar-brand mr-1" href="admin.php">HRP-Projekt</a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -63,9 +59,6 @@ if (isset($_GET["id_gehoeft"])) {
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
           <a class="nav-link" href="passwort.php">Passwort ändern</a>
-        </li>
-        <li class="nav-item no-arrow mx-1">
-            <a class="nav-link" href="passwort.php">Passwort ändern</a>
         </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
@@ -80,7 +73,7 @@ if (isset($_GET["id_gehoeft"])) {
       <ul class="sidebar navbar-nav">
         <li class="nav-item active">
           <a class="nav-link" href="admin.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-cogs"></i>
             <span>Admin</span>
           </a>
         </li>
@@ -96,7 +89,13 @@ if (isset($_GET["id_gehoeft"])) {
           <br>
 
           <?php 
+          // Prüfung, ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
+            
+            // Prüfung, ob Get-Parameter gesetzt ist
+            if (isset($_GET["id_gehoeft"])) {
+              $id_gehoeft = $_GET["id_gehoeft"];
+  
           ?>
 
           <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
@@ -127,6 +126,7 @@ if (isset($_GET["id_gehoeft"])) {
 
               <?php
 
+              // SQL-Abfrage für Gehöftverwalter zu diesem Gehöft
               $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
               $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
               $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
@@ -155,6 +155,12 @@ if (isset($_GET["id_gehoeft"])) {
           </div>
           
           <?php
+          }
+
+          else {
+            echo '<div class="alert alert-danger" role="alert">Kein Gehöft ausgewählt!</div>';
+          }
+
           }
 
           else {

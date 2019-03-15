@@ -276,6 +276,7 @@ if($_SESSION["logged"] == true) {
             }?> 
           </h1>
           <hr>
+          <br>
           <p>
             <!-- Die Adresse des Gehöfts wird dargestellt -->
             <div class="d-flex justify-content-between">
@@ -292,11 +293,13 @@ if($_SESSION["logged"] == true) {
           </p>
           <hr>
           <!-- Buttons zum Hinzufügen oder Löschen einer Box -->
+          <br>
           <div class="d-flex flex-row-reverse">
             <div class="p-2"><a class="btn btn-success" href="box-edit.php">Box hinzufügen</a></div>
             <div class="p-2"><a class="btn btn-danger" href="box-delete.php">Box löschen</a></div>
           </div>
           <hr>
+          <br>
           <!-- Diagramm: Verhältnis von belegten zu freien Boxen -->
           <div class="card mb-3">
             <div class="card-header">
@@ -310,6 +313,7 @@ if($_SESSION["logged"] == true) {
             </div>
           </div>
           <hr>
+          <br>
           <div class="card mb-3">
             <div class="card-header">
             <i class="fas fa-chart-area"></i>
