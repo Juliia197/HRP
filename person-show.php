@@ -191,11 +191,21 @@ if($_SESSION["logged"] == true) {
             $funktion_sql->execute();
             $query1 = $funktion_sql->get_result();
 
+            $lieferant= 5;
+            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion < ?' ;
+            $funktion_sql = $conn->prepare($funktion_query);
+            $funktion_sql->bind_param("ii",$_GET["id_person"],$lieferant);
+            $funktion_sql->execute();
+            $funktion = $funktion_sql->get_result();
+
             $lieferung_query= "SELECT verbrauchsgutbez, lieferdatum, menge, einkaufspreis, id_verbrauchsguttyp FROM verbrauchsgut WHERE id_person =? AND id_gehoeft = $id_gehoeft";
             $lieferung_sql = $conn->prepare($lieferung_query);
             $lieferung_sql->bind_param("i",$_GET["id_person"]);
             $lieferung_sql->execute();
             $lieferung = $lieferung_sql->get_result();
+
+            $lieferant_sql = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $_GET['id_person'];
+            $lieferant = $conn->query($lieferant_sql);
 
               if($query1->num_rows>0 ){
                 
@@ -219,9 +229,9 @@ if($_SESSION["logged"] == true) {
                     <th>Funktion</th>
                     <th></th>
                     </tr>
-                  </thead>
-                  
+                  </thead>                  
                   <tbody>";
+
                   echo '<tr>';
                   echo '<td>' . $fetch['pferdename'] .  '</td>';
                   echo '<td>' . $fetch['funktionsbez'] . '</td>';
@@ -246,7 +256,9 @@ if($_SESSION["logged"] == true) {
 
                 }
               }
-              if($lieferung->num_rows>0){
+              
+              if($lieferant->num_rows>0){
+
 
                 echo "<h3 class='float-left'>Lieferungen zu dieser Person</h3>";
 
@@ -277,9 +289,7 @@ if($_SESSION["logged"] == true) {
                     echo '<td>' . $lief['verbrauchsgutbez'] .  '</td>';
                     echo '<td>' . $lief['lieferdatum'] .  '</td>';
                     echo '<td>' . $lief['menge'] .  '</td>';
-                    echo '<td>' . $lief['einkaufspreis'] .  '</td>';
-
-    
+                    echo '<td>' . $lief['einkaufspreis'] .  '</td>'; 
   
                     echo '</tr>';
   
@@ -290,7 +300,7 @@ if($_SESSION["logged"] == true) {
                     </div>
                     <hr>";
               }
-              if($lieferung->num_rows>0 or $query1->num_rows>0){
+              if($lieferung->num_rows>0 or $funktion->num_rows>0){
                 echo "
                 <div class=\"form-group\">
                   <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
@@ -306,10 +316,7 @@ if($_SESSION["logged"] == true) {
                 <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                 <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
-              }
-  
-                
-            // }           
+              }         
           }
         }
 
