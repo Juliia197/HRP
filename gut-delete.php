@@ -16,6 +16,36 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  $id_gehoeft = $_SESSION["id_gehoeft"];
+
+$minusbestand_query = "SELECT menge, id_verbrauchsguttyp FROM verbrauchsgut WHERE id_verbrauchsgut=?";
+$minusbestand_sql = $conn->prepare($minusbestand_query );
+$minusbestand_sql ->bind_param("i",$_GET["id_verbrauchsgut"]);
+$minusbestand_sql ->execute();
+$minusbestand= $minusbestand_sql ->get_result();
+while($fetch = mysqli_fetch_assoc($minusbestand)){
+  $bestand_query = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=?";
+  $bestand_sql = $conn->prepare($bestand_query );
+  $bestand_sql ->bind_param("i",$fetch["id_verbrauchsguttyp"]);
+  $bestand_sql ->execute();
+  $bestand = $bestand_sql ->get_result();
+  while($fetch1 = mysqli_fetch_assoc($bestand)){
+    $alterBestand = $fetch1['bestand'];
+    $zulöschen = $fetch['menge'];
+    $bestand_neu = $alterBestand - $zulöschen;
+    $bestandneu_query = " UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestand_neu . " WHERE id_verbrauchsguttyp=" . $fetch['id_verbrauchsguttyp'] . " AND id_gehoeft = $id_gehoeft";
+    $bestandneu = $conn->query($bestandneu_query);
+  }
+}
+
+
+
+//Löschen des Verbrauchsguts aus der Datenbank
+$verbrauchsgutloeschen_query = "DELETE FROM verbrauchsgut WHERE id_verbrauchsgut=?";
+$verbrauchsgutloeschen_sql = $conn->prepare($verbrauchsgutloeschen_query );
+$verbrauchsgutloeschen_sql->bind_param("i",$_GET["id_verbrauchsgut"]);
+$verbrauchsgutloeschen_sql->execute();
+$verbrauchsgutloeschen_result = $verbrauchsgutloeschen_sql->get_result();
 
 ?>
 
@@ -122,32 +152,13 @@ if($_SESSION["logged"] == true) {
               Lieferung löschen
             </li>
           </ol>
-
           <?php  
-            //Übergebene Daten werden in Variablen gespeichert
-            $id_verbrauchsgut = $_GET['id_verbrauchsgut'];
-            $id_delete = $_GET['id_delete'];
+            //Success Balken
+            echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr>';
 
-            //Daten zur Lieferung werden aufgerufen          
-            $verbrauchsgutsql = "SELECT * FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsgut.id_verbrauchsguttyp AND verbrauchsgut.id_verbrauchsgut = " . $_GET['id_verbrauchsgut'];
-            $verbrauchsgut = $conn->query($verbrauchsgutsql);
-
-            while($fetch = $verbrauchsgut->fetch_assoc()){
-              echo '<p>Gut:' . $fetch['verbrauchsgutbez'] . '</p>';
-              echo '<p>Lieferdatum:' . $fetch['lieferdatum'] . '</p>';
-              echo '<p>Menge:' . $fetch['menge'] . '</p>';
-              echo '<p>Einkaufspreis:' . $fetch['einkaufspreis'] . '</p>';
-              $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut WHERE id_verbrauchsguttyp = ' . $fetch["id_verbrauchsguttyp"] . ' AND verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-              $query1 = $conn->query($lieferant) or die (mysql_error());
-                while($fetch1 = mysqli_fetch_assoc($query1)){
-                  echo '<p>Lieferant:' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</p>'  ;
-                }
-              echo "<div class=\"form-group\"></div>
-              <div class=\"form-group\">
-              <a class=\"btn btn-danger\" href=\"gut-deleted.php?id_verbrauchsgut=" . $fetch['id_verbrauchsgut'] . "\" >Löschen</a>
-              <a class=\"btn btn-secondary\" href=\"gueter.php\" >Abbrechen</a> </div>";      
-            }
           ?>
+
+
         </div>
         <!-- /.container-fluid -->
 
@@ -200,7 +211,9 @@ if($_SESSION["logged"] == true) {
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
-    
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+  <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 
