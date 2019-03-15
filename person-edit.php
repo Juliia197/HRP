@@ -205,7 +205,7 @@ if($_SESSION["logged"] == true) {
               echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["ort"] . "\" name=\"ort\" required ><br>";
 
               echo "<label>Land</label>";
-              echo "<select class=\"custom-select\" name=\"name\"  required ><option value=\"DE\"";
+              echo "<select class=\"custom-select\" name=\"land\"  required ><option value=\"DE\"";
                     if($row_p['land'] == 'DE'){echo "selected";};
               echo ">Deutschland</option><option value=\"AT\"";
                     if($row_p['land'] == 'AT'){echo "selected";};

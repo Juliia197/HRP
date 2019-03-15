@@ -155,6 +155,7 @@ if($_SESSION["logged"] == true) {
           <br>
           <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
 
+            <!-- Feststellung, ob Pferd bearbeitet/erstellt werden muss in DB oder nicht -->
             <?php
                 $saved = !isset($_GET['saved']) ? false : true;
                 $pferdId = !isset($_GET['id_pferd']) ? 0 : (int) $_GET['id_pferd'];
@@ -202,6 +203,7 @@ if($_SESSION["logged"] == true) {
                         $bind = [$pferdId];
                     }
 
+                    /* Beziehungen zu Pferd werden angepasst */
                     if ($pferdId !== 0) {
                       $besitzerId = $_POST['besitzerId'];
                       $rbId = $_POST['rbId'];
@@ -247,7 +249,7 @@ if($_SESSION["logged"] == true) {
                           }
                         }
                       }
-
+                      /* Box wird zugeordnet */
                       $prepareBoxCon = $conn->prepare("
                         UPDATE 
                           box
@@ -264,6 +266,7 @@ if($_SESSION["logged"] == true) {
 
                     }
 
+                    /* Beziehungen zu Pferd werden angepasst */
                     if ($pferdId === 0 && $prepare->execute($bind)) {
                         $pferdId = $conn->lastInsertId();
                         $besitzerId = $_POST['besitzerId'];
@@ -286,6 +289,7 @@ if($_SESSION["logged"] == true) {
                           }
                         }
 
+                        /* Box wird zugeordnet */
                         $prepareBoxCon = $conn->prepare("
                           UPDATE
                             box
@@ -342,6 +346,7 @@ if($_SESSION["logged"] == true) {
                 }
             ?>
 
+            <!-- Formular zur Eingabe -->
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
                 <label>Pferdename</label>
                 <input class="form-control" type="text" maxlength="45" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
@@ -364,6 +369,7 @@ if($_SESSION["logged"] == true) {
 
                 <br />
                 <hr>
+                <!-- Beziehungen zu Pferd als Auswahl in Tabelle -->
                 <?php
                   $allepersonen_sql = "SELECT id_person, vorname, nachname FROM person WHERE id_gehoeft = $id_gehoeft";
                   $allepersonen_result = $conn->query($allepersonen_sql);
@@ -457,31 +463,33 @@ if($_SESSION["logged"] == true) {
                   </div>
                 </div>
                 <hr>
+                <br>
+                <!-- Tabelle zum Zuweisen einer Box -->
                 <h2>Box zuweisen</h2>
                 <div class="table-responsive">
                   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>Auswahl</th>
-                      <th>Boxentyp</th>
-                      <th>Boxenpreis</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  
-                  <?php
-                  $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft)";
-                  $boxenfrei_result = $conn->query($boxenfrei_sql);
-                  $boxenfrei_result = $boxenfrei_result->fetchAll();
-                  foreach ($boxenfrei_result as $boxfrei){
-                    if ($boxfrei['id_pferd'] == $_GET['id_pferd']){
-                      echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
-                    } else {
-                    echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
-                    }
-                  }
-                  ?>
-                  </tbody>
+                    <thead>
+                      <tr>
+                        <th>Auswahl</th>
+                        <th>Boxentyp</th>
+                        <th>Boxenpreis</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    
+                    <?php
+                      $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft)";
+                      $boxenfrei_result = $conn->query($boxenfrei_sql);
+                      $boxenfrei_result = $boxenfrei_result->fetchAll();
+                      foreach ($boxenfrei_result as $boxfrei){
+                        if ($boxfrei['id_pferd'] == $_GET['id_pferd']){
+                          echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                        } else {
+                        echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
+                        }
+                      }
+                    ?>
+                    </tbody>
                   </table>
                 </div>
 
@@ -493,7 +501,6 @@ if($_SESSION["logged"] == true) {
             </form>
 
         </div>
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">

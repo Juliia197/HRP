@@ -138,8 +138,6 @@ $verbrauchsgutloeschen_result = $verbrauchsgutloeschen_sql->get_result();
 
         <div class="container-fluid">
 
-          <!-- Page Content -->
-
           <!-- Leiste zur Darstellung der aktuellen Position auf der Seite -->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -160,10 +158,7 @@ $verbrauchsgutloeschen_result = $verbrauchsgutloeschen_sql->get_result();
             echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr>';
 
           ?>
-
-
         </div>
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">

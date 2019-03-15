@@ -24,9 +24,9 @@ while($fetch = mysqli_fetch_assoc($minusbestand)){
   $bestand_sql ->execute();
   $bestand = $bestand_sql ->get_result();
   while($fetch1 = mysqli_fetch_assoc($bestand)){
-    $alterBestand = $fetch1['bestand']
-    $zulöschen = $fetch['menge']
-    $bestand_neu = $alterBestand - $zulöschen
+    $alterBestand = $fetch1['bestand'];
+    $zulöschen = $fetch['menge'];
+    $bestand_neu = $alterBestand - $zulöschen;
     echo $bestand_neu;
     $bestandneu_query = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestand_neu . " WHERE id_verbrauchsguttyp=" . $fetch['id_verbrauchsguttyp'] " AND id_gehoeft = $id_gehoeft";
     $bestandneu = $conn->query($bestandneu_query);
