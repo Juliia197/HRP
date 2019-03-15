@@ -13,13 +13,9 @@ if ($conn->connect_error) {
 
 session_start();
 
-
+// User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
 $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
-
-if (isset($_GET["id_gehoeft"])) {
-  $id_gehoeft = $_GET["id_gehoeft"];
-}
 
 ?>
 <!DOCTYPE html>
@@ -93,7 +89,13 @@ if (isset($_GET["id_gehoeft"])) {
           <br>
 
           <?php 
+          // Prüfung, ob Benutzer mit einer hinterlegten Admin-Mail angemeldet ist
           if (in_array($admin_mail, $admin_mail_array)) {
+            
+            // Prüfung, ob Get-Parameter gesetzt ist
+            if (isset($_GET["id_gehoeft"])) {
+              $id_gehoeft = $_GET["id_gehoeft"];
+  
           ?>
 
           <h2>Benutzer als Gehöftverwalter hinzufügen</h2>
@@ -124,6 +126,7 @@ if (isset($_GET["id_gehoeft"])) {
 
               <?php
 
+              // SQL-Abfrage für Gehöftverwalter zu diesem Gehöft
               $gehoeftverwalter_query = "SELECT benutzer.email, benutzer.id_benutzer FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
               $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
               $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
@@ -152,6 +155,12 @@ if (isset($_GET["id_gehoeft"])) {
           </div>
           
           <?php
+          }
+
+          else {
+            echo '<div class="alert alert-danger" role="alert">Kein Gehöft ausgewählt!</div>';
+          }
+
           }
 
           else {
