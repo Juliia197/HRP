@@ -13,13 +13,18 @@ if ($conn->connect_error) {
 
 session_start();
 
+// Prüfung, ob User eingeloggt ist
 if($_SESSION["logged"] == true) {
 
+  // Setzen der Variable aus der Session
   $id_gehoeft = $_SESSION['id_gehoeft'];
+  // Authorisierungs-Boolean erst false setzen
   $auth = false;
 
+  // Setzen des Get-Parameters als Variable
   $id_pferd = $_GET["id_pferd"];
 
+  // SQL-Abfrage für das Gehöft des Pferdes
   $query = "SELECT id_gehoeft FROM box WHERE id_pferd = ?";
   $auth_sql = $conn->prepare($query);
   $auth_sql->bind_param("i", $id_pferd);
@@ -27,6 +32,7 @@ if($_SESSION["logged"] == true) {
   $result = $auth_sql->get_result();
   $auth_result = $result->fetch_assoc();
   
+  // Wenn Gehöft übereinstimmt, ist Authorisierung positiv
   if ($auth_result["id_gehoeft"] == $id_gehoeft) {
     $auth = true;
   }
@@ -136,160 +142,173 @@ if($_SESSION["logged"] == true) {
 
         <?php
 
+          // Authorisierung positiv
           if ($auth == true) {
 
-          $pferd_query = "SELECT * FROM pferd WHERE id_pferd = ?";
-          $pferd_sql = $conn->prepare($pferd_query);
-          $pferd_sql->bind_param("i", $id_pferd);
-          $pferd_sql->execute();
-          $pferd_result = $pferd_sql->get_result();
-          while ($pferd_fetch = $pferd_result->fetch_assoc()) {  
+            // SQL Abfrage Attribute des Pferdes
+            $pferd_query = "SELECT * FROM pferd WHERE id_pferd = ?";
+            $pferd_sql = $conn->prepare($pferd_query);
+            $pferd_sql->bind_param("i", $id_pferd);
+            $pferd_sql->execute();
+            $pferd_result = $pferd_sql->get_result();
+            while ($pferd_fetch = $pferd_result->fetch_assoc()) {  
 
-            echo "<ol class=\"breadcrumb\">
-                  <li class=\"breadcrumb-item\">
-                    <a href=\"dashboard.php\">Dashboard</a>
-                  </li>
-                  <li class=\"breadcrumb-item\">
-                    <a href=\"pferd.php\">Pferde</a>
-                  </li>
-                  <li class=\"breadcrumb-item active\">
-                    Pferd anzeigen
-                  </li>
-                </ol>";
-            echo "<h1>" . $pferd_fetch['pferdename'] . "</h1> <hr> <br>";
-            
-            echo "<p>Geschlecht: ";
-            if( $pferd_fetch['geschlecht'] =='s')
-                {
-                  echo "Stute";
-                }
-            else if( $pferd_fetch['geschlecht'] =='w')
-                {
-                  echo "Wallach";
-                }
-            else
-                {
-                  echo "Hengst";
-                }
-            echo "</p>";
-            
-            $geburtsdatum_pferd = new DateTime($pferd_fetch['geburtsdatum_pferd']);
-            $ankunft = new DateTime($pferd_fetch['ankunft']);
+              echo "<ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"dashboard.php\">Dashboard</a>
+                    </li>
+                    <li class=\"breadcrumb-item\">
+                      <a href=\"pferd.php\">Pferde</a>
+                    </li>
+                    <li class=\"breadcrumb-item active\">
+                      Pferd anzeigen
+                    </li>
+                  </ol>";
+              echo "<h1>" . $pferd_fetch['pferdename'] . "</h1> <hr>";
+              
+              echo "<p>Geschlecht: ";
+              if( $pferd_fetch['geschlecht'] =='s') {
+                echo "Stute";
+              }
+              else if( $pferd_fetch['geschlecht'] =='w') {
+                echo "Wallach";
+              }
+              else {
+                echo "Hengst";
+              }
+              echo "</p>";
+              
+              // Speichern in Variable, in der das Datumsformat geändert werden kann
+              $geburtsdatum_pferd = new DateTime($pferd_fetch['geburtsdatum_pferd']);
+              $ankunft = new DateTime($pferd_fetch['ankunft']);
 
-            echo "<p>Gewicht: " . $pferd_fetch['gewicht'] . " kg</p>
-                  <p>Größe: " . $pferd_fetch['groesse'] . " cm</p>
-                  <p>Passnummer: " . $pferd_fetch['passnr'] . "</p>
-                  <p>Geburtsdatum: " . $geburtsdatum_pferd->format('d.m.Y') . "</p>
-                  <p>Ankunft: " . $ankunft->format('d.m.Y') . "</p>";
-          
-          }
+              echo "<p>Gewicht: " . $pferd_fetch['gewicht'] . " kg</p>
+                    <p>Größe: " . $pferd_fetch['groesse'] . " cm</p>
+                    <p>Passnummer: " . $pferd_fetch['passnr'] . "</p>
+                    <p>Geburtsdatum: " . $geburtsdatum_pferd->format('d.m.Y') . "</p>
+                    <p>Ankunft: " . $ankunft->format('d.m.Y') . "</p>";
 
-            $box_query = "SELECT boxentyp.boxenbez, box.boxenpreis FROM box, boxentyp WHERE box.id_pferd = ? AND box.id_boxentyp = boxentyp.id_boxentyp";
-            $box_sql = $conn->prepare($box_query);
-            $box_sql->bind_param("i", $id_pferd);
-            $box_sql->execute();
-            $box_result = $box_sql->get_result();
-            while ($box_fetch = $box_result->fetch_assoc()) {  
-              echo "<p>Boxentyp: " . $box_fetch['boxenbez'] . "</p>
-                    <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €/Monat</p>";
-            }
-            
-            echo "
-            <hr><br>
-            <h3>Verbrauch</h3>";
-
-            $verbrauchsgut_query = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = ? AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
-            $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
-            $verbrauchsgut_sql->bind_param("i", $id_pferd);
-            $verbrauchsgut_sql->execute();
-            $verbrauchsgut_result = $verbrauchsgut_sql->get_result();
-
-            $bedarf_query = "SELECT id_verbrauchsguttyp, bedarf FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd = ? ";
-            $bedarf_sql = $conn->prepare($bedarf_query);
-            $bedarf_sql->bind_param("i", $id_pferd);
-            $bedarf_sql->execute();
-            $bedarf_result = $bedarf_sql->get_result();
-            
-            echo "
-            <div class='table-responsive'>
-            <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
-            <thead class='thead-light'>
-              <tr>
-                <th>Verbrauchsgut</th>
-                <th>Bedarf</th>
-              </tr>
-            </thead>
-            
-            <tbody>";
-
-            while($verbrauchsgut_fetch = $verbrauchsgut_result->fetch_assoc() AND $bedarf_fetch = $bedarf_result->fetch_assoc()){
-              echo "<tr><td>" . $verbrauchsgut_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf_fetch['bedarf'] . "</td></tr>";
             
             }
             
-            echo "
-            </tbody>
-            </table>
-            </div>
+              // SQL-Abfrage für zugewiesene Box
+              $box_query = "SELECT boxentyp.boxenbez, box.boxenpreis FROM box, boxentyp WHERE box.id_pferd = ? AND box.id_boxentyp = boxentyp.id_boxentyp";
+              $box_sql = $conn->prepare($box_query);
+              $box_sql->bind_param("i", $id_pferd);
+              $box_sql->execute();
+              $box_result = $box_sql->get_result();
+              while ($box_fetch = $box_result->fetch_assoc()) {  
+                echo "<p>Boxentyp: " . $box_fetch['boxenbez'] . "</p>
+                      <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €/Monat</p>";
+              }
+              
+              echo "
+              <hr>
+              <h3>Verbrauch</h3>";
+
+              // SQL-Abfrage für Verbrauchsguttypbezeichnung
+              $verbrauchsgut_query = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = ? AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
+              $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
+              $verbrauchsgut_sql->bind_param("i", $id_pferd);
+              $verbrauchsgut_sql->execute();
+              $verbrauchsgut_result = $verbrauchsgut_sql->get_result();
+
+              // SQL-Abfrage für Bedarf des Pferdes
+              $bedarf_query = "SELECT id_verbrauchsguttyp, bedarf FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd = ? ";
+              $bedarf_sql = $conn->prepare($bedarf_query);
+              $bedarf_sql->bind_param("i", $id_pferd);
+              $bedarf_sql->execute();
+              $bedarf_result = $bedarf_sql->get_result();
+              
+              echo "
+              <div class='table-responsive'>
+              <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
+              <thead class='thead-light'>
+                <tr>
+                  <th>Verbrauchsgut</th>
+                  <th>Bedarf</th>
+                </tr>
+              </thead>
+              
+              <tbody>";
+
+              while($verbrauchsgut_fetch = $verbrauchsgut_result->fetch_assoc() AND $bedarf_fetch = $bedarf_result->fetch_assoc()){
+                echo "<tr><td>" . $verbrauchsgut_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf_fetch['bedarf'] . "</td></tr>";
+              
+              }
+              
+              echo "
+              </tbody>
+              </table>
+              </div>
+              
+              <hr>
+              <h3>Personen</h3>"; 
+                        
+              echo "
+              <div class='table-responsive'>
+              <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+              <thead class='thead-light'>
+                <tr>
+                  <th>Vorname</th>
+                  <th>Nachname</th>
+                  <th>Funktion</th>
+                  <th></th>
+                </tr>
+              </thead>
+              
+              <tbody>";
+
+              // SQL-Abfrage für zugewiesene Person zu diesem Pferd
+              $person_query = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = ? AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
+              $person_sql = $conn->prepare($person_query);
+              $person_sql->bind_param("i", $id_pferd);
+              $person_sql->execute();
+              $person_result = $person_sql->get_result();
+              while ($person_fetch = $person_result->fetch_assoc()) {  
+
+                  echo "<tr>";
+                  echo "<td>" . $person_fetch['vorname'] .  "</td>";
+                  echo "<td>" . $person_fetch['nachname'] .  "</td>";
+                  echo "<td>" . $person_fetch['funktionsbez'] . "</td>";
+
+                  echo '<td>
+                    <div class="d-sm-flex flex-row">
+                    <div><a class="btn btn-sm btn-dark" role="button" href="person-show.php?id_person=' . $person_fetch["id_person"] . '" >Anzeigen</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="person-edit.php?id_person=' . $person_fetch["id_person"] . '" >Bearbeiten</a></div>
+                    </div>
+                    </td>
+                    </tr>';
+                  }
+                  
+              echo "
+              </tbody>
+              </table>
+              </div>";
+              
+              
+              echo "<hr>";
+
+              echo "
+              <div class=\"form-group\">
+              <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $id_pferd . "\" >Bearbeiten</a>
+              <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
+              <a class=\"btn btn-secondary\" href=\"pferd.php\" >Zurück zur Übersicht</a></div>";
             
-            <hr><br>
-            <h3>Personen</h3>"; 
-                      
-            echo "
-            <div class='table-responsive'>
-            <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
-            <thead class='thead-light'>
-              <tr>
-                <th>Vorname</th>
-                <th>Nachname</th>
-                <th>Funktion</th>
-                <th></th>
-              </tr>
-            </thead>
             
-            <tbody>";
-
-            $person_query = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = ? AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
-            $person_sql = $conn->prepare($person_query);
-            $person_sql->bind_param("i", $id_pferd);
-            $person_sql->execute();
-            $person_result = $person_sql->get_result();
-            while ($person_fetch = $person_result->fetch_assoc()) {  
-
-                echo "<tr>";
-                echo "<td>" . $person_fetch['vorname'] .  "</td>";
-                echo "<td>" . $person_fetch['nachname'] .  "</td>";
-                echo "<td>" . $person_fetch['funktionsbez'] . "</td>";
-
-                echo '<td>
-                  <div class="d-sm-flex flex-row">
-                  <div><a class="btn btn-sm btn-dark" role="button" href="person-show.php?id_person=' . $person_fetch["id_person"] . '" >Anzeigen</a></div>
-                  <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" role="button" href="person-edit.php?id_person=' . $person_fetch["id_person"] . '" >Bearbeiten</a></div>
-                  </div>
-                  </td>
-                  </tr>';
-                }
-                
+       
             echo "
             </tbody>
             </table>
             </div>";
-            
-            
-            echo "<hr><br>";
-
-            echo "
-            <div class=\"form-group\">
-            <a class=\"btn btn-primary\" href=\"pferd-edit.php?id_pferd=" . $id_pferd . "\" >Bearbeiten</a>
-            <a class=\"btn btn-danger\" href=\"pferd-delete.php?id_pferd=" . $id_pferd . "\" onclick='return checkDelete()'>Löschen</a>
-            <a class=\"btn btn-secondary\" href=\"pferd.php\" >Zurück zur Übersicht</a></div>";
-          
+                
           }
+                
 
         else {
           echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr><br>';
           }
-          
+
         ?>
 
 
@@ -355,6 +374,7 @@ if($_SESSION["logged"] == true) {
         return confirm('Pferd endgültig löschen?')
       }
     </script>
+    
     <!-- JavaScript für mehrere DataTables auf einer Seite -->
     <script>
       $(document).ready(function() {

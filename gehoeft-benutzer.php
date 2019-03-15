@@ -15,6 +15,7 @@ session_start();
 
 if($_SESSION["logged"] == true) {
 
+  // Setzen der Gehöft-ID als Variable aus der Session
   $id_gehoeft = $_SESSION['id_gehoeft'];
 
 ?>
@@ -151,6 +152,7 @@ if($_SESSION["logged"] == true) {
             <tbody>
               <?php
 
+              // SQL-Abfrage für Gehöftverwalter zu diesem Gehöft
               $gehoeftverwalter_query = "SELECT benutzer.email FROM benutzer, benutzer_verwaltet_gehoeft WHERE benutzer.id_benutzer = benutzer_verwaltet_gehoeft.id_benutzer AND benutzer_verwaltet_gehoeft.id_gehoeft = ?";
               $gehoeftverwalter_sql = $conn->prepare($gehoeftverwalter_query);
               $gehoeftverwalter_sql->bind_param("i", $id_gehoeft);
