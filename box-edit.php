@@ -58,6 +58,9 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -105,7 +108,7 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
-              <a href="#">Dashboard</a>
+              <a href="dashboard.php">Dashboard</a>
             </li>
             <li class="breadcrumb-item">
               <a href="gehoeft.php">Gehöft</a>
@@ -118,6 +121,9 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
           <h1>Box hinzufügen</h1>
           <hr>
+          
+          <!-- Überprüfung, ob Box angelegt werden soll oder nicht -->
+          <br>
           <?php
             if (isset($_GET['saved']) && $_GET['saved'] == true){
               $boxenpreis = $_POST['boxenpreis'];
@@ -127,12 +133,13 @@ if($_SESSION["logged"] == true) {
               $boxadd_prepare->bind_param('dii', $boxenpreis, $id_gehoeft, $boxentyp);
               $boxadd_prepare->execute();
               $boxadd_prepare->close();
-              echo '<div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div><hr>';
+              echo '<div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div><br>';
             }
           ?>
+
+          <!-- Formular zum Anlegen einer Box -->
           <form action="box-edit.php?saved=true" method="post">
-            <div class="form-group">
-            <label>Boxentyp:</label><br>
+            <label>Boxentyp</label><br>
             <div class="radio">
               <label><input type="radio" name="boxentyp" value="1" required>Innenbox</label>
             </div>
@@ -140,20 +147,15 @@ if($_SESSION["logged"] == true) {
               <label><input type="radio" name="boxentyp" value="2" required>Paddockbox</label>
             <div>
             <br />
-            <div class="form-group">
-            <label>Boxenpreis (€/Monat):</label><br>
+            <label>Boxenpreis in €/Monat</label><br>
             <input type="number" min="0" max="2000" name="boxenpreis" step="0.01" required>
-            </div>
             <br />
             <hr>
-            <div class="form-group">
             <button type="submit" class="btn btn-success">Abschicken</button>
             <a class="btn btn-secondary" href="gehoeft.php">Abbrechen</a>
-            </div>
           </form>
 
         </div>
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">

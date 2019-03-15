@@ -43,7 +43,7 @@ if($_SESSION["logged"] == true) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
     <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft;
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft . ' ORDER BY lieferdatum';
       $lieferungen_result = $conn->query($lieferungen_sql);
       $dataPoints = '';
       if ($lieferungen_result->num_rows > 0){
@@ -93,6 +93,9 @@ chart.render();
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -163,7 +166,7 @@ chart.render();
 
             while ($fetch = $verbrauchsguttypbez ->fetch_assoc()){
               echo "<h1> " . $fetch['verbrauchsguttypbez'] . "</h1>";
-              echo "<hr>";
+              echo "<hr><br>";
               echo "<h3> Lieferungen </h3>";
               echo "                
               <div class='table-responsive'>
@@ -214,12 +217,14 @@ chart.render();
           </tbody>
           </table>
           </div>
-          <br>
           <hr>
+          <br>
           <h3> Preisentwicklung des Gutes</h3>
           
           <div class="card mb-3">
           <div class="card-header">
+          <i class="fas fa-chart-line"></i>
+                  Preisentwicklung
           </div>
           <div class="card-body">
           <div id="preisentwicklung" style="height: 300px; width: 100%;"></div>

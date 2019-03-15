@@ -61,6 +61,9 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -122,6 +125,7 @@ if($_SESSION["logged"] == true) {
           <!-- Überschrift -->
           <h1>Übersicht Personen</h1>
           <hr>
+          <br>
 
           <!-- Hinzufügen Button -->
           <div class="container-fluid">
@@ -176,7 +180,12 @@ if($_SESSION["logged"] == true) {
                   <div class="d-sm-flex flex-row">
                     <div><a class="btn btn-sm btn-dark" href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a></div>
                     <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a></div>';
-                  if($query1->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
+                    $lieferung_query= "SELECT id_verbrauchsgut FROM verbrauchsgut WHERE id_person =? AND id_gehoeft = $id_gehoeft";
+                    $lieferung_sql = $conn->prepare($lieferung_query);
+                    $lieferung_sql->bind_param("i",$fetch["id_person"]);
+                    $lieferung_sql->execute();
+                    $lieferung = $lieferung_sql->get_result();
+                  if($query1->num_rows==0 and $lieferung->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
                     echo '<div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="person-delete.php?id_person=' . $fetch['id_person'] . '" onclick="return checkDelete()">Löschen</a></div>';
                   }
                   else{
@@ -192,7 +201,7 @@ if($_SESSION["logged"] == true) {
           </table>
             </div>
         </p>
-        *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.
+        *Diese Person kann nicht gelöscht werden, da ihr entweder mindestens ein Pferd und/oder eine Lieferung zugeordnet ist.
 
 
         </div>

@@ -12,27 +12,36 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-//id_adresse der Person herausfinden
-$id_verbrauchsguttyp_sql = "SELECT id_verbrauchsguttyp FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
-$id_verbrauchsguttyp = $conn->query($id_verbrauchsguttyp_sql);
-
-//Löschen der Person aus der Datenbank
-$verbrauchsgutloeschen_sql = "DELETE FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
-$verbrauchsgutloeschen_result = $conn->query($verbrauchsgutloeschen_sql);
-
-while($row_x = $id_verbrauchsguttyp->fetch_assoc()){   
-  $wieoftda_sql = "SELECT id_verbrauchsgut FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $row_x["id_verbrauchsguttyp"];
-  $wieoftda= $conn->query($wieoftda_sql);
-
-  if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
-    $verbrauchsguttyploeschen_sql = "DELETE FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_x["id_verbrauchsguttyp"];
-    $verbrauchsguttyploeschen_result = $conn->query($verbrauchsguttyploeschen_sql);
-
-  }
-  else{
-    echo "Adresse bleibt in der Datenbank da sie nicht nur dieser Person zugeordnet war";
+$minusbestand_query = "SELECT menge, id_verbrauchsguttyp FROM verbrauchsgut WHERE id_verbrauchsgut=?";
+$minusbestand_sql = $conn->prepare($minusbestand_query );
+$minusbestand_sql ->bind_param("i",$_GET["id_verbrauchsgut"]);
+$minusbestand_sql ->execute();
+$minusbestand= $minusbestand_sql ->get_result();
+while($fetch = mysqli_fetch_assoc($minusbestand)){
+  $bestand_query = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp=?";
+  $bestand_sql = $conn->prepare($bestand_query );
+  $bestand_sql ->bind_param("i",$fetch["id_verbrauchsguttyp"]);
+  $bestand_sql ->execute();
+  $bestand = $bestand_sql ->get_result();
+  while($fetch1 = mysqli_fetch_assoc($bestand)){
+    $alterBestand = $fetch1['bestand']
+    $zulöschen = $fetch['menge']
+    $bestand_neu = $alterBestand - $zulöschen
+    echo $bestand_neu;
+    $bestandneu_query = "UPDATE gehoeft_besitzt_verbrauchsguttyp SET bestand = " . $bestand_neu . " WHERE id_verbrauchsguttyp=" . $fetch['id_verbrauchsguttyp'] " AND id_gehoeft = $id_gehoeft";
+    $bestandneu = $conn->query($bestandneu_query);
   }
 }
+
+
+
+//Löschen des Verbrauchsguts aus der Datenbank
+$verbrauchsgutloeschen_query = "DELETE FROM verbrauchsgut WHERE id_verbrauchsgut=?";
+$verbrauchsgutloeschen_sql = $conn->prepare($verbrauchsgutloeschen_query );
+$verbrauchsgutloeschen_sql->bind_param("i",$_GET["id_verbrauchsgut"]);
+$verbrauchsgutloeschen_sql->execute();
+$verbrauchsgutloeschen_result = $verbrauchsgutloeschen_sql->get_result();
+
 
 session_start();
 
@@ -80,6 +89,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -146,7 +158,7 @@ if($_SESSION["logged"] == true) {
           </ol>
           <?php  
             //Success Balken
-            echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr>';
+            echo '<div class="alert alert-success" role="alert"> Die Lieferung wurde gelöscht!</div><hr><br>';
 
           ?>
 

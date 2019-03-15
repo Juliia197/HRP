@@ -56,6 +56,9 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -105,6 +108,7 @@ if($_SESSION["logged"] == true) {
           <!-- Page Content -->
           <h1>Benutzer zum Gehöft hinzufügen</h1>
           <hr>
+          <br>
 
           <?php 
 
@@ -122,7 +126,7 @@ if($_SESSION["logged"] == true) {
 
             // Prüfung, ob Benutzer zu dieser E-Mail vorhanden
             if ($id_benutzer_result->num_rows == 0) {
-              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Die E-Mail ist keinem Benutzer zugeordnet!</div><br>';
             }
 
             else {
@@ -136,7 +140,7 @@ if($_SESSION["logged"] == true) {
 
             // Prüfung, ob der Benutzer dem Gehöft bereits zugeordnet ist
             if ($check['count'] > 0) {
-              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr>';
+              echo '<div class="alert alert-danger" role="alert">Der Benutzer ist dem Gehöft bereits zugeordnet!</div><hr><br>';
             }
             
             else {

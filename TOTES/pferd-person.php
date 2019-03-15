@@ -1,11 +1,22 @@
 <?php
+$servername = "localhost";
+$username = "hrppr_1";
+$password = "J49Wj7wUbSsKmNC5";
+$dbname = "hrppr_db1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 session_start();
 
 if($_SESSION["logged"] == true) {
 
+  
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +28,17 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP</title>
+    <?php
+      $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
+      $pferdename_result = $conn->prepare($pferdename_sql);
+      $pferdename_result->bind_param("i", $_GET['id_pferd']);
+      $pferdename_result->execute();
+      $pferdename_result = $pferdename_result->get_result();
+      $pferdename_result = $pferdename_result->fetch_assoc();
+      $name = $pferdename_result['pferdename'];
+    ?>
+
+    <title>HRP - <?php echo $name; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -45,6 +66,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -93,6 +117,7 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
+
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="dashboard.php">Dashboard</a>
@@ -101,14 +126,54 @@ if($_SESSION["logged"] == true) {
               <a href="pferd.php">Pferde</a>
             </li>
             <li class="breadcrumb-item active">
-              Beziehung bearbeiten
-            </li>
+              Personen zum Pferd
           </ol>
+          <tr>
+
+          <?php  
+            $pferdsql = "SELECT pferdename FROM pferd WHERE id_pferd = " . $_GET['id_pferd'];
+            $pferd = $conn->query($pferdsql);
+
+            while ($fetch1 = mysqli_fetch_assoc($pferd)){
+              echo "<h1> Personen zu " . $fetch1['pferdename'] . "</h1>";
+              $personsql = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = " . $_GET['id_pferd'] . " AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
+              $personbez = $conn->query($personsql);
+
+              echo "
+                <p>
+                <div class='table-responsive'>
+                <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                <thead>
+                  <tr>
+                    <th>Vorname</th>
+                    <th>Nachname</th>
+                    <th>Beziehung</th>
+                    <th>Aktion</th>
+                  </tr>
+                  </thead>";
+
+              while($fetch = mysqli_fetch_assoc($personbez)){
+                echo '<tr>';
+                echo'<td>' . $fetch['vorname'] .  '</td>';
+                echo'<td>' . $fetch['nachname'] .  '</td>';
+                echo'<td>' . $fetch['funktionsbez'] . '</td>';
+
+                echo '<td> 
+                  <a href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a> <br>
+                  <a href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a> <br>';
+                echo '</tr>';
+                } 
+            }
+            ?>
+          
+          </table>
+          </p>
+            
 
 
-          <h1>Überschrift</h1>
-          <hr>
-          <p>Hier könnte Ihre Werbung stehen.</p>
+
+          
+
 
         </div>
         <!-- /.container-fluid -->
@@ -161,6 +226,19 @@ if($_SESSION["logged"] == true) {
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
+
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script>
+    $(document).ready(function() {
+    $('#dataTable').DataTable( {
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+    } );
+} );
+    </script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
 
   </body>
 

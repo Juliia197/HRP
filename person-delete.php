@@ -35,6 +35,7 @@ if($_SESSION["logged"] == true) {
       $id_adresse_sql->bind_param("i", $_GET['id_person']);
       $id_adresse_sql->execute();
       $id_adresse = $id_adresse_sql->get_result();
+    
 
       //Löschen der Person aus der Datenbank
       $personloeschen_query = "DELETE FROM person WHERE id_person=?";
@@ -51,11 +52,20 @@ if($_SESSION["logged"] == true) {
         $wieoftda = $wieoftda_sql->get_result();
 
         if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
-          $adresseloeschen_query = "DELETE FROM adresse WHERE id_adresse=? ";
-          $adresseloeschen_sql = $conn->prepare($adresseloeschen_query);
-          $adresseloeschen_sql->bind_param("i", $row_x["id_adresse"]);
-          $adresseloeschen_sql->execute();
-          $adresseloeschen_result = $adresseloeschen_sql->get_result();
+          $adressebeigehoeft_query = "SELECT id_gehoeft FROM gehoeft WHERE id_adresse = " . $row_x['id_adresse'];
+          $adressebeigehoeft = $conn->query($adressebeigehoeft);
+
+          if($gehoeftnichtda->num_rows==0){
+
+            $adresseloeschen_query = "DELETE FROM adresse WHERE id_adresse=? ";
+            $adresseloeschen_sql = $conn->prepare($adresseloeschen_query);
+            $adresseloeschen_sql->bind_param("i", $row_x["id_adresse"]);
+            $adresseloeschen_sql->execute();
+            $adresseloeschen_result = $adresseloeschen_sql->get_result();
+
+          }
+          else{
+          }
         }
         else{
         }
@@ -76,7 +86,7 @@ if($_SESSION["logged"] == true) {
     <meta name="author" content="">
 
 
-    <title> HRP - Pferd gelöscht </title>
+    <title> HRP - Person gelöscht </title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -104,6 +114,9 @@ if($_SESSION["logged"] == true) {
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
         <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
@@ -168,14 +181,14 @@ if($_SESSION["logged"] == true) {
           <?php  
           if ($auth == true) {
             //Success Balken
-            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr>';
+            echo '<div class="alert alert-success" role="alert"> Die Person wurde gelöscht!</div><hr><br>';
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
             <a class=\"btn btn-secondary\" href=\"person.php\" >zurück zur Übersicht</a>
             </div";
           }
           else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
+            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
           }
           ?>
 

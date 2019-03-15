@@ -79,6 +79,9 @@ if($_SESSION["logged"] == true) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -129,7 +132,7 @@ if($_SESSION["logged"] == true) {
 
         <?php
 
-          if ($auth == true) {
+        if ($auth == true) {
 
           $id_person = $_GET["id_person"];
 
@@ -155,7 +158,7 @@ if($_SESSION["logged"] == true) {
                   </li>
                 </ol>";
             //Überschrift
-            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr>";
+            echo "<h1>" . $row_p['vorname'] ." " . $row_p['nachname'] . "</h1> <hr><br>";
 
             //Darstellung der Person            
             echo "<p>E-Mail: " . $row_p['email'] . "</p>";
@@ -166,19 +169,18 @@ if($_SESSION["logged"] == true) {
 
             echo "<p>" . $row_p['strasse'] . " " . $row_p['hausnr'] . "</p>";
             echo "<p>" . $row_p['plz'] . " " . $row_p['ort'] . "</p>";
-            echo "<p>";
-            if ($row_p['land'] == "DE") {
-              echo "Deutschland";
-            }
-            else if ($row_p['land'] == "AT") {
-              echo "Österreich";
-            }
-            else if ($row_p['land'] == "CH") {
-              echo "Schweiz";
-            }
+            echo "<p>"; 
+            if ($row_p['land'] == 'DE'){
+              $land = 'Deutschland';
+            } elseif ($row_p['land'] == 'AT'){
+              $land = 'Österreich';
+            } else {
+              $land = 'Schweiz';
+            };
+            echo $land;
             echo "</p>"; 
             
-            echo "<hr>";
+            echo "<hr><br>";
 
             
             
@@ -189,33 +191,23 @@ if($_SESSION["logged"] == true) {
             $funktion_sql->execute();
             $query1 = $funktion_sql->get_result();
 
-              if($query1->num_rows==0){ //wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
-               echo "
-                <div class=\"form-group\">
-                  <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
-                  <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
-                  <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a>
-                </div>";
-              }
-              else{ //wird ausgeführt wenn die Person Beziehungen hat also nicht gelöscht werden kann.
-  
-                //Tabelle wird erzeugt
-                echo "
-                <h3>Beziehungen zu dieser Person</h3><br>";
+            $lieferant= 5;
+            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion < ?' ;
+            $funktion_sql = $conn->prepare($funktion_query);
+            $funktion_sql->bind_param("ii",$_GET["id_person"],$lieferant);
+            $funktion_sql->execute();
+            $funktion = $funktion_sql->get_result();
 
-                echo "
-                <div class='table-responsive'>
-                <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
-                <thead class='thead-light'>
-                  <tr>
-                  <th>Pferdename</th>
-                  <th>Funktion</th>
-                  <th></th>
-                  </tr>
-                </thead>
-                
-                <tbody>";
+            $lieferung_query= "SELECT verbrauchsgutbez, lieferdatum, menge, einkaufspreis, id_verbrauchsguttyp FROM verbrauchsgut WHERE id_person =? AND id_gehoeft = $id_gehoeft";
+            $lieferung_sql = $conn->prepare($lieferung_query);
+            $lieferung_sql->bind_param("i",$_GET["id_person"]);
+            $lieferung_sql->execute();
+            $lieferung = $lieferung_sql->get_result();
 
+            $lieferant_sql = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $_GET['id_person'];
+            $lieferant = $conn->query($lieferant_sql);
+
+              if($query1->num_rows>0 ){
                 
                 $pferd_query= "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = ? AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
                 $pferd_sql = $conn->prepare($pferd_query);
@@ -224,6 +216,22 @@ if($_SESSION["logged"] == true) {
                 $pferd_bez = $pferd_sql->get_result();
   
                 while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
+                  //Tabelle wird erzeugt
+                  echo "
+                  <h3>Beziehungen zu dieser Person</h3><br>";
+  
+                  echo "
+                  <div class='table-responsive'>
+                  <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
+                  <thead class='thead-light'>
+                    <tr>
+                    <th>Pferdename</th>
+                    <th>Funktion</th>
+                    <th></th>
+                    </tr>
+                  </thead>                  
+                  <tbody>";
+
                   echo '<tr>';
                   echo '<td>' . $fetch['pferdename'] .  '</td>';
                   echo '<td>' . $fetch['funktionsbez'] . '</td>';
@@ -238,31 +246,87 @@ if($_SESSION["logged"] == true) {
                   </td>
                   </tr>';
 
-                }
+              
                 echo "
                   </tbody>
                   </table>
                   </div>
-                  <hr>";
+                  <hr>
+                  <br>";
 
+                }
+              }
+              
+              if($lieferant->num_rows>0){
+
+
+                echo "<h3 class='float-left'>Lieferungen zu dieser Person</h3>";
+
+                echo "
+                  <div class='table-responsive'>
+                  <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
+                  <thead class='thead-light'>
+                    <tr>
+                    <th>Verbrauchsgut</th>
+                    <th>Bezeichnung</th>
+                    <th>Lieferdatum</th>
+                    <th>Menge</th>
+                    <th>Einkaufspreis in € pro kg</th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>";
+  
+
+                  while($lief = mysqli_fetch_assoc($lieferung)){ //für jede Lieferung wird eine Zeile erzeugt
+                    echo '<tr>';
+                    $verbrauchsguttyp_q = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = " . $lief['id_verbrauchsguttyp'];
+                    $verbrauchsguttyp = $conn->query($verbrauchsguttyp_q);
+
+                    while ($bez = mysqli_fetch_assoc($verbrauchsguttyp)){
+                      echo '<td>' . $bez['verbrauchsguttypbez'] . '</td>';
+                    }
+                    echo '<td>' . $lief['verbrauchsgutbez'] .  '</td>';
+                    echo '<td>' . $lief['lieferdatum'] .  '</td>';
+                    echo '<td>' . $lief['menge'] .  '</td>';
+                    echo '<td>' . $lief['einkaufspreis'] .  '</td>'; 
+  
+                    echo '</tr>';
+  
+                  }
+                  echo "
+                    </tbody>
+                    </table>
+                    </div>
+                    <hr>";
+              }
+              if($lieferung->num_rows>0 or $funktion->num_rows>0){
                 echo "
                 <div class=\"form-group\">
                   <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                   <a class=\"btn btn-outline-danger disabled\" href=\"#\" onclick='return checkDelete()'>Löschen nicht möglich*</a>
                   <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a></div>
-                  *Diese Person kann nicht gelöscht werden, da ihr mindestens ein Pferd zugeordnet ist.";
-          
-            }
-            
+                  *Diese Person kann nicht gelöscht werden, da ihr entweder mindestens ein Pferd und/oder eine Lieferung zugeordnet ist.";
+               }
+                
+                
+              else{ // wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
+               echo "<div class=\"form-group\"></div>
+               <div class=\"form-group\">
+                <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
+                <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
+                <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
+              }         
           }
-
         }
-	
-          else {
-            echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr>';
-          }
 
-        ?>
+        
+	
+        else {
+          echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Person!</div><hr><br>';
+        }
+
+    ?>
 
 
 
@@ -309,8 +373,8 @@ if($_SESSION["logged"] == true) {
       </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
+     <!-- Bootstrap core JavaScript-->
+     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -324,6 +388,13 @@ if($_SESSION["logged"] == true) {
     <script src="js/demo/datatables-demo.js"></script>
 
     <!-- JavaScript für Delete-Confirm -->
+    <script>
+      function checkDelete(){
+        return confirm('Person endgültig löschen?')
+      }
+    </script>
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
+    <script>
     <script>
       function checkDelete(){
         return confirm('Person endgültig löschen?')
