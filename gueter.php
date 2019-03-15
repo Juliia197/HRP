@@ -90,6 +90,9 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item no-arrow mx-1">
+          <a class="nav-link" href="passwort.php">Passwort ändern</a>
+        </li>
+        <li class="nav-item no-arrow mx-1">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
         </li>
       </ul>
@@ -154,9 +157,8 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           <br>
           <br>
           <hr>
-          <br>
 
-          <p class="float-left">Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: </p>
+          <!-- <p class="float-left">Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: </p> -->
           <div class="float-right">
           <a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a>
           </div>
