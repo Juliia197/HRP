@@ -131,6 +131,8 @@ if($_SESSION["logged"] == true) {
             $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
             $id_person = $_POST["id_person"];
             $update = $_GET["id_verbrauchsgut"];
+
+            /* Bestandsveränderung bei Änderung der Menge */
             if($update > 0){
             $update_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $update;
                   $update_result = $conn->query($update_sql);
@@ -149,6 +151,7 @@ if($_SESSION["logged"] == true) {
                     }
                   }
                 }
+              /* Bestandsveränderung bei Neu-Anlegen einer Lieferung */
               else {
                 $bestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
                 $bestand_result = $conn->query($bestand_sql);
@@ -183,6 +186,7 @@ if($_SESSION["logged"] == true) {
                         <h1>Lieferung bearbeiten</h1>
                         <hr><br>";
                   echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde geändert!</div>";
+                  /* Formular Lieferung bearbeiten */
                   echo "<form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<label>Verbrauchsgütertyp</label>";
                   echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
@@ -253,6 +257,7 @@ if($_SESSION["logged"] == true) {
                         <h1>Lieferung erstellen</h1>
                         <hr><br>";
                 echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde hinzugefügt!</div>";
+                /* Formular Lieferung erstellen */
                 echo "<form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<label>Verbrauchsgütertyp:</label>";
                 echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";

@@ -17,37 +17,38 @@ if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION["id_gehoeft"];
 
-$preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=1";
-$preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
-if ($preis_verbrauchsguttyp1_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp1_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp1 = $row["preis_verbrauchsguttyp2"];
+  /* Berechnung der Durchschnittspreise der Verbrauchsgüter */
+  $preis_verbrauchsguttyp1_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=1";
+  $preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
+  if ($preis_verbrauchsguttyp1_result->num_rows > 0) {
+    while($row = $preis_verbrauchsguttyp1_result->fetch_assoc()) {
+      $preis_verbrauchsguttyp1 = $row["preis_verbrauchsguttyp2"];
+    }
   }
-}
 
-$preis_verbrauchsguttyp2_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=2";
-$preis_verbrauchsguttyp2_result = $conn->query($preis_verbrauchsguttyp2_sql);
-if ($preis_verbrauchsguttyp2_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp2_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp2 = $row["preis_verbrauchsguttyp2"];
+  $preis_verbrauchsguttyp2_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=2";
+  $preis_verbrauchsguttyp2_result = $conn->query($preis_verbrauchsguttyp2_sql);
+  if ($preis_verbrauchsguttyp2_result->num_rows > 0) {
+    while($row = $preis_verbrauchsguttyp2_result->fetch_assoc()) {
+      $preis_verbrauchsguttyp2 = $row["preis_verbrauchsguttyp2"];
+    }
   }
-}
 
-$preis_verbrauchsguttyp3_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp3 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=3";
-$preis_verbrauchsguttyp3_result = $conn->query($preis_verbrauchsguttyp3_sql);
-if ($preis_verbrauchsguttyp3_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp3_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp3 = $row["preis_verbrauchsguttyp3"];
+  $preis_verbrauchsguttyp3_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp3 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=3";
+  $preis_verbrauchsguttyp3_result = $conn->query($preis_verbrauchsguttyp3_sql);
+  if ($preis_verbrauchsguttyp3_result->num_rows > 0) {
+    while($row = $preis_verbrauchsguttyp3_result->fetch_assoc()) {
+      $preis_verbrauchsguttyp3 = $row["preis_verbrauchsguttyp3"];
+    }
   }
-}
 
-$preis_verbrauchsguttyp4_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp4 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=4";
-$preis_verbrauchsguttyp4_result = $conn->query($preis_verbrauchsguttyp4_sql);
-if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
-  while($row = $preis_verbrauchsguttyp4_result->fetch_assoc()) {
-    $preis_verbrauchsguttyp4 = $row["preis_verbrauchsguttyp4"];
+  $preis_verbrauchsguttyp4_sql = "SELECT avg(verbrauchsgut.einkaufspreis) as preis_verbrauchsguttyp4 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=4";
+  $preis_verbrauchsguttyp4_result = $conn->query($preis_verbrauchsguttyp4_sql);
+  if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
+    while($row = $preis_verbrauchsguttyp4_result->fetch_assoc()) {
+      $preis_verbrauchsguttyp4 = $row["preis_verbrauchsguttyp4"];
+    }
   }
-}
 
 ?>
 <!DOCTYPE html>
@@ -157,61 +158,58 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           <hr>
           <br>
 
-          <!-- <p>Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: -->
           <div class="d-flex flex-row-reverse">
             <div class="p-2"><a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a></div>
           </div>
           <hr>
           <br>
 
-          
-          <p>
+          <!-- Tabelle über Verbrauchsgüter im Überblick -->
           <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead class="thead-light">
-            <tr>
-              <th>Typ</th>
-              <th>Bestand in kg</th>
-              <th>Durchschnittspreis je kg</th>
-              <th></th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsguttyp = "SELECT verbrauchsguttyp.id_verbrauchsguttyp, verbrauchsguttyp.verbrauchsguttypbez, gehoeft_besitzt_verbrauchsguttyp.bestand FROM verbrauchsguttyp, gehoeft_besitzt_verbrauchsguttyp WHERE gehoeft_besitzt_verbrauchsguttyp.id_gehoeft = $id_gehoeft AND verbrauchsguttyp.id_verbrauchsguttyp = gehoeft_besitzt_verbrauchsguttyp.id_verbrauchsguttyp";
-              $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
+              <tr>
+                <th>Typ</th>
+                <th>Bestand in kg</th>
+                <th>Durchschnittspreis je kg</th>
+                <th></th>
+              </tr>
+              </thead>          
+              <tbody>
+              <?php  
+                // SQL-Anfrage: Ergebnis ist stets eine Tabelle
+                $verbrauchsguttyp = "SELECT verbrauchsguttyp.id_verbrauchsguttyp, verbrauchsguttyp.verbrauchsguttypbez, gehoeft_besitzt_verbrauchsguttyp.bestand FROM verbrauchsguttyp, gehoeft_besitzt_verbrauchsguttyp WHERE gehoeft_besitzt_verbrauchsguttyp.id_gehoeft = $id_gehoeft AND verbrauchsguttyp.id_verbrauchsguttyp = gehoeft_besitzt_verbrauchsguttyp.id_verbrauchsguttyp";
+                $query = $conn->query($verbrauchsguttyp) or die(mysql_error());
 
-              while($fetch = mysqli_fetch_assoc($query)){
-                echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
-                  echo '<td>' . $fetch['bestand'] . '</td>';
-                  echo '<td>' ;
-                    if( $fetch['id_verbrauchsguttyp'] == 1)
-                      {
-                        echo $preis_verbrauchsguttyp1;
-                      }
-                    else if( $fetch['id_verbrauchsguttyp'] == 2)
-                      {
-                        echo $preis_verbrauchsguttyp2;
-                      }
-                    else if( $fetch['id_verbrauchsguttyp'] == 3)
-                      {
-                        echo $preis_verbrauchsguttyp3;
-                      }
-                    else
-                      {
-                        echo $preis_verbrauchsguttyp4;
-                      }
-                  echo '</td>';
-                  echo '<td> <a class="btn btn-sm btn-dark" href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
-                  }
-            ?>
-            </tbody>                
-          </table>
+                while($fetch = mysqli_fetch_assoc($query)){
+                  echo '<tr>';
+                    echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
+                    echo '<td>' . $fetch['bestand'] . '</td>';
+                    echo '<td>' ;
+                      if( $fetch['id_verbrauchsguttyp'] == 1)
+                        {
+                          echo $preis_verbrauchsguttyp1;
+                        }
+                      else if( $fetch['id_verbrauchsguttyp'] == 2)
+                        {
+                          echo $preis_verbrauchsguttyp2;
+                        }
+                      else if( $fetch['id_verbrauchsguttyp'] == 3)
+                        {
+                          echo $preis_verbrauchsguttyp3;
+                        }
+                      else
+                        {
+                          echo $preis_verbrauchsguttyp4;
+                        }
+                    echo '</td>';
+                    echo '<td> <a class="btn btn-sm btn-dark" href="gut-show.php?id_verbrauchsguttyp=' . $fetch["id_verbrauchsguttyp"] . '" >Anzeigen</a> <br> </td>';                  
+                    }
+              ?>
+              </tbody>                
+            </table>
           </div>  
         </div>
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">

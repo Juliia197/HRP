@@ -160,8 +160,11 @@ if($_SESSION["logged"] == true) {
                         <h1>Lieferung bearbeiten</h1>
                         <hr><br>
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
+
+                  /* Formular zur Bearbeitung von Lieferungen */
                   echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\" required>";
+
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
                   if($verbrauchsguttyp_result->num_rows > 0){
@@ -226,6 +229,8 @@ if($_SESSION["logged"] == true) {
                         <h1>Lieferung erstellen</h1>
                         <hr><br>
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
+                      
+                /* Formular zur Erstellung von Lieferungen */
                 echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
@@ -256,7 +261,7 @@ if($_SESSION["logged"] == true) {
                 echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"></div>";
                 echo "
                     <div class=\"form-group\">
-                    <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
+                    <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $_GET["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
                     <a class=\"btn btn-secondary\" href=\"lieferung.php\" >Abbrechen</a> </div>";
               }
 

@@ -203,7 +203,6 @@ if($_SESSION["logged"] == true) {
             $lieferung_sql->bind_param("i",$_GET["id_person"]);
             $lieferung_sql->execute();
             $lieferung = $lieferung_sql->get_result();
-
             $lieferant_sql = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $_GET['id_person'];
             $lieferant = $conn->query($lieferant_sql);
 
@@ -258,10 +257,7 @@ if($_SESSION["logged"] == true) {
               }
               
               if($lieferant->num_rows>0){
-
-
                 echo "<h3 class='float-left'>Lieferungen zu dieser Person</h3>";
-
                 echo "
                   <div class='table-responsive'>
                   <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
@@ -274,9 +270,7 @@ if($_SESSION["logged"] == true) {
                     <th>Einkaufspreis in € pro kg</th>
                     </tr>
                   </thead>
-                  
                   <tbody>";
-  
 
                   while($lief = mysqli_fetch_assoc($lieferung)){ //für jede Lieferung wird eine Zeile erzeugt
                     echo '<tr>';
@@ -289,8 +283,7 @@ if($_SESSION["logged"] == true) {
                     echo '<td>' . $lief['verbrauchsgutbez'] .  '</td>';
                     echo '<td>' . $lief['lieferdatum'] .  '</td>';
                     echo '<td>' . $lief['menge'] .  '</td>';
-                    echo '<td>' . $lief['einkaufspreis'] .  '</td>'; 
-  
+                    echo '<td>' . $lief['einkaufspreis'] .  '</td>';    
                     echo '</tr>';
   
                   }
@@ -307,15 +300,13 @@ if($_SESSION["logged"] == true) {
                   <a class=\"btn btn-outline-danger disabled\" href=\"#\" onclick='return checkDelete()'>Löschen nicht möglich*</a>
                   <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a></div>
                   *Diese Person kann nicht gelöscht werden, da ihr entweder mindestens ein Pferd und/oder eine Lieferung zugeordnet ist.";
-               }
-                
-                
-              else{ // wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
+              } else{ // wird ausgeführt wenn die Person keine Beziehungen hat,also gelöscht werden kann
                echo "<div class=\"form-group\"></div>
                <div class=\"form-group\">
                 <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
                 <a class=\"btn btn-danger\" href=\"person-delete.php?id_person=" . $id_person . "\" onclick='return checkDelete()'>Löschen</a>
                 <a class=\"btn btn-secondary\" href=\"person.php\" >Zurück zur Übersicht</a> </div>";
+
               }         
           }
         }

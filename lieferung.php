@@ -130,54 +130,50 @@ if($_SESSION["logged"] == true) {
             </div>
           </div>
           
-          
-          
-          <p>
+          <!-- Tabelle mit Lieferungen -->
           <div class="table-responsive">
-          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead class="thead-light">
-            <tr>
-              <th>Gut</th>
-              <th>Lieferung</th>  
-              <th>Lieferdatum</th>
-              <th>Menge in kg</th>
-              <th>Einkaufspreis in €/kg</th>
-              <th>Lieferant</th>
-              <th></th>
-            </tr>
-            </thead>          
-            <tbody>
-            <?php  
-              // SQL-Anfrage: Ergebnis ist stets eine Tabelle
-              $verbrauchsgut = "SELECT verbrauchsguttyp.verbrauchsguttypbez, verbrauchsgut.verbrauchsgutbez, verbrauchsgut.menge, verbrauchsgut.einkaufspreis, verbrauchsgut.id_person, verbrauchsgut.id_verbrauchsgut, DATE_FORMAT(verbrauchsgut.lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
-              $query = $conn->query($verbrauchsgut) or die(mysql_error());
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+              <thead class="thead-light">
+              <tr>
+                <th>Gut</th>
+                <th>Lieferung</th>  
+                <th>Lieferdatum</th>
+                <th>Menge in kg</th>
+                <th>Einkaufspreis in €/kg</th>
+                <th>Lieferant</th>
+                <th></th>
+              </tr>
+              </thead>          
+              <tbody>
+              <?php  
+                // SQL-Anfrage: Ergebnis ist stets eine Tabelle
+                $verbrauchsgut = "SELECT verbrauchsguttyp.verbrauchsguttypbez, verbrauchsgut.verbrauchsgutbez, verbrauchsgut.menge, verbrauchsgut.einkaufspreis, verbrauchsgut.id_person, verbrauchsgut.id_verbrauchsgut, DATE_FORMAT(verbrauchsgut.lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut, verbrauchsguttyp WHERE verbrauchsgut.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
+                $query = $conn->query($verbrauchsgut) or die(mysql_error());
 
-              while($fetch = mysqli_fetch_assoc($query)){
-                echo '<tr>';
-                  echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
-                  echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
-                  echo '<td>' . $fetch['lieferdatum'] . '</td>';
-                  echo '<td>' . $fetch['menge'] . '</td>';
-                  echo '<td>' . $fetch['einkaufspreis'] . '</td>';
-                  $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
-                  $query1 = $conn->query($lieferant) or die (mysql_error());
-                    if($fetch1 = mysqli_fetch_assoc($query1)){
-                      echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
-                    }
-                                
-                  echo '<td>
-                  <div class="d-sm-flex flex-row">
-                  <div><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
-                  <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Löschen</a></div>
-                  </div>
-                  </td>
-                  </tr>';
-                }
-
-            ?>
-            </tbody>                
-
-          </table>
+                while($fetch = mysqli_fetch_assoc($query)){
+                  echo '<tr>';
+                    echo '<td>' . $fetch['verbrauchsguttypbez'] . '</td>';
+                    echo '<td>' . $fetch['verbrauchsgutbez'] . '</td>';
+                    echo '<td>' . $fetch['lieferdatum'] . '</td>';
+                    echo '<td>' . $fetch['menge'] . '</td>';
+                    echo '<td>' . $fetch['einkaufspreis'] . '</td>';
+                    $lieferant = 'SELECT person.vorname, person.nachname From person, verbrauchsgut  WHERE verbrauchsgut.id_person = person.id_person AND verbrauchsgut.id_person = '.$fetch['id_person'];
+                    $query1 = $conn->query($lieferant) or die (mysql_error());
+                      if($fetch1 = mysqli_fetch_assoc($query1)){
+                        echo '<td>' . $fetch1['vorname'] . ' ' . $fetch1['nachname'] . '</td>'  ;
+                      }
+                                  
+                    echo '<td>
+                    <div class="d-sm-flex flex-row">
+                    <div><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Löschen</a></div>
+                    </div>
+                    </td>
+                    </tr>';
+                  }
+              ?>
+              </tbody>                
+            </table>
           <br>
           </div>          
         
