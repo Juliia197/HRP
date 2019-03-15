@@ -157,9 +157,10 @@ if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
           <hr>
           <br>
 
-          <p>Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich:
-          <a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a>
-          </p>
+          <!-- <p>Wenn aufgrund von schlechtem Futter, Änderungen im Verbrauch oder aus anderen Gründen der Bestand mauell angepasst werden muss ist das hier möglich: -->
+          <div class="d-flex flex-row-reverse">
+            <div class="p-2"><a class="btn btn-secondary" role="button" href="gueter-bestand.php">Zur Bestandsaktualisierung</a></div>
+          </div>
           <hr>
           <br>
 
