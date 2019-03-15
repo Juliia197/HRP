@@ -153,11 +153,14 @@ if($_SESSION["logged"] == true) {
             $ort = $_POST["ort"];
             $land = $_POST["land"];
             $update = $_GET["id_person"];
-            $update2 = $_GET["id_adresse"];
-          
+            $update2 = $_GET["id_adresse"]; 
+
+            // $test = $_POST['id_funktion'];
             
-            // $schonvorhanden_query = "SELECT * FROM person WHERE vorname = '$vorname' AND nachname = '$nachname' AND geburtsdatum = '$geburtsdatum' ";
-            // $schonvorhanden=$conn->query($schonvorhanden_query);
+            // if (isset($_POST["id_funktion"]) && $_POST["id_funktion"] == 5){
+            //   $test = $_POST['id_funktion'];
+            // }
+
 
             $schonvorhanden_query = "SELECT * FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' ";
             $schonvorhanden_sql = $conn->prepare($schonvorhanden_query);
@@ -168,6 +171,8 @@ if($_SESSION["logged"] == true) {
 
               if ($update > 0){ //wird ausgeführt wenn die Person geändert wird
                 $erfolg = 1;
+
+
                 $adresseschonda_query = "SELECT id_adresse FROM adresse WHERE strasse = ? AND hausnr =? AND plz = '$plz' AND ort=? AND land='$land'";
                 $adresseschonda_sql = $conn->prepare($adresseschonda_query);
                 $adresseschonda_sql -> bind_param("sss",$strasse,$hausnr,$ort);
@@ -180,7 +185,7 @@ if($_SESSION["logged"] == true) {
                   $adressevergeben_sql->execute();
                   $adressevergeben=$adressevergeben_sql->get_result();
 
-                  if($adresseschonda->num_rows==0){//wird ausgeführt die neue Adresse nicht vorhanden ist
+                if($adresseschonda->num_rows==0){//wird ausgeführt die neue Adresse nicht vorhanden ist
                     if($adressevergeben->num_rows==1){ //wird ausgeführt wenn die alte Adresse nur einer Person zugeordnet ist
                       //adresse wird geändert
                       $adresseupdate_query = "UPDATE adresse SET strasse =?, hausnr = ?, plz='$plz', ort=?, land='$land' WHERE id_adresse=? ";
@@ -248,6 +253,24 @@ if($_SESSION["logged"] == true) {
                     }
 
                   }
+                  $id_person_query = "SELECT id_person FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' ";
+                  $id_person_sql = $conn->prepare($id_person_query);
+                  $id_person_sql -> bind_param("ss",$vorname,$nachname);
+                  $id_person_sql->execute();
+                  $id_person=$id_person_sql->get_result();
+
+                  while ($id = $id_person->fetch_assoc()){
+
+                    if (isset($_POST["id_funktion"]) && $_POST["id_funktion"] == 5){
+
+                      $lieferant_query = "INSERT INTO beziehung (id_beziehung, id_person, id_funktion, id_pferd) VALUES(NULL,?, ?, NULL)";
+                      $lieferant_sql = $conn->prepare($lieferant_query);
+                      $lieferant_sql -> bind_param("ii", $id['id_person'], $_POST["id_funktion"]);
+                      $lieferant_sql -> execute();
+                      $lieferant = $lieferant_sql ->get_result();                          
+
+                    }
+                  }
               }
               
               else { //wird bei hinzufügen einer Person ausgeführt
@@ -295,7 +318,26 @@ if($_SESSION["logged"] == true) {
                       $personnew_sql->execute();
                       $personnew_result=$personnew_sql->get_result();
 
+
                       $erfolg = 2;
+                    }
+                  }
+                  $id_person_query = "SELECT id_person FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' ";
+                  $id_person_sql = $conn->prepare($id_person_query);
+                  $id_person_sql -> bind_param("ss",$vorname,$nachname);
+                  $id_person_sql->execute();
+                  $id_person=$id_person_sql->get_result();
+
+                  while ($id = $id_person->fetch_assoc()){
+
+                    if (isset($_POST["id_funktion"]) && $_POST["id_funktion"] == 5){
+
+                      $lieferant_query = "INSERT INTO beziehung (id_beziehung, id_person, id_funktion, id_pferd) VALUES(NULL,?, ?, NULL)";
+                      $lieferant_sql = $conn->prepare($lieferant_query);
+                      $lieferant_sql -> bind_param("ii", $id['id_person'], $_POST["id_funktion"]);
+                      $lieferant_sql -> execute();
+                      $lieferant = $lieferant_sql ->get_result();                          
+
                     }
                   }
                 }
@@ -366,6 +408,28 @@ if($_SESSION["logged"] == true) {
               echo "<label>Land</label>";
               echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
 
+              $checkbox_query = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $row_p['id_person'];
+              $checkbox=$conn->query($checkbox_query);
+
+              if ($checkbox->num_rows==1){
+                echo '<br><hr><br><div class="form-check">
+                <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion" checked>
+                <label class="form-check-label" for="id_funktion">
+                  Hat die Rolle eines Lieferanten
+                </label>
+                </div><br>';
+                echo "<hr><br>"; 
+              }
+              else{
+                echo '<br><hr><br><div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
+                  <label class="form-check-label" for="id_funktion">
+                    Hat die Rolle eines Lieferanten
+                  </label>
+                </div><br>';
+                echo "<hr><br>";
+              }
+              
               echo "<div class=\"form-group\"></div>
               <div class=\"form-group\">
                 <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
@@ -441,7 +505,12 @@ if($_SESSION["logged"] == true) {
             echo "<label>Land</label>";
             echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
           
-            echo "<hr>";
+            echo '<br><hr><br><div class="form-check">
+              <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
+              <label class="form-check-label" for="id_funktion">
+                Hat die Rolle eines Lieferanten
+              </label>
+            </div><br>';
 
             echo "<div class=\"form-group\"></div>
             <div class=\"form-group\">
