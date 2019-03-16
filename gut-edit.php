@@ -54,7 +54,7 @@ if($_SESSION["logged"] == true) {
         $lieferungname_result->execute();
         $lieferungname_result = $lieferungname_result->get_result();
         $lieferungname_result = $lieferungname_result->fetch_assoc();
-        $lieferungname = $lieferungname_result['verbrauchsgutbez'] . "bearbeiten";
+        $lieferungname = $lieferungname_result['verbrauchsgutbez'] . " bearbeiten";
       }
 
     ?>
@@ -168,7 +168,7 @@ if($_SESSION["logged"] == true) {
                         <form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
 
                   /* Formular zur Bearbeitung von Lieferungen */
-                  echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
+                  echo "<label>Verbrauchsgütertyp</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\" required>";
 
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
@@ -185,12 +185,12 @@ if($_SESSION["logged"] == true) {
                       echo "<option value=\"" . $row_nvgt["id_verbrauchsguttyp"] . "\">" . $row_nvgt["verbrauchsguttypbez"] . "</option>";
                     }
                   }
-                  echo "</select></div><br>";
-                  echo "<div class=\"form-group\"><label>Bezeichnung</label>";
-                  echo "<input  class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\" required></div><br>";
-                  echo "<div class=\"form-group\"><label>Lieferdatum</label>";
-                  echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"></div><br>";
-                  echo "<div class=\"form-group\"><label>Lieferant</label>";
+                  echo "</select><br><br>";
+                  echo "<label>Bezeichnung</label>";
+                  echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\" required><br>";
+                  echo "<label>Lieferdatum</label>";
+                  echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
+                  echo "<label>Lieferant</label>";
                   echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" .$row_g["id_person"] . "person.id_person = beziehung.id_person AND id_funktion = 5";
                   $lieferant_result = $conn->query($lieferant_sql);
@@ -206,15 +206,16 @@ if($_SESSION["logged"] == true) {
                       echo "<option value=\"" . $row_al['id_person'] . "\">" . $row_al['vorname'] . " " . $row_al['nachname'] . "</option>";
                     }
                   }
-                  echo "</select></div><br>";
-                  echo "<div class=\"form-group\"><label>Menge in kg</label>";
-                  echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"></div><br>";
-                  echo "<div class=\"form-group\"><label>Einkaufspreis in €/kg</label>";
-                  echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"></div><br>";
+                  echo "</select><br><br>";
+                  echo "<label>Menge in kg</label>";
+                  echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"><br>";
+                  echo "<label>Einkaufspreis in €/kg</label>";
+                  echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"><br>";
                   echo "
+                      <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
-                        <a class=\"btn btn-secondary\" href=\"lieferung.php\" >Abbrechen</a> </div>";
+                        <a class=\"btn btn-secondary\" href=\"lieferung.php\" >Abbrechen</a></div>";
                 }
               }
               else {
@@ -237,7 +238,7 @@ if($_SESSION["logged"] == true) {
                       <form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                       
                 /* Formular zur Erstellung von Lieferungen */
-                echo "<div class=\"form-group\"><label>Verbrauchsgütertyp</label>";
+                echo "<label>Verbrauchsgütertyp</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
@@ -246,12 +247,12 @@ if($_SESSION["logged"] == true) {
                     echo "<option value=\"" . $row_vgtall["id_verbrauchsguttyp"] . "\">" . $row_vgtall["verbrauchsguttypbez"] . "</option>";
                   }
                 }
-                echo "</select></div><br>";
-                echo "<div class=\"form-group\"><label>Bezeichnung</label>";
-                echo "<input required class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"verbrauchsgutbez\"></div><br>";
-                echo "<div class=\"form-group\"><label>Lieferdatum</label>";
-                echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"></div><br>";
-                echo "<div class=\"form-group\"><label>Lieferant</label>";
+                echo "</select><br><br>";
+                echo "<label>Bezeichnung</label>";
+                echo "<input required class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"verbrauchsgutbez\"><br>";
+                echo "<label>Lieferdatum</label>";
+                echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"><br>";
+                echo "<label>Lieferant</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
                 $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5";
                   $lieferanten_result = $conn->query($lieferanten_sql);
@@ -260,12 +261,13 @@ if($_SESSION["logged"] == true) {
                       echo "<option value=\"" . $row_al['id_person'] . "\">" . $row_al['vorname'] . " " . $row_al['nachname'] . "</option>";
                     }
                   }
-                echo "</select></div><br>";
-                echo "<div class=\"form-group\"><label>Menge in kg</label>";
-                echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"></div><br>";
-                echo "<div class=\"form-group\"><label>Einkaufspreis in €/kg</label>";
-                echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"></div><br>";
+                echo "</select><br><br>";
+                echo "<label>Menge in kg</label>";
+                echo "<input required class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"><br>";
+                echo "<label>Einkaufspreis in €/kg</label>";
+                echo "<input required class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"><br>";
                 echo "
+                    <hr>
                     <div class=\"form-group\">
                     <button type=\"submit\" class=\"btn btn-success\"  href=\"gut-edited.php?id_verbrauchsgut=" . $_GET["id_verbrauchsgut"] . "\" role=\"button\">Abschicken</button>
                     <a class=\"btn btn-secondary\" href=\"lieferung.php\" >Abbrechen</a> </div>";
@@ -279,6 +281,7 @@ if($_SESSION["logged"] == true) {
               ?>
           </form>
 
+          </div>
         </div>
 
         <!-- Sticky Footer -->

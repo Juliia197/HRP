@@ -210,7 +210,7 @@ if($_SESSION["logged"] == true) {
                   /* Formular Lieferung bearbeiten */
                   echo "<form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<label>Verbrauchsgütertyp</label>";
-                  echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                  echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
                   $verbrauchsguttyp_sql = "SELECT * FROM verbrauchsguttyp WHERE id_verbrauchsguttyp=" . $row_g["id_verbrauchsguttyp"];
                   $verbrauchsguttyp_result = $conn->query($verbrauchsguttyp_sql);
                   if($verbrauchsguttyp_result->num_rows > 0){
@@ -225,13 +225,13 @@ if($_SESSION["logged"] == true) {
                       echo "<option value=\"" . $row_nvgt["id_verbrauchsguttyp"] . "\">" . $row_nvgt["verbrauchsguttypbez"] . "</option>";
                     }
                   }
-                  echo "</select><br>";
+                  echo "</select><br><br>";
                   echo "<label>Bezeichnung</label>";
                   echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"><br>";
                   echo "<label>Lieferdatum</label>";
                   echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
                   echo "<label>Lieferant</label>";
-                  echo "<select class=\"form-control\" name=\"id_person\">";
+                  echo "<select class=\"form-control custom-select\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
@@ -246,12 +246,13 @@ if($_SESSION["logged"] == true) {
                       echo "<option value=\"" . $row_nl["id_person"] . "\">" . $row_nl["vorname"] . " " . $row_nl["nachname"] . "</option>";
                     }
                   }
-                  echo "</select><br>";
+                  echo "</select><br><br>";
                   echo "<label>Menge</label>";
                   echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\"><br>";
                   echo "<label>Einkaufspreis</label>";
                   echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"><br>";
-                  echo "<div class=\"form-group\"></div>
+                  echo "
+                      <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
                         <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
@@ -281,7 +282,7 @@ if($_SESSION["logged"] == true) {
                 /* Formular Lieferung erstellen */
                 echo "<form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<label>Verbrauchsgütertyp:</label>";
-                echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
+                echo "<select class=\"form-control custom-select\" name=\"id_verbrauchsguttyp\">";
                 $verbrauchsguttypall_sql = "SELECT * FROM verbrauchsguttyp";
                 $verbrauchsguttypall_result = $conn->query($verbrauchsguttypall_sql);
                 if ($verbrauchsguttypall_result->num_rows > 0){
@@ -289,13 +290,13 @@ if($_SESSION["logged"] == true) {
                     echo "<option value=\"" . $row_vgtall["id_verbrauchsguttyp"] . "\">" . $row_vgtall["verbrauchsguttypbez"] . "</option>";
                   }
                 }
-                echo "</select<br>>";
+                echo "</select<br><br>";
                 echo "<label>Bezeichnung</label>";
                 echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"><br>";
                 echo "<label>Lieferdatum</label>";
                 echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"><br>";
                 echo "<label>Lieferant</label>";
-                echo "<select class=\"form-control\" name=\"id_person\">";
+                echo "<select class=\"form-control custom-select\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person";
                 $lieferantall_result = $conn->query($lieferantall_sql);
                 if($lieferantall_result->num_rows > 0){
@@ -303,12 +304,13 @@ if($_SESSION["logged"] == true) {
                     echo "<option value=\"" . $row_lall["id_person"] . "\">" . $row_lall["vorname"] . " " . $row_lall["nachname"] . "</option>";
                   }
                 }
-                echo "</select><br>";
+                echo "</select><br><br>";
                 echo "<label>Menge</label>";
                 echo "<input class=\"form-control\" type=\"number\" name=\"menge\"><br>";
                 echo "<label>Einkaufspreis</label>";
                 echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"><br>";
-                echo "<div class=\"form-group\"></div>
+                echo "
+                      <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
                         <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
