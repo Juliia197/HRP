@@ -18,8 +18,11 @@ if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION["id_gehoeft"];
   $auth = false;
     
-  $auth_sql = "SELECT id_gehoeft FROM verbrauchsgut WHERE id_verbrauchsgut = " . $_GET['id_verbrauchsgut'] . "";
-  $auth_result =  $conn->query($auth_sql);
+  $auth_sql = "SELECT id_gehoeft FROM verbrauchsgut WHERE id_verbrauchsgut = ?";
+  $auth_result =  $conn->prepare($auth_sql);
+  $auth_result->bind_param('i', $_GET['id_verbrauchsgut']);
+  $auth_result->execute();
+  $auth_result = $auth_result->get_result();
   $auth_result = $auth_result->fetch_assoc();
     
   if ($auth_result['id_gehoeft'] == $id_gehoeft) {
@@ -131,6 +134,8 @@ if($_SESSION["logged"] == true) {
             $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
             $id_person = $_POST["id_person"];
             $update = $_GET["id_verbrauchsgut"];
+
+            /* Bestandsveränderung bei Änderung der Menge */
             if($update > 0){
             $update_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $update;
                   $update_result = $conn->query($update_sql);
@@ -149,6 +154,7 @@ if($_SESSION["logged"] == true) {
                     }
                   }
                 }
+              /* Bestandsveränderung bei Neu-Anlegen einer Lieferung */
               else {
                 $bestand_sql = "SELECT bestand FROM gehoeft_besitzt_verbrauchsguttyp WHERE id_verbrauchsguttyp = $id_verbrauchsguttyp AND id_gehoeft = $id_gehoeft";
                 $bestand_result = $conn->query($bestand_sql);
@@ -162,8 +168,11 @@ if($_SESSION["logged"] == true) {
           ?>
           <?php
           if($update > 0){
-            $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
-            $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
+            $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=?";
+            $verbrauchsgut_result = $conn->prepare($verbrauchsgut_sql);
+            $verbrauchsgut_result->bind_param('i', $_GET['id_verbrauchsgut']);
+            $verbrauchsgut_result->execute();
+            $verbrauchsgut_result = $verbrauchsgut_result->get_result();
               if($verbrauchsgut_result->num_rows > 0){
                 while($row_g = $verbrauchsgut_result->fetch_assoc()){   
                   echo "<ol class=\"breadcrumb\">
@@ -183,6 +192,7 @@ if($_SESSION["logged"] == true) {
                         <h1>Lieferung bearbeiten</h1>
                         <hr><br>";
                   echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde geändert!</div>";
+                  /* Formular Lieferung bearbeiten */
                   echo "<form action=\"gut-edited.php?id_verbrauchsgut=" . $row_g["id_verbrauchsgut"] . "\" method=\"post\">";
                   echo "<label>Verbrauchsgütertyp</label>";
                   echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";
@@ -253,6 +263,7 @@ if($_SESSION["logged"] == true) {
                         <h1>Lieferung erstellen</h1>
                         <hr><br>";
                 echo "<div class=\"alert alert-success\" role=\"alert\">Ihre Lieferung wurde hinzugefügt!</div>";
+                /* Formular Lieferung erstellen */
                 echo "<form action=\"gut-edited.php?id_verbrauchsgut=0\" method=\"post\">";
                 echo "<label>Verbrauchsgütertyp:</label>";
                 echo "<select class=\"form-control\" name=\"id_verbrauchsguttyp\">";

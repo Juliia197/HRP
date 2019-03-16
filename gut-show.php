@@ -42,9 +42,14 @@ if($_SESSION["logged"] == true) {
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
+
+    <!-- DataPoints für Diagramm wird erstellt -->
     <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft . ' ORDER BY lieferdatum';
-      $lieferungen_result = $conn->query($lieferungen_sql);
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = ? AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum";
+      $lieferungen_result = $conn->prepare($lieferungen_sql);
+      $lieferungen_result->bind_param('i', $_GET['id_verbrauchsguttyp']);
+      $lieferungen_result->execute();
+      $lieferungen_result = $lieferungen_result->get_result();
       $dataPoints = '';
       if ($lieferungen_result->num_rows > 0){
         while ($row_l = $lieferungen_result->fetch_assoc()){
@@ -54,30 +59,31 @@ if($_SESSION["logged"] == true) {
       $dataPoints = "[" . $dataPoints . "]";
 
     ?>
-        <script>
+      <!-- Skript für Diagramm mit Preisentwicklung des Verbrauchsguts -->
+      <script>
         window.onload = function () {
           var dataPoints_verbrauchsgut = <?php echo $dataPoints ?>;
-var chart = new CanvasJS.Chart("preisentwicklung", {
-	animationEnabled: true,
-	theme: "light2",
-	title:{
-		text: "Preisentwicklung",
-    fontWeight: "bold",
-    fontFamily: "Helvetica"
-	},
-	axisY:{
-		includeZero: false
-	},
-	data: [{        
-		type: "line",    
-    color: "#a4bf6b",   
-		dataPoints: dataPoints_verbrauchsgut
-	}]
-});
-chart.render();
+          var chart = new CanvasJS.Chart("preisentwicklung", {
+            animationEnabled: true,
+            theme: "light2",
+            title:{
+              text: "Preisentwicklung",
+              fontWeight: "bold",
+              fontFamily: "Helvetica"
+            },
+            axisY:{
+              includeZero: false
+            },
+            data: [{        
+              type: "line",    
+              color: "#a4bf6b",   
+              dataPoints: dataPoints_verbrauchsgut
+            }]
+          });
+          chart.render();
 
-}
-</script>
+        }
+      </script>
 
   </head>
 
@@ -164,24 +170,25 @@ chart.render();
             $verbrauchsguttypbez_sql ->execute();
             $verbrauchsguttypbez = $verbrauchsguttypbez_sql->get_result();
 
+            /* Tabelle mit Lieferungen zu Verbrauchsgut */
             while ($fetch = $verbrauchsguttypbez ->fetch_assoc()){
               echo "<h1> " . $fetch['verbrauchsguttypbez'] . "</h1>";
               echo "<hr><br>";
               echo "<h3> Lieferungen </h3>";
               echo "                
               <div class='table-responsive'>
-              <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
-              <thead class='thead-light'>
-                <tr>
-                <th>Lieferung</th>
-                <th>Lieferdatum</th>
-                <th>Menge in kg</th>
-                <th>Einkaufpreis je kg</th>
-                <th>Lieferant</th>
-                <th></th>
-                </tr>
-              </thead>              
-              <tbody>";
+                <table class='table table-bordered table-hover' id='dataTable' width='100%' cellspacing='0'>
+                  <thead class='thead-light'>
+                    <tr>
+                    <th>Lieferung</th>
+                    <th>Lieferdatum</th>
+                    <th>Menge in kg</th>
+                    <th>Einkaufpreis je kg</th>
+                    <th>Lieferant</th>
+                    <th></th>
+                    </tr>
+                  </thead>              
+                  <tbody>";
             }
             $verbrauchsgut_query = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
             $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
@@ -214,22 +221,21 @@ chart.render();
               
             }
           ?>
-          </tbody>
-          </table>
+              </tbody>
+            </table>
           </div>
           <hr>
           <br>
           <h3> Preisentwicklung des Gutes</h3>
-          
+          <!-- Diagramm mit Preisentwicklung -->
           <div class="card mb-3">
-          <div class="card-header">
-          <i class="fas fa-chart-line"></i>
-                  Preisentwicklung
-          </div>
-          <div class="card-body">
-          <div id="preisentwicklung" style="height: 300px; width: 100%;"></div>
-          
-          </div>
+            <div class="card-header">
+              <i class="fas fa-chart-line"></i>
+              Preisentwicklung
+            </div>
+            <div class="card-body">
+              <div id="preisentwicklung" style="height: 300px; width: 100%;"></div>
+            </div>
           </div>
           <a class="btn btn-secondary" href="gueter.php" >Zurück zur Übersicht</a>
           <br>

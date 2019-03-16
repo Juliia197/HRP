@@ -211,45 +211,45 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
           <br>
 
           <?php
-          if ($changed == true) {
+            if ($changed == true) {
           ?>
 
           <div class="alert alert-success" role="alert">Das Passwort wurde geändert</div>
           
           <div class="form-group">
-          <a class="btn btn-secondary" href="login.php">Zum Login</a>
+            <a class="btn btn-secondary" href="login.php">Zum Login</a>
           </div>
 
           <?php
-          }
+            }
           ?>
 
           <?php
-          if ($changed == false) {
+            if ($changed == false) {
 
-          if ($wiederholung) {
-            echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr><br>';
-          }
+            if ($wiederholung) {
+              echo '<div class="alert alert-danger" role="alert">Passwörter sind nicht identisch!</div><hr><br>';
+            }
 
-          if ($passwort_falsch) {
-            echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr><br>';
-          }
+            if ($passwort_falsch) {
+              echo '<div class="alert alert-danger" role="alert">Falsches Passwort!</div><hr><br>';
+            }
           ?>
 
           <form action="passwort.php" method="post" onsubmit="return checkChange()">
             <div class="form-group">
-            <label for="passwort_alt">
-              Altes Passwort
-            </label>
-            <input class="form-control" type="password" id="passwort_alt" name="passwort_alt" required><br>
-            <label for="passwort_neu">
-              Neues Passwort
-            </label>
-            <input class="form-control" minlength="8" type="password" id="passwort_neu" name="passwort_neu" required><br>
-            <label for="passwort_confirm">
-              Neues Passwort wiederholen
-            </label>
-            <input class="form-control" minlength="8" type="password" id="passwort_confirm" name="passwort_confirm" required>
+              <label for="passwort_alt">
+                Altes Passwort
+              </label>
+              <input class="form-control" type="password" id="passwort_alt" name="passwort_alt" required><br>
+              <label for="passwort_neu">
+                Neues Passwort
+              </label>
+              <input class="form-control" minlength="8" type="password" id="passwort_neu" name="passwort_neu" required><br>
+              <label for="passwort_confirm">
+                Neues Passwort wiederholen
+              </label>
+              <input class="form-control" minlength="8" type="password" id="passwort_confirm" name="passwort_confirm" required>
             </div>
             
             <div class="form-group">
@@ -258,25 +258,23 @@ if (isset($_POST['passwort_alt']) && isset($_POST['passwort_neu']) && isset($_PO
                 Passwort ändern
               </button>
               <?php 
-              if ($user) {
-                echo '<a class="btn btn-secondary" href="dashboard.php" >Abbrechen</a>';
-              }
+                if ($user) {
+                  echo '<a class="btn btn-secondary" href="dashboard.php" >Abbrechen</a>';
+                }
 
-              if ($admin) {
-                echo '<a class="btn btn-secondary" href="admin.php" >Abbrechen</a>';
-              }
+                if ($admin) {
+                  echo '<a class="btn btn-secondary" href="admin.php" >Abbrechen</a>';
+                }
               ?>
 
             </div>
 
           </form>
           <?php
-          }
+            }
           ?>
 
         </div>
-        
-        <!-- /.container-fluid -->
 
         <!-- Sticky Footer -->
         <footer class="sticky-footer">
