@@ -113,8 +113,11 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
             $id_benutzer = $id_benutzer_fetch["id_benutzer"];
 
             // SQL-Abfrage für Benutzer mit dieser E-Mail und dem Gehöft
-            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  $id_gehoeft ";
-            $check = $conn->query($check_sql);
+            $check_sql = "SELECT COUNT(*) AS count FROM benutzer_verwaltet_gehoeft WHERE id_benutzer = $id_benutzer AND id_gehoeft =  ? ";
+            $check = $conn->prepare($check_sql);
+            $check->bind_param('i', $id_gehoeft);
+            $check->execute();
+            $check = $check->get_result();
             $check = $check->fetch_assoc();
 
             // Prüfung, ob Benutzer bereits Gehöftverwalter ist

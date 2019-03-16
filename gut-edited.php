@@ -18,8 +18,11 @@ if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION["id_gehoeft"];
   $auth = false;
     
-  $auth_sql = "SELECT id_gehoeft FROM verbrauchsgut WHERE id_verbrauchsgut = " . $_GET['id_verbrauchsgut'] . "";
-  $auth_result =  $conn->query($auth_sql);
+  $auth_sql = "SELECT id_gehoeft FROM verbrauchsgut WHERE id_verbrauchsgut = ?";
+  $auth_result =  $conn->prepare($auth_sql);
+  $auth_result->bind_param('i', $_GET['id_verbrauchsgut']);
+  $auth_result->execute();
+  $auth_result = $auth_result->get_result();
   $auth_result = $auth_result->fetch_assoc();
     
   if ($auth_result['id_gehoeft'] == $id_gehoeft) {
@@ -165,8 +168,11 @@ if($_SESSION["logged"] == true) {
           ?>
           <?php
           if($update > 0){
-            $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=" . $_GET["id_verbrauchsgut"];
-            $verbrauchsgut_result = $conn->query($verbrauchsgut_sql);
+            $verbrauchsgut_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsgut=?";
+            $verbrauchsgut_result = $conn->prepare($verbrauchsgut_sql);
+            $verbrauchsgut_result->bind_param('i', $_GET['id_verbrauchsgut']);
+            $verbrauchsgut_result->execute();
+            $verbrauchsgut_result = $verbrauchsgut_result->get_result();
               if($verbrauchsgut_result->num_rows > 0){
                 while($row_g = $verbrauchsgut_result->fetch_assoc()){   
                   echo "<ol class=\"breadcrumb\">

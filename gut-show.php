@@ -45,8 +45,11 @@ if($_SESSION["logged"] == true) {
 
     <!-- DataPoints für Diagramm wird erstellt -->
     <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = " . $_GET['id_verbrauchsguttyp'] . ' AND id_gehoeft = ' . $id_gehoeft . ' ORDER BY lieferdatum';
-      $lieferungen_result = $conn->query($lieferungen_sql);
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = ? AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum";
+      $lieferungen_result = $conn->prepare($lieferungen_sql);
+      $lieferungen_result->bind_param('i', $_GET['id_verbrauchsguttyp']);
+      $lieferungen_result->execute();
+      $lieferungen_result = $lieferungen_result->get_result();
       $dataPoints = '';
       if ($lieferungen_result->num_rows > 0){
         while ($row_l = $lieferungen_result->fetch_assoc()){
