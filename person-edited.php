@@ -271,14 +271,18 @@ if($_SESSION["logged"] == true) {
 
                     }
                     else{
-                      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $id['id_person'];
-                      $istlieferant=$conn->query($istlieferant_query);
-                      echo $istlieferant_query;
+                      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =?";
+                      $istlieferant_sql = $conn->prepare($istlieferant_query);
+                      $istlieferant_sql -> bind_param("i", $id['id_person']);
+                      $istlieferant_sql -> execute();
+                      $istlieferant = $istlieferant_sql ->get_result(); 
 
                       if($istlieferant->num_rows==1){
-                        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =" . $id['id_person'];
-                        $deletelieferant = $conn->query($deletelieferant_query);
-                        echo $deletelieferant_query;
+                        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =?";
+                        $deletelieferant_sql = $conn->prepare($deletelieferant_query);
+                        $deletelieferant_sql -> bind_param("i", $id['id_person']);
+                        $deletelieferant_sql -> execute();
+                        $deletelieferant = $deletelieferant_sql ->get_result(); 
                       }
                     }
                   }
