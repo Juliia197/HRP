@@ -154,6 +154,13 @@ if($_SESSION["logged"] == true) {
               $person_sql -> bind_param("i",$id_gehoeft);
               $person_sql->execute();
               $query=$person_sql->get_result();
+
+              $lieferant= 5;
+              $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion < ?' ;
+              $funktion_sql = $conn->prepare($funktion_query);
+              $funktion_sql->bind_param("ii",$_GET["id_person"],$lieferant);
+              $funktion_sql->execute();
+              $funktion = $funktion_sql->get_result();
               
               //While erzeugt für jede Zeile der Datenbank eine Tabellenzeile
               while($fetch = mysqli_fetch_assoc($query)){
@@ -180,12 +187,14 @@ if($_SESSION["logged"] == true) {
                   <div class="d-sm-flex flex-row">
                     <div><a class="btn btn-sm btn-dark" href="person-show.php?id_person=' . $fetch["id_person"] . '" >Anzeigen</a></div>
                     <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-primary" href="person-edit.php?id_person=' . $fetch["id_person"] . '" >Bearbeiten</a></div>';
+                    
                     $lieferung_query= "SELECT id_verbrauchsgut FROM verbrauchsgut WHERE id_person =? AND id_gehoeft = $id_gehoeft";
                     $lieferung_sql = $conn->prepare($lieferung_query);
                     $lieferung_sql->bind_param("i",$fetch["id_person"]);
                     $lieferung_sql->execute();
                     $lieferung = $lieferung_sql->get_result();
-                  if($query1->num_rows==0 and $lieferung->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
+
+                  if($funktion->num_rows==0 and $lieferung->num_rows==0){  //Link zum Löschen wird nur angezeigt wenn löschen möglich ist
                     echo '<div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="person-delete.php?id_person=' . $fetch['id_person'] . '" onclick="return checkDelete()">Löschen</a></div>';
                   }
                   else{
