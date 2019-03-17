@@ -106,9 +106,18 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Benutzer zum Gehöft hinzufügen</h1>
-          <hr>
-          <br>
+          <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="dashboard.php">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="gehoeft.php">Gehöft</a>
+          </li>
+          <li class="breadcrumb-item active">
+            Gehöftverwaltung
+          </li>
+        </ol>
 
           <?php 
 
@@ -166,7 +175,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

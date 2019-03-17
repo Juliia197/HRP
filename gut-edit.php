@@ -192,14 +192,14 @@ if($_SESSION["logged"] == true) {
                   echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
                   echo "<label>Lieferant</label>";
                   echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
-                  $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" .$row_g["id_person"] . "person.id_person = beziehung.id_person AND id_funktion = 5";
+                  $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" . $row_g["id_person"] . " AND person.id_person = beziehung.id_person AND id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
                     while($row_l = $lieferant_result->fetch_assoc()){
                       echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
                     }
                   }
-                  $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5";
+                  $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $lieferanten_result = $conn->query($lieferanten_sql);
                   if($lieferanten_result->num_rows > 0) {
                     while($row_al = $lieferanten_result->fetch_assoc()){
@@ -254,7 +254,7 @@ if($_SESSION["logged"] == true) {
                 echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"><br>";
                 echo "<label>Lieferant</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
-                $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5";
+                $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $lieferanten_result = $conn->query($lieferanten_sql);
                   if($lieferanten_result->num_rows > 0) {
                     while($row_al = $lieferanten_result->fetch_assoc()){
@@ -288,7 +288,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutz</a></span>
             </div>
           </div>
         </footer>

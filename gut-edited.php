@@ -144,7 +144,6 @@ if($_SESSION["logged"] == true) {
             $lieferdatum = $_POST["lieferdatum"];
             $menge = $_POST["menge"];
             $einkaufspreis = $_POST["einkaufspreis"];
-            $id_gehoeft = 1;
             $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
             $id_person = $_POST["id_person"];
             $update = $_GET["id_verbrauchsgut"];
@@ -227,19 +226,19 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select><br><br>";
                   echo "<label>Bezeichnung</label>";
-                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"><br>";
+                  echo "<input class=\"form-control\" type=\"text\"  maxlength=\"45\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"><br>";
                   echo "<label>Lieferdatum</label>";
-                  echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
+                  echo "<input class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
                   echo "<label>Lieferant</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_person\">";
-                  $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
+                  $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" . $row_g["id_person"] . " AND person.id_person = beziehung.id_person AND id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
                     while($row_l = $lieferant_result->fetch_assoc()){
                       echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
                     }
                   }
-                  $notlieferant_sql = "SELECT * FROM person WHERE id_person IS NOT NULL AND NOT id_person = " . $row_g["id_person"];
+                  $notlieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $notlieferant_result = $conn->query($notlieferant_sql);
                   if($notlieferant_result->num_rows > 0){
                     while($row_nl = $notlieferant_result->fetch_assoc()){
@@ -248,14 +247,14 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select><br><br>";
                   echo "<label>Menge</label>";
-                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\"><br>";
+                  echo "<input class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"><br>";
                   echo "<label>Einkaufspreis</label>";
-                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"><br>";
+                  echo "<input class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"><br>";
                   echo "
                       <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
+                        <button class=\"btn btn-secondary\" href=\"lieferung.php\" role=\"button\">Abbrechen</button>
                       </div>";
                 }
               }
@@ -292,12 +291,12 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select><br><br>";
                 echo "<label>Bezeichnung</label>";
-                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"><br>";
+                echo "<input class=\"form-control\" type=\"text\"  maxlength=\"45\" name=\"verbrauchsgutbez\"><br>";
                 echo "<label>Lieferdatum</label>";
-                echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"><br>";
+                echo "<input class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"><br>";
                 echo "<label>Lieferant</label>";
                 echo "<select class=\"form-control custom-select\" name=\"id_person\">";
-                $lieferantall_sql = "SELECT * FROM person";
+                $lieferantall_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                 $lieferantall_result = $conn->query($lieferantall_sql);
                 if($lieferantall_result->num_rows > 0){
                   while($row_lall = $lieferantall_result->fetch_assoc()){
@@ -306,14 +305,14 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select><br><br>";
                 echo "<label>Menge</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"menge\"><br>";
+                echo "<input class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"><br>";
                 echo "<label>Einkaufspreis</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"><br>";
+                echo "<input class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"><br>";
                 echo "
                       <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
+                        <button class=\"btn btn-secondary\" href=\"lieferung.php\" role=\"button\">Abbrechen</button>
                       </div>";
               }
 
@@ -332,7 +331,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

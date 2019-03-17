@@ -119,12 +119,7 @@ if($_SESSION["logged"] == true) {
               Box löschen
             </li>
           </ol>
-
-          <h1>Box löschen</h1>
-          <hr>
-
           <!-- Box löschen, wenn GET-Parameter gesetzt ist -->
-          <br>
           <?php
             if (isset($_GET['id_box'])){
               $id_box = $_GET['id_box'];
@@ -137,6 +132,9 @@ if($_SESSION["logged"] == true) {
             }
 
           ?>
+
+          <h1>Box löschen</h1>
+          <hr>
           <!-- Tabelle der einzelnen Boxen zur Auswahl -->
           <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -173,7 +171,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutzerklärung</a></span>
             </div>
           </div>
         </footer>

@@ -129,7 +129,6 @@ if($_SESSION["logged"] == true) {
               <a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Hinzufügen</a>
             </div>
           </div>
-          
           <!-- Tabelle mit Lieferungen -->
           <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -166,7 +165,7 @@ if($_SESSION["logged"] == true) {
                     echo '<td>
                     <div class="d-sm-flex flex-row">
                     <div><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
-                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Löschen</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $fetch['id_verbrauchsgut'] . '" onclick="return checkDelete()">Löschen</a></div>
                     </div>
                     </td>
                     </tr>';
@@ -185,7 +184,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutz</a></span>
             </div>
           </div>
         </footer>
@@ -246,6 +245,7 @@ if($_SESSION["logged"] == true) {
 
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
+  <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   </body>
 </html>
