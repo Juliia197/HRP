@@ -1,24 +1,24 @@
 <?php
+//Logindaten
 $servername = "localhost";
 $username = "hrppr_1";
 $password = "J49Wj7wUbSsKmNC5";
 $dbname = "hrppr_db1";
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch(PDOException $e)
-{
-    echo "Connection failed: " . $e->getMessage();
-}
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
 
 session_start();
 
 if($_SESSION["logged"] == true) {
-  $id_gehoeft = $_SESSION['id_gehoeft'];
 
-  
+  $id_gehoeft = $_SESSION['id_gehoeft'];
+	  $auth = false;
+
 ?>
 
 <!DOCTYPE html>
@@ -34,19 +34,20 @@ if($_SESSION["logged"] == true) {
 
     <?php
       if ($_GET['id_pferd'] == 0){
-        $pferdename = "Pferd erstellen";
+        $pferdenamebearbeiten = "Pferd hinzufügen";
       } else {
         $pferdename_sql = "SELECT pferdename FROM pferd WHERE id_pferd = ?";
         $pferdename_result = $conn->prepare($pferdename_sql);
-        $pferdename_bind = [$_GET['id_pferd']];
-        $pferdename_result->execute($pferdename_bind);
-        $pferdename_result = $pferdename_result->fetch();
-        $pferdename = $pferdename_result['pferdename'] . " bearbeiten";
+        $pferdename_result->bind_param('i', $_GET['id_pferd']);
+        $pferdename_result->execute();
+        $pferdename_result = $pferdename_result->get_result();
+        $pferdename_result = $pferdename_result->fetch_assoc();
+        $pferdenamebearbeiten = $pferdename_result['pferdename'] . " bearbeiten";
       }
 
     ?>
 
-    <title>HRP - <?php echo $pferdename; ?></title>
+    <title>HRP - <?php echo $pferdenamebearbeiten; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -137,7 +138,7 @@ if($_SESSION["logged"] == true) {
             </li>
             <li class="breadcrumb-item active">
               <?php if ($_GET['id_pferd'] == 0){
-                echo "Pferd erstellen";
+                echo "Pferd hinzufügen";
               } else {
                 echo "Pferd bearbeiten";
               }?>
@@ -146,211 +147,210 @@ if($_SESSION["logged"] == true) {
 
             <!-- Feststellung, ob Pferd bearbeitet/erstellt werden muss in DB oder nicht -->
             <?php
-                $saved = !isset($_GET['saved']) ? false : true;
-                $pferdId = !isset($_GET['id_pferd']) ? 0 : (int) $_GET['id_pferd'];
+              if (isset($_GET['saved'])){
+                $saved = $_GET['saved'];
+              } else {
+                $saved = false;
+              }
+              $id_pferd = $_GET['id_pferd'];
+              if ($id_pferd === 0){
+                $pferdename = '';
+                $geschlecht = '';
+                $gewicht = 0;
+                $groesse = 0;
+                $passnr = 0;
+                $geburtsdatum = '';
+                $ankunft = '';
+              } else {
+                $pferdtoedit_sql = "SELECT * FROM pferd WHERE id_pferd = ?";
+                $pferdtoedit_result = $conn->prepare($pferdtoedit_sql);
+                $pferdtoedit_result->bind_param('i', $_GET['id_pferd']);
+                $pferdtoedit_result->execute();
+                $pferdtoedit_result = $pferdtoedit_result->get_result();
+                $pferdtoedit_result = $pferdtoedit_result->fetch_assoc();
+                $pferdename = $pferdtoedit_result['pferdename'];
+                $geschlecht = $pferdtoedit_result['geschlecht'];
+                $gewicht = $pferdtoedit_result['gewicht'];
+                $groesse = $pferdtoedit_result['groesse'];
+                $passnr = $pferdtoedit_result['passnr'];
+                $geburtsdatum = $pferdtoedit_result['geburtsdatum_pferd'];
+                $ankunft = $pferdtoedit_result['ankunft'];
+              }
+              
+              if ($saved){
+                $pferdename = $_POST['pferdename'];
+                $geschlecht = $_POST['geschlecht'];
+                $gewicht = $_POST['gewicht'];
+                $groesse = $_POST['groesse'];
+                $passnr = $_POST['passnr'];
+                $geburtsdatum = $_POST['geburtsdatum'];
+                $ankunft = $_POST['ankunft'];
+                $idbesitzer = $_POST['besitzerId'];
+                $idrb = $_POST['rbId'];
+                $idtierarzt = $_POST['tierarztId'];
+                $idhufschmied = $_POST['hufschmiedId'];
+                $idbox = $_POST['id_box'];
 
-                if (isset($_POST['pferdename'])) {
-                    $pferdename = !isset($_POST['pferdename']) ? '' : $_POST['pferdename'];
-                    $geschlecht = !isset($_POST['geschlecht']) ? '' : $_POST['geschlecht'];
-                    $gewicht = !isset($_POST['gewicht']) ? '' : $_POST['gewicht'];
-                    $groesse = !isset($_POST['groesse']) ? '' : $_POST['groesse'];
-                    $passnr = !isset($_POST['passnr']) ? '' : $_POST['passnr'];
-                    $gebursdatum = !isset($_POST['geburtsdatum_pferd']) ? '' : $_POST['geburtsdatum_pferd'];
-                    $ankunft = !isset($_POST['ankunft']) ? '' : $_POST['ankunft'];
+                if ($id_pferd == 0){
+                  $neuespferd_sql = "INSERT INTO pferd (pferdename, geschlecht, gewicht, groesse, passnr, geburtsdatum_pferd, ankunft) VALUES (?, '$geschlecht', $gewicht, $groesse, $passnr, '$geburtsdatum', '$ankunft')";
+                  $neuespferd_result = $conn->prepare($neuespferd_sql);
+                  $neuespferd_result->bind_param('s', $pferdename);
+                  $neuespferd_result->execute();
 
-                    if ($pferdId === 0) {
-                        $prepare = $conn->prepare('
-                        INSERT INTO 
-                            pferd 
-                          ( 
-                            pferdename,
-                            geschlecht,
-                            gewicht,
-                            groesse,
-                            passnr,
-                            geburtsdatum_pferd,
-                            ankunft
-                          ) VALUES (
-                            ?,?,?,?,?,?,?
-                          )');
-                        $bind = [$pferdename, $geschlecht, $gewicht, $groesse, $passnr, $gebursdatum, $ankunft];
-                    } else {
-                        $prepare = $conn->prepare(
-                          "UPDATE
-                            pferd
-                          SET
-                            pferdename ='$pferdename',
-                            geschlecht = '$geschlecht',
-                            gewicht='$gewicht',
-                            groesse='$groesse',
-                            passnr='$passnr',
-                            geburtsdatum_pferd='$gebursdatum',
-                            ankunft='$ankunft'
-                          WHERE
-                           id_pferd = ?"
-                          );
-                        $bind = [$pferdId];
+                  $newpferdid_sql = "SELECT id_pferd FROM pferd WHERE passnr = $passnr";
+                  $newpferdid_result = $conn->query($newpferdid_sql);
+                  $newpferdid_result = $newpferdid_result->fetch_assoc();
+                  $id_pferd = $newpferdid_result['id_pferd'];
+
+                  $besitzernew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 1, $idbesitzer)";
+                  echo $besitzernew_sql;
+                  $besitzernew_result = $conn->query($besitzernew_sql);
+
+                  if ($idrb != 0){
+                    $rbnew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 2, $idrb)";
+                    $rbnew_result = $conn->query($rbnew_sql);
+                  }
+
+                  if ($idtierarzt != 0){
+                    $tierarztnew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 3, $idtierarzt)";
+                    $tierarztnew_result = $conn->query($tierarztnew_sql);
+                  }
+
+                  if ($idhufschmied != 0){
+                    $hufschmiednew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 4, $idhufschmied)";
+                    $hufschmiednew_result = $conn->query($hufschmiednew_sql);
+                  }
+                  
+                  $boxzuweisen_sql = "UPDATE box SET id_pferd = $id_pferd WHERE id_box = $idbox";
+                  $boxzuweisen_result = $conn->query($boxzuweisen_sql);
+
+
+                } else {
+                  $pferdedit_sql = "UPDATE pferd SET pferdename = ?, geschlecht = '$geschlecht', gewicht = $gewicht, groesse = $groesse, passnr = $passnr, geburtsdatum_pferd = '$geburtsdatum', ankunft = '$ankunft' WHERE id_pferd = ?";
+                  $pferdedit_result = $conn->prepare($pferdedit_sql);
+                  $pferdedit_result->bind_param('si', $pferdename, $id_pferd);
+                  $pferdedit_result->execute();
+
+                  $pferdzubesitzer_sql = "SELECT * FROM beziehung WHERE id_pferd = $id_pferd AND id_funktion = 1";
+                  $pferdzubesitzer_result = $conn->query($pferdzubesitzer_sql);
+                  while ($pferdzubesitzer = $pferdzubesitzer_result->fetch_assoc()){
+                    if ($idbesitzer != $pferdzubesitzer['id_person']){
+                      $besitzerupdate_sql = "UPDATE beziehung SET id_person = $idbesitzer WHERE id_beziehung = " . $pferdzubesitzer['id_beziehung'];
+                      $besitzerupdate_result = $conn->query($besitzerupdate_sql);
                     }
+                  }
 
-                    /* Beziehungen zu Pferd werden angepasst */
-                    if ($pferdId !== 0) {
-                      $besitzerId = $_POST['besitzerId'];
-                      $rbId = $_POST['rbId'];
-                      $tierarztId = $_POST['tierarztId'];
-                      $hufschmiedId = $_POST['hufschmiedId'];
-                      $userIdArray = [$besitzerId, $rbId, $tierarztId, $hufschmiedId];
-                      for ($idf = 1; $idf<=4; $idf++){
-                        $beziehungexist_sql = "SELECT * FROM beziehung WHERE id_pferd = $pferdId AND id_funktion = $idf";
-                        $beziehungexist_result = $conn->query($beziehungexist_sql);
-                        $beziehungexist_result = $beziehungexist_result->fetch();
-                        if (is_null($beziehungexist_result['id_beziehung'])){
-                          if ($userIdArray[$idf-1] > 0) {
-                            $prepareCon = $conn->prepare('
-                            INSERT INTO 
-                              beziehung
-                              (
-                                id_person,
-                                id_funktion,
-                                id_pferd
-                              ) VALUES (?,?,?)');
-                            $bindCon=[(int) $userIdArray[$idf-1], (int) $idf, $pferdId];
-                            $prepareCon->execute($bindCon);
-                          }
+                  $pferdzurb_sql = "SELECT * FROM beziehung WHERE id_pferd = $id_pferd AND id_funktion = 2";
+                  $pferdzurb_result = $conn->query($pferdzurb_sql);
+                  if ($pferdzurb_result->num_rows > 0){
+                    while ($pferdzurb = $pferdzurb_result->fetch_assoc()){
+                      if ($idrb != $pferdzurb['id_person']){
+                        if($idrb == 0){
+                          $rbupdate_sql = "DELETE FROM beziehung WHERE id_beziehung = " . $pferdzurb['id_beziehung'];
+                          $rbupdate_result = $conn->query($rbupdate_sql);
                         } else {
-                          if($userIdArray[$idf-1] > 0){
-                            $prepareCon = $conn->prepare("
-                              UPDATE
-                                beziehung
-                              SET
-                                id_person = " . $userIdArray[$idf-1] . ",
-                                id_funktion = '$idf',
-                                id_pferd = '$pferdId'
-                              WHERE
-                                id_beziehung = ?");
-                            $bindCon = [$beziehungexist_result['id_beziehung']];
-                            if($prepareCon->execute($bindCon)){
-                              $saved = true;
-                            }
-                          } else{
-                            $prepareCon = $conn->prepare("
-                              DELETE FROM beziehung WHERE id_funktion = $idf AND id_pferd = $pferdId");
-                            $prepareCon->execute();
-                          }
+                          $rbupdate_sql = "UPDATE beziehung SET id_person = $idrb WHERE id_beziehung = " . $pferdzurb['id_beziehung'];
+                          $rbupdate_result = $conn->query($rbupdate_sql);
                         }
                       }
-                      /* Box wird zugeordnet */
-                      $prepareBoxCon = $conn->prepare("
-                        UPDATE 
-                          box
-                        SET
-                          id_pferd='$pferdId'
-                        WHERE
-                          id_gehoeft='$id_gehoeft' AND
-                          id_box=?");
-                      $bindBoxCon = [$_POST['id_box']];
-                      $prepareBoxCon->execute($bindBoxCon);
-                      $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_pferd = $pferdId AND id_box != " . $_POST['id_box'];
-                      $boxleerenprepare = $conn->prepare($boxleeren_sql);
-                      $boxleerenprepare->execute();
-
                     }
 
-                    /* Beziehungen zu Pferd werden angepasst */
-                    if ($pferdId === 0 && $prepare->execute($bind)) {
-                        $pferdId = $conn->lastInsertId();
-                        $besitzerId = $_POST['besitzerId'];
-                        $rbId = $_POST['rbId'];
-                        $tierarztId = $_POST['tierarztId'];
-                        $hufschmiedId = $_POST['hufschmiedId'];
-                        $userIdArray = [$besitzerId, $rbId, $tierarztId, $hufschmiedId];
-                        for ($idf = 1; $idf<=4; $idf++){
-                          if ($userIdArray[$idf-1] > 0) {
-                            $prepareCon = $conn->prepare('
-                            INSERT INTO 
-                              beziehung
-                              (
-                                id_person,
-                                id_funktion,
-                                id_pferd
-                              ) VALUES (?,?,?)');
-                            $bindCon=[(int) $userIdArray[$idf-1], (int) $idf, $pferdId];
-                            $prepareCon->execute($bindCon);
-                          }
-                        }
+                    echo "<div class=\"alert alert-success\" role=\"alert\">Dieses Pferd wurde erstellt!</div>";
 
-                        /* Box wird zugeordnet */
-                        $prepareBoxCon = $conn->prepare("
-                          UPDATE
-                            box
-                          SET 
-                            id_pferd = '$pferdId'
-                          WHERE
-                            id_gehoeft = '$id_gehoeft' AND
-                            id_box = ?");
-                        $bindBoxCon = [$_POST['id_box']];
-                        $prepareBoxCon->execute($bindBoxCon);
-                        
-
-                        header('Location: pferd-edit.php?id_pferd=' . $pferdId . '&saved=true');
-
-                        exit();
+                  } else {
+                    if ($idrb != 0){
+                      $rbnew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 2, $idrb)";
+                      $rbnew_result = $conn->query($rbnew_sql);
                     }
+                  }
                   
-                } else {
-                    $sql = 'SELECT * FROM pferd WHERE id_pferd = ' . $_GET['id_pferd'];
-                    $pferd = $conn->query($sql);
+                  $pferdzutierarzt_sql = "SELECT * FROM beziehung WHERE id_pferd = $id_pferd AND id_funktion = 3";
+                  $pferdzutierarzt_result = $conn->query($pferdzutierarzt_sql);
+                  if ($pferdzutierarzt_result->num_rows > 0){
+                    while ($pferdzutierarzt = $pferdzutierarzt_result->fetch_assoc()){
+                      if ($idtierarzt != $pferdzutierarzt['id_person']){
+                        if($idtierarzt == 0){
+                          $tierarztupdate_sql = "DELETE FROM beziehung WHERE id_beziehung = " . $pferdzutierarzt['id_beziehung'];
+                          $tierarztupdate_result = $conn->query($tierarztupdate_sql);
+                        } else {
+                          $tierarztupdate_sql = "UPDATE beziehung SET id_person = $idtierarzt WHERE id_beziehung = " . $pferdzutierarzt['id_beziehung'];
+                          $tierarztupdate_result = $conn->query($tierarztupdate_sql);
+                        }
+                      }
+                    }
 
-                    $pferd = $pferd->fetch(MYSQLI_ASSOC);
+                  } else {
+                    if ($idtierarzt != 0){
+                      $tierarztnew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 3, $idtierarzt)";
+                      $tierarztnew_result = $conn->query($tierarztnew_sql);
+                    }
+                  }
 
-                    $pferdename = !isset($pferd['pferdename']) ? '' : $pferd['pferdename'];
-                    $geschlecht = !isset($pferd['geschlecht']) ? '' : $pferd['geschlecht'];
-                    $gewicht = !isset($pferd['gewicht']) ? '' : $pferd['gewicht'];
-                    $groesse = !isset($pferd['groesse']) ? '' : $pferd['groesse'];
-                    $passnr = !isset($pferd['passnr']) ? '' : $pferd['passnr'];
-                    $gebursdatum = !isset($pferd['geburtsdatum_pferd']) ? '' : $pferd['geburtsdatum_pferd'];
-                    $ankunft = !isset($pferd['ankunft']) ? '' : $pferd['ankunft'];
+                  
+                  $pferdzuhufschmied_sql = "SELECT * FROM beziehung WHERE id_pferd = $id_pferd AND id_funktion = 4";
+                  $pferdzuhufschmied_result = $conn->query($pferdzuhufschmied_sql);
+                  if ($pferdzuhufschmied_result->num_rows > 0){
+                    while ($pferdzuhufschmied = $pferdzuhufschmied_result->fetch_assoc()){
+                      if ($idhufschmied != $pferdzuhufschmied['id_person']){
+                        if($idhufschmied == 0){
+                          $hufschmiedupdate_sql = "DELETE FROM beziehung WHERE id_beziehung = " . $pferdzuhufschmied['id_beziehung'];
+                          $hufschmiedupdate_result = $conn->query($hufschmiedupdate_sql);
+                        } else {
+                          $hufschmiedupdate_sql = "UPDATE beziehung SET id_person = $idhufschmied WHERE id_beziehung = " . $pferdzuhufschmied['id_beziehung'];
+                          $hufschmiedupdate_result = $conn->query($hufschmiedupdate_sql);
+                        }
+                      }
+                    }
+
+                  } else {
+                    if ($idhufschmied != 0){
+                      $hufschmiednew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 4, $idhufschmied)";
+                      $hufschmiednew_result = $conn->query($hufschmiednew_sql);
+                    }
+                  }
+
+                  $boxaktuell_sql = "SELECT * FROM box WHERE id_pferd = $id_pferd";
+                  $boxaktuell_result = $conn->query($boxaktuell_sql);
+                  while ($boxaktuell = $boxaktuell_result->fetch_assoc()){
+                    if($boxaktuell['id_box'] != $idbox){
+                      $boxzuweisen_sql = "UPDATE box SET id_pferd = $id_pferd WHERE id_box = $idbox";
+                      $boxzuweisen_result = $conn->query($boxzuweisen_sql);
+                      $boxleeren_sql = "UPDATE box SET id_pferd = NULL WHERE id_box = " . $boxaktuell['id_box'];
+                      $boxleeren_result = $conn->query($boxleeren_sql);
+                    }
+                  }
+
+                  echo "<div class=\"alert alert-success\" role=\"alert\">Dieses Pferd wurde geändert!</div>";
+                  
+
+
                 }
 
-                $connections = [];
-
-                if ($pferdId !== 0) {
-                    $sql = 'SELECT * FROM beziehung WHERE id_pferd = ' . $pferdId;
-                    $connections = $conn->query($sql);
-                    $connections = $connections->fetchAll();
-                }
-
-                $sql = 'SELECT id_person, vorname, nachname FROM person';
-                $users = $conn->query($sql);
-                $users = $users->fetchAll();
-
-                $sql = 'SELECT * FROM funktion';
-                $functions = $conn->query($sql);
-                $functions = $functions->fetchAll();
 
 
-                if ($saved) {
-                    echo '<div id="myAlert" class="alert alert-success collapse">
-                            <strong> Pferd erfolgreich bearbeitet!</strong>
-                        </div>';
-                }
+
+
+                
+
+              }
             ?>
 
           <h1>
-          <?php if ($_GET['id_pferd'] == 0){
-            echo "Pferd erstellen";
+          <?php  if ($_GET['id_pferd'] == 0){
+            echo "Pferd hinzufügen";
           } else {
             echo "Pferd bearbeiten";
-          }?>
+          } ?>
           </h1>
           <hr>
           <br>
           <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
             <!-- Formular zur Eingabe -->
-            <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
+            <form action="pferd-edit.php?id_pferd=<?php echo $id_pferd; ?>&saved=true"  method="post">
                 <label>Pferdename</label>
                 <input class="form-control" type="text" maxlength="45" value="<?php echo $pferdename ?>" name="pferdename" required> <br />
                 <label>Geschlecht</label><br />
-                <select class="custom-select" name="geschlecht">
+                <select class="custom-select" name="geschlecht" required>
                     <option <?php if ($geschlecht === 's') {echo 'selected';} ?> value="s">Stute</option>
                     <option <?php if ($geschlecht === 'h') {echo 'selected';} ?> value="h">Hengst</option>
                     <option <?php if ($geschlecht === 'w') {echo 'selected';} ?> value="w">Wallach</option>
@@ -362,26 +362,28 @@ if($_SESSION["logged"] == true) {
                 <label>Passnummer</label>
                 <input class="form-control" type="number" min="100000000" max="999999999999999" value="<?php echo $passnr ?>" name="passnr" required><br />
                 <label>Geburtsdatum (tt.mm.jjjj)</label>
-                <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $gebursdatum ?>" name="geburtsdatum_pferd" required><br />
+                <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $geburtsdatum ?>" name="geburtsdatum" required><br />
                 <label>Ankunft des Pferdes am Hof (tt.mm.jjjj)</label>
                 <input class="form-control" type="date" min="2018-10-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $ankunft ?>" name="ankunft" required><br />
 
                 <br />
-                <hr>
+                <hr> 
                 <!-- Beziehungen zu Pferd als Auswahl in Tabelle -->
                 <?php
                   $allepersonen_sql = "SELECT id_person, vorname, nachname FROM person WHERE id_gehoeft = $id_gehoeft";
                   $allepersonen_result = $conn->query($allepersonen_sql);
-                  $allepersonen_result = $allepersonen_result->fetchAll();
+                  
                   $id_besitzer = 0;
                   $id_rb = 0;
                   $id_tierarzt = 0;
                   $id_hufschmied = 0;
                   if ($_GET['id_pferd']>0){
-                    $allebeziehungen_sql = "SELECT person.vorname, person.nachname, person.id_person, beziehung.id_funktion FROM person, beziehung WHERE person.id_person = beziehung.id_person AND id_pferd = " . $_GET['id_pferd'];
-                    $allebeziehungen_result = $conn->query($allebeziehungen_sql);
-                    $allebeziehungen_result = $allebeziehungen_result->fetchAll();
-                    foreach ($allebeziehungen_result as $beziehung){
+                    $allebeziehungen_sql = "SELECT person.vorname, person.nachname, person.id_person, beziehung.id_funktion FROM person, beziehung WHERE person.id_person = beziehung.id_person AND id_pferd = ?";
+                    $allebeziehungen_result = $conn->prepare($allebeziehungen_sql);
+                    $allebeziehungen_result->bind_param('i', $_GET['id_pferd']);
+                    $allebeziehungen_result->execute();
+                    $allebeziehungen_result = $allebeziehungen_result->get_result();
+                    while ($beziehung = $allebeziehungen_result->fetch_assoc()){
                       $beziehungid = $beziehung['id_funktion'];
                       if ($beziehungid == 1){
                         $id_besitzer = $beziehung['id_person'];
@@ -393,13 +395,12 @@ if($_SESSION["logged"] == true) {
                         $id_hufschmied = $beziehung['id_person'];
                       }
                     }
-                  }
+                  } 
 
                 ?>
                 <h2>Beziehungen zu Pferd</h2>
                 <div class="table-responsive">
-                  <div class="table table-bordered" width="100%" cellspacing = "0">
-                    <table>
+                  <table class="table table-bordered table-hover display" id="dataTable1" width="100%" cellspacing="0">
                       <thead>
                         <th>Beziehung</th>
                         <th>Person</th>
@@ -410,9 +411,9 @@ if($_SESSION["logged"] == true) {
                           <td>
                             <select class="custom-select" name="besitzerId">  
                             <?php
-                              foreach($allepersonen_result as $person){?>
-                                <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_besitzer){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
-                              <?php }
+                              foreach($allepersonen_result as $person){ ?>
+                                <option value = "<?php echo $person['id_person'] ?>" <?php if($person['id_person']==$id_besitzer){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname']; ?></option>
+                              <?php } 
 
                             ?>
                             </select>
@@ -424,8 +425,8 @@ if($_SESSION["logged"] == true) {
                             <select class="custom-select" name="rbId">
                               <option value="0"></option>
                               <?php
-                                foreach($allepersonen_result as $person){?>
-                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_rb){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                                foreach($allepersonen_result as $person){ ?>
+                                  <option value = "<?php echo $person['id_person'] ?>" <?php if($person['id_person']==$id_rb){ echo 'selected';} ?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
                                 <?php }
                               ?>
                             </select>
@@ -438,7 +439,7 @@ if($_SESSION["logged"] == true) {
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
-                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_tierarzt){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_tierarzt){ echo 'selected';} ?>><?php echo $person['vorname'] . " " . $person['nachname']; ?></option>
                                 <?php }
                               ?>
                             </select>
@@ -451,7 +452,7 @@ if($_SESSION["logged"] == true) {
                               <option value="0"></option>
                               <?php
                                 foreach($allepersonen_result as $person){?>
-                                  <option value = "<?php echo $person['id_person']?>" <?php if($person['id_person']==$id_hufschmied){ echo 'selected';}?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
+                                  <option value = "<?php echo $person['id_person'] ?>" <?php if($person['id_person']==$id_hufschmied){ echo 'selected';} ?>><?php echo $person['vorname'] . " " . $person['nachname'];?></option>
                                 <?php }
                               ?>
                             </select>
@@ -460,13 +461,13 @@ if($_SESSION["logged"] == true) {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                
                 <hr>
-                <br>
+                <br> 
                 <!-- Tabelle zum Zuweisen einer Box -->
                 <h2>Box zuweisen</h2>
                 <div class="table-responsive">
-                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <table class="table table-bordered table-hover display" id="dataTable2" width="100%" cellspacing="0">
                     <thead>
                       <tr>
                         <th>Auswahl</th>
@@ -475,18 +476,21 @@ if($_SESSION["logged"] == true) {
                       </tr>
                     </thead>
                     <tbody>
-                    
                     <?php
-                      $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft) OR (box.id_pferd = " . $_GET['id_pferd'] . " AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft)";
-                      $boxenfrei_result = $conn->query($boxenfrei_sql);
-                      $boxenfrei_result = $boxenfrei_result->fetchAll();
-                      foreach ($boxenfrei_result as $boxfrei){
+                      $boxenfrei_sql = "SELECT box.id_box as id_box, boxentyp.boxenbez as boxenbez, box.boxenpreis as boxenpreis, box.id_pferd as id_pferd 
+                          FROM box, boxentyp WHERE (box.id_pferd IS NULL AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft) OR 
+                          (box.id_pferd = ? AND box.id_boxentyp = boxentyp.id_boxentyp AND box.id_gehoeft = $id_gehoeft)";
+                      $boxenfrei_result = $conn->prepare($boxenfrei_sql);
+                      $boxenfrei_result->bind_param('i', $id_pferd);
+                      $boxenfrei_result->execute();
+                      $boxenfrei_result = $boxenfrei_result->get_result();
+                      while ($boxfrei = $boxenfrei_result->fetch_assoc()){
                         if ($boxfrei['id_pferd'] == $_GET['id_pferd']){
                           echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" checked required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
                         } else {
                         echo "<tr><td><input type=\"radio\" name=\"id_box\" value=\"" . $boxfrei['id_box'] . "\" required></td><td>" . $boxfrei['boxenbez'] . "</td><td>" . $boxfrei['boxenpreis'] . "</td></tr>";
                         }
-                      }
+                      } 
                     ?>
                     </tbody>
                   </table>
@@ -550,47 +554,19 @@ if($_SESSION["logged"] == true) {
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
 
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="js/demo/datatables-demo.js"></script>
+
+    <!-- JavaScript für mehrere DataTables auf einer Seite -->
     <script>
-        let i = 0;
-        $('#addNewConnection').click(function(){
-            i++;
-            $('#addNewConnection').before('<select name="userIdNew-'+i+'" id="userIdNew-'+i+'">' +
-                <?php
-                foreach ($users as $user) {
-                ?>
-                '<option value="<?php echo $user['id_person']; ?>"><?php echo $user['vorname'] . ' ' . $user['nachname']; ?></option>' +
-                <?php
-                }
-                ?>
-                '</select>' +
-                '<select name="functionIdNew-'+i+'" id="functionIdNew-'+i+'">' +
-                <?php
-                foreach ($functions as $function) {
-                ?>
-                '<option value="<?php echo $function['id_funktion']; ?>"><?php echo $function['funktionsbez']; ?></option>' +
-                <?php
-                }
-                ?>
-                '</select>' +
-                '<span class="deleteNew btn btn-danger btn-sm" data-connid='+i+' id="deleteNew-'+i+'"> Löschen</span>'+
-                '<br />'
-                );
-        });
-
-        $('.delete').click(function(){
-            let connId = $(this).data('connid');
-            $.post( "pferd-delete_alt.php", { connId: connId } );
-            $('#userId-'+connId).remove();
-            $('#functionId-'+connId).remove();
-            $('#delete-'+connId).remove();
-        });
-
-        $("body").on("click", ".deleteNew", function(){
-            let connId = $(this).data('connid');
-            $('#userIdNew-'+connId).remove();
-            $('#functionIdNew-'+connId).remove();
-            $(this).remove();
-        });
+      $(document).ready(function() {
+      $('table.display').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
+        }
+      });
+      });
     </script>
   </body>
 
