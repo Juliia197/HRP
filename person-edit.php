@@ -216,9 +216,17 @@ if($_SESSION["logged"] == true) {
               $checkbox_query = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $row_p['id_person'];
               $checkbox=$conn->query($checkbox_query);
 
+              $disabled_query = "SELECT * FROM verbrauchsgut WHERE id_person = " . $row_p['id_person'] . " AND id_gehoeft = $id_gehoeft";
+              $disabled_result = $conn->query($disabled_query);
+              if($disabled_result->num_rows > 0){
+                $disabled = 'disabled="disabled"';
+              } else {
+                $disabled = '';
+              }
+
               if ($checkbox->num_rows==1){
                 echo '<br><hr><br><div class="form-check">
-                <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion" checked>
+                <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion" ' . $disabled . 'checked>
                 <label class="form-check-label" for="id_funktion">
                   Hat die Rolle eines Lieferanten
                 </label>

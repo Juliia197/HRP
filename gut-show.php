@@ -29,7 +29,17 @@ if($_SESSION["logged"] == true) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HRP-Projekt</title>
+    <?php
+      $gutname_sql = "SELECT verbrauchsguttypbez FROM verbrauchsguttyp WHERE id_verbrauchsguttyp = ?";
+      $gutname_result = $conn->prepare($gutname_sql);
+      $gutname_result->bind_param('i', $_GET['id_verbrauchsguttyp']);
+      $gutname_result->execute();
+      $gutname_result = $gutname_result->get_result();
+      $gutname_result = $gutname_result->fetch_assoc();
+      $gutname = $gutname_result['verbrauchsguttypbez'];
+    ?>
+
+    <title>HRP - <?php echo $gutname; ?></title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -45,7 +55,7 @@ if($_SESSION["logged"] == true) {
 
     <!-- DataPoints für Diagramm wird erstellt -->
     <?php
-      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = ? AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum";
+      $lieferungen_sql = "SELECT DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdaten, einkaufspreis FROM verbrauchsgut WHERE id_verbrauchsguttyp = ? AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum";
       $lieferungen_result = $conn->prepare($lieferungen_sql);
       $lieferungen_result->bind_param('i', $_GET['id_verbrauchsguttyp']);
       $lieferungen_result->execute();
@@ -53,7 +63,7 @@ if($_SESSION["logged"] == true) {
       $dataPoints = '';
       if ($lieferungen_result->num_rows > 0){
         while ($row_l = $lieferungen_result->fetch_assoc()){
-          $dataPoints = $dataPoints . '{label: "' . $row_l["lieferdatum"] . '" , y: ' . $row_l["einkaufspreis"] . '},';
+          $dataPoints = $dataPoints . '{label: "' . $row_l["lieferdaten"] . '" , y: ' . $row_l["einkaufspreis"] . '},';
         }
       }
       $dataPoints = "[" . $dataPoints . "]";

@@ -290,7 +290,7 @@ if($_SESSION["logged"] == true) {
                     echo "<option value=\"" . $row_vgtall["id_verbrauchsguttyp"] . "\">" . $row_vgtall["verbrauchsguttypbez"] . "</option>";
                   }
                 }
-                echo "</select<br><br>";
+                echo "</select><br><br>";
                 echo "<label>Bezeichnung</label>";
                 echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"><br>";
                 echo "<label>Lieferdatum</label>";
