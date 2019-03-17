@@ -220,7 +220,7 @@ if($_SESSION["logged"] == true) {
 
               <?php
 
-              // SQL-Abfrage für Bedarf des Pferdes
+              // SQL-Abfrage für Bedarf des Pferdes, Heu und Hafer
               $bedarf1_query = "SELECT verbrauchsguttypbez, (koeffizient * $gewicht / 100) as bedarf FROM verbrauchsguttyp WHERE id_verbrauchsguttyp <= 2";
               $bedarf1_sql = $conn->query($bedarf1_query);
 
@@ -228,11 +228,12 @@ if($_SESSION["logged"] == true) {
                 echo "<tr><td>" . $bedarf1_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf1_fetch['bedarf'] . "</td></tr>";
               }
 
-              $bedarf1_query = "SELECT verbrauchsguttypbez, (koeffizient) as bedarf FROM verbrauchsguttyp WHERE id_verbrauchsguttyp > 2";
-              $bedarf1_sql = $conn->query($bedarf1_query);
+              // SQL-Abfrage für Bedarf des Pferdes, Streu und Sägespäne
+              $bedarf2_query = "SELECT verbrauchsguttypbez, (koeffizient) as bedarf FROM verbrauchsguttyp WHERE id_verbrauchsguttyp > 2";
+              $bedarf2_sql = $conn->query($bedarf2_query);
 
-              while($bedarf1_fetch = $bedarf1_sql->fetch_assoc()) {
-                echo "<tr><td>" . $bedarf1_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf1_fetch['bedarf'] . "</td></tr>";
+              while($bedarf2_fetch = $bedarf2_sql->fetch_assoc()) {
+                echo "<tr><td>" . $bedarf2_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf2_fetch['bedarf'] . "</td></tr>";
               }
 
               ?>
