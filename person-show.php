@@ -188,7 +188,7 @@ if($_SESSION["logged"] == true) {
             
             
             //Abfrage, ob diese Person Beziehungen hat
-            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion';
+            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion <5';
             $funktion_sql = $conn->prepare($funktion_query);
             $funktion_sql->bind_param("i",$_GET["id_person"]);
             $funktion_sql->execute();
