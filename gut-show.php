@@ -256,7 +256,7 @@ if($_SESSION["logged"] == true) {
         <footer class="sticky-footer">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutz</a></span>
             </div>
           </div>
         </footer>
@@ -317,6 +317,7 @@ if($_SESSION["logged"] == true) {
 
       <!-- Demo scripts for this page-->
   <script src="js/demo/datatables-demo.js"></script>
+  <script> function checkDelete(){ return confirm('Person endgültig löschen?') } </script>
 
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
