@@ -212,7 +212,7 @@ if($_SESSION["logged"] == true) {
               <thead class='thead-light'>
                 <tr>
                   <th>Verbrauchsgut</th>
-                  <th>Bedarf in kg/Tag</th>
+                  <th>Verbrauch in kg/Tag</th>
                 </tr>
               </thead>
               
