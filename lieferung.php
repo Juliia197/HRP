@@ -165,7 +165,7 @@ if($_SESSION["logged"] == true) {
                     echo '<td>
                     <div class="d-sm-flex flex-row">
                     <div><a class="btn btn-sm btn-primary" role="button" href="gut-edit.php?id_verbrauchsgut=' . $fetch["id_verbrauchsgut"] . '" >Bearbeiten</a></div>
-                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $row_v['id_verbrauchsgut'] . '" onclick="return checkDelete()">Löschen</a></div>
+                    <div class="ml-0 ml-sm-2 mt-1 mt-sm-0"><a class="btn btn-sm btn-danger" role="button" href="gut-delete.php?id_verbrauchsgut=' . $fetch['id_verbrauchsgut'] . '" onclick="return checkDelete()">Löschen</a></div>
                     </div>
                     </td>
                     </tr>';
