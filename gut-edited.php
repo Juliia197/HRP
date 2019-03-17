@@ -226,9 +226,9 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select><br><br>";
                   echo "<label>Bezeichnung</label>";
-                  echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"><br>";
+                  echo "<input class=\"form-control\" type=\"text\"  maxlength=\"45\" value=\"" . $row_g["verbrauchsgutbez"] . "\" name=\"verbrauchsgutbez\"><br>";
                   echo "<label>Lieferdatum</label>";
-                  echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
+                  echo "<input class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
                   echo "<label>Lieferant</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_person\">";
                   $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" . $row_g["id_person"] . " AND person.id_person = beziehung.id_person AND id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
@@ -247,9 +247,9 @@ if($_SESSION["logged"] == true) {
                   }
                   echo "</select><br><br>";
                   echo "<label>Menge</label>";
-                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["menge"] . "\" name=\"menge\"><br>";
+                  echo "<input class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" value=\"" . $row_g["menge"] . "\" name=\"menge\"><br>";
                   echo "<label>Einkaufspreis</label>";
-                  echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"><br>";
+                  echo "<input class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" value=\"" . $row_g["einkaufspreis"] . "\" name=\"einkaufspreis\"><br>";
                   echo "
                       <hr>
                       <div class=\"form-group\">
@@ -291,9 +291,9 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select><br><br>";
                 echo "<label>Bezeichnung</label>";
-                echo "<input class=\"form-control\" type=\"text\" name=\"verbrauchsgutbez\"><br>";
+                echo "<input class=\"form-control\" type=\"text\"  maxlength=\"45\" name=\"verbrauchsgutbez\"><br>";
                 echo "<label>Lieferdatum</label>";
-                echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"><br>";
+                echo "<input class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"><br>";
                 echo "<label>Lieferant</label>";
                 echo "<select class=\"form-control custom-select\" name=\"id_person\">";
                 $lieferantall_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
@@ -305,9 +305,9 @@ if($_SESSION["logged"] == true) {
                 }
                 echo "</select><br><br>";
                 echo "<label>Menge</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"menge\"><br>";
+                echo "<input class=\"form-control\" type=\"number\" min=\"1\" max=\"10000\" name=\"menge\"><br>";
                 echo "<label>Einkaufspreis</label>";
-                echo "<input class=\"form-control\" type=\"number\" name=\"einkaufspreis\"><br>";
+                echo "<input class=\"form-control\" type=\"number\" min=\"0.01\" max=\"300\" step=\"0.01\" name=\"einkaufspreis\"><br>";
                 echo "
                       <hr>
                       <div class=\"form-group\">
