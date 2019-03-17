@@ -231,14 +231,14 @@ if($_SESSION["logged"] == true) {
                   echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_g["lieferdatum"] . "\" name=\"lieferdatum\"><br>";
                   echo "<label>Lieferant</label>";
                   echo "<select class=\"form-control custom-select\" name=\"id_person\">";
-                  $lieferant_sql = "SELECT * FROM person WHERE id_person =" .$row_g["id_person"];
+                  $lieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person =" . $row_g["id_person"] . " AND person.id_person = beziehung.id_person AND id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $lieferant_result = $conn->query($lieferant_sql);
                   if($lieferant_result->num_rows > 0){
                     while($row_l = $lieferant_result->fetch_assoc()){
                       echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
                     }
                   }
-                  $notlieferant_sql = "SELECT * FROM person WHERE id_person IS NOT NULL AND NOT id_person = " . $row_g["id_person"];
+                  $notlieferant_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                   $notlieferant_result = $conn->query($notlieferant_sql);
                   if($notlieferant_result->num_rows > 0){
                     while($row_nl = $notlieferant_result->fetch_assoc()){
@@ -296,7 +296,7 @@ if($_SESSION["logged"] == true) {
                 echo "<input class=\"form-control\" type=\"date\" name=\"lieferdatum\"><br>";
                 echo "<label>Lieferant</label>";
                 echo "<select class=\"form-control custom-select\" name=\"id_person\">";
-                $lieferantall_sql = "SELECT * FROM person";
+                $lieferantall_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
                 $lieferantall_result = $conn->query($lieferantall_sql);
                 if($lieferantall_result->num_rows > 0){
                   while($row_lall = $lieferantall_result->fetch_assoc()){
