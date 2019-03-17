@@ -144,7 +144,6 @@ if($_SESSION["logged"] == true) {
             $lieferdatum = $_POST["lieferdatum"];
             $menge = $_POST["menge"];
             $einkaufspreis = $_POST["einkaufspreis"];
-            $id_gehoeft = 1;
             $id_verbrauchsguttyp = $_POST["id_verbrauchsguttyp"];
             $id_person = $_POST["id_person"];
             $update = $_GET["id_verbrauchsgut"];
@@ -255,7 +254,7 @@ if($_SESSION["logged"] == true) {
                       <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
+                        <button class=\"btn btn-secondary\" href=\"lieferung.php\" role=\"button\">Abbrechen</button>
                       </div>";
                 }
               }
@@ -313,7 +312,7 @@ if($_SESSION["logged"] == true) {
                       <hr>
                       <div class=\"form-group\">
                         <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                        <button class=\"btn btn-secondary\" href=\"gueter.php\" role=\"button\">Abbrechen</button>
+                        <button class=\"btn btn-secondary\" href=\"lieferung.php\" role=\"button\">Abbrechen</button>
                       </div>";
               }
 
