@@ -203,7 +203,6 @@ if($_SESSION["logged"] == true) {
                   $id_pferd = $newpferdid_result['id_pferd'];
 
                   $besitzernew_sql = "INSERT INTO beziehung (id_pferd, id_funktion, id_person) VALUES ($id_pferd, 1, $idbesitzer)";
-                  echo $besitzernew_sql;
                   $besitzernew_result = $conn->query($besitzernew_sql);
 
                   if ($idrb != 0){
@@ -223,6 +222,8 @@ if($_SESSION["logged"] == true) {
                   
                   $boxzuweisen_sql = "UPDATE box SET id_pferd = $id_pferd WHERE id_box = $idbox";
                   $boxzuweisen_result = $conn->query($boxzuweisen_sql);
+
+                  echo "<div class=\"alert alert-success\" role=\"alert\">Dieses Pferd wurde erstellt!</div>";
 
 
                 } else {
@@ -255,7 +256,7 @@ if($_SESSION["logged"] == true) {
                       }
                     }
 
-                    echo "<div class=\"alert alert-success\" role=\"alert\">Dieses Pferd wurde erstellt!</div>";
+                   
 
                   } else {
                     if ($idrb != 0){
