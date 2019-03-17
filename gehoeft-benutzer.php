@@ -130,7 +130,6 @@ if($_SESSION["logged"] == true) {
           <form action= "gehoeft-benutzer-added.php" method="post">
           <div class="form-group">
           <label for="email">E-Mail</label>
-          <input class="form-control" id="email" type="email" name="email" required>
           </div>
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
 
@@ -195,6 +194,7 @@ if($_SESSION["logged"] == true) {
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
               <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutzerklärung</a></span>
+              <span>Copyright © HRP-Projekt 2018/19 | <a href="impressum.html" target="_blank">Impressum & Datenschutz</a></span>
             </div>
           </div>
         </footer>
