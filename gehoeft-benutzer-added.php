@@ -106,9 +106,18 @@ if($_SESSION["logged"] == true) {
         <div class="container-fluid">
 
           <!-- Page Content -->
-          <h1>Benutzer zum Gehöft hinzufügen</h1>
-          <hr>
-          <br>
+          <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="dashboard.php">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="gehoeft.php">Gehöft</a>
+          </li>
+          <li class="breadcrumb-item active">
+            Gehöftverwaltung
+          </li>
+        </ol>
 
           <?php 
 
