@@ -130,7 +130,7 @@ if($_SESSION["logged"] == true) {
           <form action= "gehoeft-benutzer-added.php" method="post">
           <div class="form-group">
           <label for="email">E-Mail</label>
-          <input class="form-control" id="email" type="email" name="email" required>
+          <input class="form-control" id="email" maxlength="45" type="email" name="email" required>
           </div>
           <button type="submit" class="btn btn-success">Benutzer zum Gehöft hinzufügen</button>
 

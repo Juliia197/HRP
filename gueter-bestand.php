@@ -141,7 +141,7 @@ if($_SESSION["logged"] == true) {
                 <label for="'. $fetch['id_verbrauchsguttyp'] .'">
                 '. $fetch['verbrauchsguttypbez'] .'
                 </label>
-                <input class="form-control" id="'. $fetch['id_verbrauchsguttyp'] .'" name="typ_'. $fetch['id_verbrauchsguttyp'] .'" type="number" value="'. $fetch['bestand'] .'" required><br>
+                <input class="form-control" id="'. $fetch['id_verbrauchsguttyp'] .'" name="typ_'. $fetch['id_verbrauchsguttyp'] .'" type="number" maxlength="11" value="'. $fetch['bestand'] .'" required><br>
                 ';             
                   
               }
