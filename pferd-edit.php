@@ -144,17 +144,6 @@ if($_SESSION["logged"] == true) {
             </li>
           </ol>
 
-          <h1>
-          <?php if ($_GET['id_pferd'] == 0){
-            echo "Pferd erstellen";
-          } else {
-            echo "Pferd bearbeiten";
-          }?>
-          </h1>
-          <hr>
-          <br>
-          <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
-
             <!-- Feststellung, ob Pferd bearbeitet/erstellt werden muss in DB oder nicht -->
             <?php
                 $saved = !isset($_GET['saved']) ? false : true;
@@ -346,6 +335,16 @@ if($_SESSION["logged"] == true) {
                 }
             ?>
 
+          <h1>
+          <?php if ($_GET['id_pferd'] == 0){
+            echo "Pferd erstellen";
+          } else {
+            echo "Pferd bearbeiten";
+          }?>
+          </h1>
+          <hr>
+          <br>
+          <p>Auf dieser Seite können Sie alle Informationen rund um das Pferd bearbeiten. Außerdem die Personen, die mit dem Pferd in Verbindung stehen, einsehen und ändern.</p>
             <!-- Formular zur Eingabe -->
             <form action="pferd-edit.php?id_pferd=<?php echo $pferdId ?>"  method="post">
                 <label>Pferdename</label>

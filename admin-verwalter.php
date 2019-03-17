@@ -15,7 +15,7 @@ session_start();
 
 // User-E-Mail aus der Session (vom Login) holen und setzen des Arrays, mit zugelassenen Admin-Mail-Adressen
 $admin_mail  = $_SESSION["mail"];
-$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+$admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt.de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
 
 ?>
 <!DOCTYPE html>
