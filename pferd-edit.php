@@ -364,7 +364,7 @@ if($_SESSION["logged"] == true) {
                 <label>Geburtsdatum (tt.mm.jjjj)</label>
                 <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $geburtsdatum ?>" name="geburtsdatum" required><br />
                 <label>Ankunft des Pferdes am Hof (tt.mm.jjjj)</label>
-                <input class="form-control" type="date" min="2018-10-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $ankunft ?>" name="ankunft" required><br />
+                <input class="form-control" type="date" min="1980-01-01" max="<?php echo date("Y-m-d"); ?>" value="<?php echo $ankunft ?>" name="ankunft" required><br />
 
                 <br />
                 <hr> 
