@@ -216,13 +216,12 @@ if($_SESSION["logged"] == true) {
                 $pferd_sql->bind_param("i",$_GET["id_person"]);
                 $pferd_sql->execute();
                 $pferd_bez = $pferd_sql->get_result();
+
+                //Tabelle wird erzeugt
+                echo "
+                 <h3>Beziehungen zu dieser Person</h3><br>";
   
-                while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
-                  //Tabelle wird erzeugt
-                  echo "
-                  <h3>Beziehungen zu dieser Person</h3><br>";
-  
-                  echo "
+                echo "
                   <div class='table-responsive'>
                   <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
                   <thead class='thead-light'>
@@ -233,6 +232,9 @@ if($_SESSION["logged"] == true) {
                     </tr>
                   </thead>                  
                   <tbody>";
+  
+                while($fetch = mysqli_fetch_assoc($pferd_bez)){ //für jede Beziehung wird eine Zeile erzeugt
+
 
                   echo '<tr>';
                   echo '<td>' . $fetch['pferdename'] .  '</td>';
@@ -247,16 +249,13 @@ if($_SESSION["logged"] == true) {
                   </div>
                   </td>
                   </tr>';
-
-              
-                echo "
-                  </tbody>
-                  </table>
-                  </div>
-                  <hr>
-                  <br>";
-
                 }
+                echo "
+                </tbody>
+                </table>
+                </div>
+                <hr>
+                <br>";
               }
               
               if($lieferant->num_rows>0){
