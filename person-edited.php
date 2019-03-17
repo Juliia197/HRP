@@ -366,7 +366,7 @@ if($_SESSION["logged"] == true) {
                 }
               }
 
-//wiederanzeige der Hinzufügenseite
+//wiederanzeige der Bearbeiten
 
       if($erfolg==1){
         
@@ -394,16 +394,16 @@ if($_SESSION["logged"] == true) {
 
 
               echo "<label>Vorname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\" required ><br>";
+              echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["vorname"] . "\" name=\"vorname\" required ><br>";
               
               echo "<label>Nachname</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\" required ><br>";
+              echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\"  value=\"" . $row_p["nachname"] . "\" name=\"nachname\" required ><br>";
               
               echo "<label>E-Mail</label>";
-              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\" required ><br>";
+              echo "<input class=\"form-control\" type=\"email\" maxlength=\"45\" value=\"" . $row_p["email"] . "\" name=\"email\" required ><br>";
               
               echo "<label>Telefonnummer</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\" required ><br>";
+              echo "<input class=\"form-control\" type=\"number\"  min=\"100000000\" max=\"99999999999999999999\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\" required ><br>";
               
               echo "<label>Geburtsdatum</label>";
               echo "<input class=\"form-control\" type=\"date\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\" required ><br>";
@@ -413,16 +413,16 @@ if($_SESSION["logged"] == true) {
               echo "<br><h3> Adresse </h3>";
 
               echo "<label>Straße</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\" required ><br>";
+              echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["strasse"] . "\" name=\"strasse\" required ><br>";
 
               echo "<label>Hausnummer</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\" required ><br>";
+              echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["hausnr"] . "\" name=\"hausnr\" required ><br>";
 
               echo "<label>Postleitzahl</label>";
-              echo "<input class=\"form-control\" type=\"number\" value=\"" . $row_p["plz"] . "\" name=\"plz\" required ><br>";
+              echo "<input class=\"form-control\" type=\"number\"  min=\"1000\" max=\"99999\" value=\"" . $row_p["plz"] . "\" name=\"plz\" required ><br>";
 
               echo "<label>Ortschaft</label>";
-              echo "<input class=\"form-control\" type=\"text\" value=\"" . $row_p["ort"] . "\" name=\"ort\" required ><br>";
+              echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["ort"] . "\" name=\"ort\" required ><br>";
 
               echo "<label>Land</label>";
               echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
@@ -499,35 +499,35 @@ if($_SESSION["logged"] == true) {
             
             
             echo "<label>Vorname</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"vorname\" required ><br>";
+            echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"vorname\" required ><br>";
             
             echo "<label>Nachname</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\" required ><br>";
+            echo "<input class=\"form-control\" type=\"text\"  maxlength=\"45\" name=\"nachname\" required ><br>";
             
             echo "<label>E-Mail</label>";
-            echo "<input class=\"form-control\" type=\"email\" name=\"email\" required ><br>";
+            echo "<input class=\"form-control\" type=\"email\" maxlength=\"45\" name=\"email\" required ><br>";
             
             echo "<label>Telefonnummer</label>";
-            echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\" required ><br>";
+            echo "<input class=\"form-control\" type=\"number\"  min=\"100000000\" max=\"99999999999999999999\" name=\"telefonnr\" required ><br>";
             
             echo "<label>Geburtsdatum</label>";
-            echo "<input class=\"form-control\" type=\"date\"  name=\"geburtsdatum\" required ><br>";
+            echo "<input class=\"form-control\" type=\"date\"   min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\" required ><br>";
 
             echo "<hr>";
 
             echo "<br><h3> Adresse </h3>";
 
             echo "<label>Straße</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"strasse\" required ><br>";
+            echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"strasse\" required ><br>";
 
             echo "<label>Hausnummer</label>";
-            echo "<input class=\"form-control\" type=\"text\" name=\"hausnr\" required ><br>";
+            echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"hausnr\" required ><br>";
 
             echo "<label>Postleitzahl</label>";
-            echo "<input class=\"form-control\" type=\"number\" name=\"plz\" required ><br>";
+            echo "<input class=\"form-control\" type=\"number\"  min=\"1000\" max=\"99999\" name=\"plz\" required ><br>";
 
             echo "<label>Ortschaft</label>";
-            echo "<input class=\"form-control\" type=\"text\"  name=\"ort\" required ><br>";
+            echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" name=\"ort\" required ><br>";
 
             echo "<label>Land</label>";
             echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";

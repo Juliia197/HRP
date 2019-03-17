@@ -181,7 +181,7 @@ if($_SESSION["logged"] == true) {
               echo "<input class=\"form-control\" type=\"text\" maxlength=\"45\" value=\"" . $row_p["nachname"] . "\" name=\"nachname\" required><br>";
               
               echo "<label>E-Mail</label>";
-              echo "<input class=\"form-control\" type=\"email\" value=\"" . $row_p["email"] . "\" name=\"email\"  required><br>";
+              echo "<input class=\"form-control\" type=\"email\" maxlength=\"45\" value=\"" . $row_p["email"] . "\" name=\"email\"  required><br>";
               
               echo "<label>Telefonnummer</label>";
               echo "<input class=\"form-control\" type=\"number\" min=\"100000000\" max=\"99999999999999999999\" value=\"" . $row_p["telefonnr"] . "\" name=\"telefonnr\" required ><br>";
@@ -282,7 +282,7 @@ if($_SESSION["logged"] == true) {
             echo "<input class=\"form-control\" type=\"text\"  name=\"nachname\" maxlength=\"45\" required ><br>";
             
             echo "<label>E-Mail</label>";
-            echo "<input class=\"form-control\" type=\"email\" name=\"email\" required ><br>";
+            echo "<input class=\"form-control\" type=\"email\" maxlength=\"45\" name=\"email\" required ><br>";
             
             echo "<label>Telefonnummer</label>";
             echo "<input class=\"form-control\" type=\"number\" name=\"telefonnr\" min=\"100000000\" max=\"99999999999999999999\" required ><br>";
