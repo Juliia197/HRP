@@ -170,7 +170,7 @@ if($_SESSION["logged"] == true) {
                   echo '<td>';
                   
                   //Abrufen der verschiedenen Beziehungen die die Person mit einem oder mehreren Pferden hat
-                  $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion';
+                  $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion GROUP BY funktion.funktionsbez';
                   $funktion_sql = $conn->prepare($funktion_query);
                   $funktion_sql->bind_param("i",$fetch["id_person"]);
                   $funktion_sql->execute();
