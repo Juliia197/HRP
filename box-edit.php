@@ -118,12 +118,7 @@ if($_SESSION["logged"] == true) {
             </li>
           </ol>
 
-          <!-- Page Content -->
-          <h1>Box hinzufügen</h1>
-          <hr>
-          
           <!-- Überprüfung, ob Box angelegt werden soll oder nicht -->
-          <br>
           <?php
             if (isset($_GET['saved']) && $_GET['saved'] == true){
               $boxenpreis = $_POST['boxenpreis'];
@@ -136,6 +131,11 @@ if($_SESSION["logged"] == true) {
               echo '<div class="alert alert-success" role="alert">Ihre Box wurde hinzugefügt!</div><br>';
             }
           ?>
+          
+          <!-- Page Content -->
+          <h1>Box hinzufügen</h1>
+          <hr>
+          <br>
 
           <!-- Formular zum Anlegen einer Box -->
           <form action="box-edit.php?saved=true" method="post">
