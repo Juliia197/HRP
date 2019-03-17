@@ -119,12 +119,7 @@ if($_SESSION["logged"] == true) {
               Box löschen
             </li>
           </ol>
-
-          <h1>Box löschen</h1>
-          <hr>
-
           <!-- Box löschen, wenn GET-Parameter gesetzt ist -->
-          <br>
           <?php
             if (isset($_GET['id_box'])){
               $id_box = $_GET['id_box'];
@@ -137,6 +132,9 @@ if($_SESSION["logged"] == true) {
             }
 
           ?>
+
+          <h1>Box löschen</h1>
+          <hr>
           <!-- Tabelle der einzelnen Boxen zur Auswahl -->
           <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
