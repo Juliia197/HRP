@@ -35,6 +35,21 @@ if($_SESSION["logged"] == true) {
       $id_adresse_sql->bind_param("i", $_GET['id_person']);
       $id_adresse_sql->execute();
       $id_adresse = $id_adresse_sql->get_result();
+
+      //mögliche Beziehungen löschen
+      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =?";
+      $istlieferant_sql = $conn->prepare($istlieferant_query);
+      $istlieferant_sql -> bind_param("i", $_GET['id_person']);
+      $istlieferant_sql -> execute();
+      $istlieferant = $istlieferant_sql ->get_result(); 
+
+      if($istlieferant->num_rows==1){
+        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =?";
+        $deletelieferant_sql = $conn->prepare($deletelieferant_query);
+        $deletelieferant_sql -> bind_param("i", $_GET['id_person']);
+        $deletelieferant_sql -> execute();
+        $deletelieferant = $deletelieferant_sql ->get_result(); 
+      }
     
 
       //Löschen der Person aus der Datenbank
@@ -52,10 +67,12 @@ if($_SESSION["logged"] == true) {
         $wieoftda = $wieoftda_sql->get_result();
 
         if($wieoftda->num_rows==0){ //wird durchgeführt wenn die Adresse keiner weiteren Person zugeordnet ist
-          $adressebeigehoeft_query = "SELECT id_gehoeft FROM gehoeft WHERE id_adresse = " . $row_x['id_adresse'];
-          $adressebeigehoeft = $conn->query($adressebeigehoeft);
 
-          if($gehoeftnichtda->num_rows==0){
+          $adressebeigehoeft_query = "SELECT id_gehoeft FROM gehoeft WHERE id_adresse = " . $row_x['id_adresse'];
+          $adressebeigehoeft = $conn->query($adressebeigehoeft_query);
+          $adressebeigehoeft_query;
+
+          if($adressebeigehoeft->num_rows==0){
 
             $adresseloeschen_query = "DELETE FROM adresse WHERE id_adresse=? ";
             $adresseloeschen_sql = $conn->prepare($adresseloeschen_query);

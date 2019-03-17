@@ -18,10 +18,13 @@ if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION['id_gehoeft'];
 	$auth = false;
-	
-	$auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
-	$auth_result =  $conn->query($auth_sql);
-	$auth_result = $auth_result->fetch_assoc();
+	  
+  $query = "SELECT id_gehoeft FROM person WHERE id_person = ?";
+  $auth_sql = $conn->prepare($query);
+  $auth_sql->bind_param("i", $_GET['id_person']);
+  $auth_sql->execute();
+  $result = $auth_sql->get_result();
+  $auth_result = $result->fetch_assoc();
 	
 	if ($auth_result['id_gehoeft'] == $id_gehoeft) {
 	  $auth = true;

@@ -20,9 +20,12 @@ if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
 	  $auth = false;
 	    
-	  $auth_sql = "SELECT id_gehoeft FROM person WHERE id_person = " . $_GET['id_person'] . "";
-	  $auth_result =  $conn->query($auth_sql);
-	  $auth_result = $auth_result->fetch_assoc();
+    $query = "SELECT id_gehoeft FROM person WHERE id_person = ?";
+    $auth_sql = $conn->prepare($query);
+    $auth_sql->bind_param("i", $_GET['id_person']);
+    $auth_sql->execute();
+    $result = $auth_sql->get_result();
+    $auth_result = $result->fetch_assoc();
 	    
 	  if ($auth_result['id_gehoeft'] == $id_gehoeft) {
 	      $auth = true;
@@ -249,7 +252,6 @@ if($_SESSION["logged"] == true) {
                     }
 
                     else{//wird durchgeführt wenn die alte Adresse mehr als einer Person zugeordnet ist
-                     // echo "Adresse bleibt im System da sie nicht nur dieser Person zugeorndet war";
                     }
 
                   }
@@ -269,6 +271,22 @@ if($_SESSION["logged"] == true) {
                       $lieferant_sql -> execute();
                       $lieferant = $lieferant_sql ->get_result();                          
 
+                    }
+                    else{
+                      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =?";
+                      $istlieferant_sql = $conn->prepare($istlieferant_query);
+                      $istlieferant_sql -> bind_param("i", $id['id_person']);
+                      $istlieferant_sql -> execute();
+                      $istlieferant = $istlieferant_sql ->get_result();
+
+                      if($istlieferant->num_rows==1){
+                        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =?";
+                        $deletelieferant_sql = $conn->prepare($deletelieferant_query);
+                        $deletelieferant_sql -> bind_param("i", $id['id_person']);
+                        $deletelieferant_sql -> execute();
+                        $deletelieferant = $deletelieferant_sql ->get_result();
+     
+                      }
                     }
                   }
               }
@@ -340,6 +358,7 @@ if($_SESSION["logged"] == true) {
 
                     }
                   }
+
                 }
                 else{
                   $erfolg = 3;

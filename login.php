@@ -196,7 +196,7 @@ if (isset($_POST['email'], $_POST['password'])) {
 
             // Überprüfung, ob Benutzer ein Admin ist
             $_SESSION['mail'] = $mail;
-            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt.de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
             if (in_array($mail, $admin_mail_array)) {
               // Setzen eines Booleans, wenn ein Admin einem Gehöft zugeordnet ist
               $ein_gehoeft = true;
@@ -398,7 +398,7 @@ if (isset($_POST['email'], $_POST['password'])) {
           else if ($id_gehoeft_count['count'] > 1) {
             $gehoeft_auswaehlen = true;
             $_SESSION['mail'] = $mail;
-            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt.de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
             if (in_array($mail, $admin_mail_array)) {
               $admin = true;
             }
@@ -408,7 +408,7 @@ if (isset($_POST['email'], $_POST['password'])) {
           else {
             $error_gehoeft = true;
             $_SESSION['mail'] = $mail;
-            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt-de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
+            $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@hrp-projekt.de", "julia@hrp-projekt.de", "kerstin@hrp-projekt.de", "demo_admin@hrp-projekt.de");
             if (in_array($mail, $admin_mail_array)) {
               $admin = true;
             }
