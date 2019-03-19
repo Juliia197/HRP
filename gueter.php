@@ -171,7 +171,7 @@ if($_SESSION["logged"] == true) {
               <tr>
                 <th>Typ</th>
                 <th>Bestand in kg</th>
-                <th>Durchschnittspreis je kg</th>
+                <th>Durchschnittspreis in €/kg</th>
                 <th></th>
               </tr>
               </thead>          
