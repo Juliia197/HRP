@@ -144,7 +144,7 @@ if($_SESSION["logged"] == true) {
               <thead class="thead-light">
                 <tr>
                   <th>Boxentyp</th>
-                  <th>Boxenpreis</th>
+                  <th>Boxenpreis in €/Monat</th>
                   <th></th>
                 </tr>
               </thead>
