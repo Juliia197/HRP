@@ -99,6 +99,9 @@ exit();
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
    
   <!-- Main structure css file -->
   <link  rel="stylesheet" href="css/login5-style.css">
