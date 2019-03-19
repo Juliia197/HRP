@@ -36,23 +36,17 @@ if($_SESSION["logged"] == true) {
     $pferd_delete1_sql->execute();
     $pferd_delete1_sql->close();
 
-    $pferd_delete2_query = "DELETE FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd =  ?";
+    $pferd_delete2_query = "UPDATE box SET id_pferd = NULL WHERE id_pferd = ?";
     $pferd_delete2_sql = $conn->prepare($pferd_delete2_query);
     $pferd_delete2_sql->bind_param("i", $id_pferd);
     $pferd_delete2_sql->execute();
     $pferd_delete2_sql->close();
 
-    $pferd_delete3_query = "UPDATE box SET id_pferd = NULL WHERE id_pferd = ?";
+    $pferd_delete3_query = "DELETE FROM pferd WHERE id_pferd =  ?";
     $pferd_delete3_sql = $conn->prepare($pferd_delete3_query);
     $pferd_delete3_sql->bind_param("i", $id_pferd);
     $pferd_delete3_sql->execute();
     $pferd_delete3_sql->close();
-
-    $pferd_delete4_query = "DELETE FROM pferd WHERE id_pferd =  ?";
-    $pferd_delete4_sql = $conn->prepare($pferd_delete4_query);
-    $pferd_delete4_sql->bind_param("i", $id_pferd);
-    $pferd_delete4_sql->execute();
-    $pferd_delete4_sql->close();
   }
 
   $auth_sql->close();

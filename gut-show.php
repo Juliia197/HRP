@@ -200,9 +200,9 @@ if($_SESSION["logged"] == true) {
                   </thead>              
                   <tbody>";
             }
-            $verbrauchsgut_query = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_verbrauchsguttyp = ?";
+            $verbrauchsgut_query = "SELECT *, DATE_FORMAT(lieferdatum, '%d.%m.%Y') as lieferdatum FROM verbrauchsgut WHERE id_verbrauchsguttyp = ? AND id_gehoeft = ?";
             $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
-            $verbrauchsgut_sql->bind_param("i", $_GET["id_verbrauchsguttyp"]);
+            $verbrauchsgut_sql->bind_param("ii", $_GET["id_verbrauchsguttyp"], $id_gehoeft);
             $verbrauchsgut_sql->execute();
             $verbrauchsgut = $verbrauchsgut_sql->get_result();
             while($row_v = mysqli_fetch_assoc($verbrauchsgut)){

@@ -151,7 +151,7 @@ if($_SESSION["logged"] == true) {
             $pferd_sql->bind_param("i", $id_pferd);
             $pferd_sql->execute();
             $pferd_result = $pferd_sql->get_result();
-            while ($pferd_fetch = $pferd_result->fetch_assoc()) {  
+            while ($pferd_fetch = $pferd_result->fetch_assoc()) {
 
               echo "<ol class=\"breadcrumb\">
                     <li class=\"breadcrumb-item\">
@@ -188,7 +188,8 @@ if($_SESSION["logged"] == true) {
                     <p>Geburtsdatum: " . $geburtsdatum_pferd->format('d.m.Y') . "</p>
                     <p>Ankunft: " . $ankunft->format('d.m.Y') . "</p>";
 
-            
+            // Gewicht in Variable speichern für Bedarfsberechnung
+            $gewicht = $pferd_fetch['gewicht'];
             }
             
               // SQL-Abfrage für zugewiesene Box
@@ -201,51 +202,49 @@ if($_SESSION["logged"] == true) {
                 echo "<p>Boxentyp: " . $box_fetch['boxenbez'] . "</p>
                       <p>Boxenpreis: " . $box_fetch['boxenpreis'] .  " €/Monat</p>";
               }
-              
-              echo "
+              ?>
+
               <hr>
-              <h3>Verbrauch</h3>";
+              <h3>Verbrauch</h3>
 
-              // SQL-Abfrage für Verbrauchsguttypbezeichnung
-              $verbrauchsgut_query = "SELECT verbrauchsguttyp.verbrauchsguttypbez FROM pferd_frisst_verbrauchsguttyp, verbrauchsguttyp WHERE pferd_frisst_verbrauchsguttyp.id_pferd = ? AND pferd_frisst_verbrauchsguttyp.id_verbrauchsguttyp = verbrauchsguttyp.id_verbrauchsguttyp";
-              $verbrauchsgut_sql = $conn->prepare($verbrauchsgut_query);
-              $verbrauchsgut_sql->bind_param("i", $id_pferd);
-              $verbrauchsgut_sql->execute();
-              $verbrauchsgut_result = $verbrauchsgut_sql->get_result();
-
-              // SQL-Abfrage für Bedarf des Pferdes
-              $bedarf_query = "SELECT id_verbrauchsguttyp, bedarf FROM pferd_frisst_verbrauchsguttyp WHERE id_pferd = ? ";
-              $bedarf_sql = $conn->prepare($bedarf_query);
-              $bedarf_sql->bind_param("i", $id_pferd);
-              $bedarf_sql->execute();
-              $bedarf_result = $bedarf_sql->get_result();
-              
-              echo "
               <div class='table-responsive'>
               <table class='table table-bordered table-hover display' id='dataTable1' width='100%' cellspacing='0'>
               <thead class='thead-light'>
                 <tr>
                   <th>Verbrauchsgut</th>
-                  <th>Bedarf</th>
+                  <th>Verbrauch in kg/Tag</th>
                 </tr>
               </thead>
               
-              <tbody>";
+              <tbody>
 
-              while($verbrauchsgut_fetch = $verbrauchsgut_result->fetch_assoc() AND $bedarf_fetch = $bedarf_result->fetch_assoc()){
-                echo "<tr><td>" . $verbrauchsgut_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf_fetch['bedarf'] . "</td></tr>";
-              
+              <?php
+
+              // SQL-Abfrage für Bedarf des Pferdes, Heu und Hafer
+              $bedarf1_query = "SELECT verbrauchsguttypbez, (koeffizient * $gewicht / 100) as bedarf FROM verbrauchsguttyp WHERE id_verbrauchsguttyp <= 2";
+              $bedarf1_sql = $conn->query($bedarf1_query);
+
+              while($bedarf1_fetch = $bedarf1_sql->fetch_assoc()) {
+                echo "<tr><td>" . $bedarf1_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf1_fetch['bedarf'] . "</td></tr>";
               }
+
+              // SQL-Abfrage für Bedarf des Pferdes, Streu und Sägespäne
+              $bedarf2_query = "SELECT verbrauchsguttypbez, (koeffizient) as bedarf FROM verbrauchsguttyp WHERE id_verbrauchsguttyp > 2";
+              $bedarf2_sql = $conn->query($bedarf2_query);
+
+              while($bedarf2_fetch = $bedarf2_sql->fetch_assoc()) {
+                echo "<tr><td>" . $bedarf2_fetch['verbrauchsguttypbez'] . "</td><td>" . $bedarf2_fetch['bedarf'] . "</td></tr>";
+              }
+
+              ?>
               
-              echo "
               </tbody>
               </table>
               </div>
               
               <hr>
-              <h3>Personen</h3>"; 
+              <h3>Personen</h3>
                         
-              echo "
               <div class='table-responsive'>
               <table class='table table-bordered table-hover display' id='dataTable2' width='100%' cellspacing='0'>
               <thead class='thead-light'>
@@ -257,8 +256,9 @@ if($_SESSION["logged"] == true) {
                 </tr>
               </thead>
               
-              <tbody>";
+              <tbody>
 
+              <?php
               // SQL-Abfrage für zugewiesene Person zu diesem Pferd
               $person_query = "SELECT person.id_person, vorname, nachname, funktionsbez FROM person, funktion, beziehung WHERE beziehung.id_pferd = ? AND person.id_person = beziehung.id_person AND beziehung.id_funktion = funktion.id_funktion";
               $person_sql = $conn->prepare($person_query);
