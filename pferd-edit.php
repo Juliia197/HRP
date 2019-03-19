@@ -17,7 +17,29 @@ session_start();
 if($_SESSION["logged"] == true) {
 
   $id_gehoeft = $_SESSION['id_gehoeft'];
-	  $auth = false;
+  // Authorisierungs-Boolean erst false setzen
+  $auth = false;
+
+  // Setzen des Get-Parameters als Variable
+  $id_pferd = $_GET["id_pferd"];
+
+  // SQL-Abfrage für das Gehöft des Pferdes
+  $query = "SELECT id_gehoeft FROM box WHERE id_pferd = ?";
+  $auth_sql = $conn->prepare($query);
+  $auth_sql->bind_param("i", $id_pferd);
+  $auth_sql->execute();
+  $result = $auth_sql->get_result();
+  $auth_result = $result->fetch_assoc();
+  
+  // Wenn Gehöft übereinstimmt, ist Authorisierung positiv
+  if ($auth_result["id_gehoeft"] == $id_gehoeft) {
+    $auth = true;
+  }
+
+  else if ($_GET['id_pferd'] == 0) {
+    $auth = true;
+  }
+  $auth_sql->close();
 
 ?>
 
@@ -144,9 +166,13 @@ if($_SESSION["logged"] == true) {
               }?>
             </li>
           </ol>
+          
 
             <!-- Feststellung, ob Pferd bearbeitet/erstellt werden muss in DB oder nicht -->
             <?php
+
+              if($auth)
+              {
               if (isset($_GET['saved'])){
                 $saved = $_GET['saved'];
               } else {
@@ -503,6 +529,10 @@ if($_SESSION["logged"] == true) {
                 <button type="submit" class="btn btn-success" id="sendButton">Abschicken</button>
                 <a class="btn btn-secondary" href="pferd.php">Abbrechen</a>
             </form>
+            <?php } else {
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für dieses Pferd!</div><hr><br>';
+            }
+            ?>
 
         </div>
 
