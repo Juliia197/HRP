@@ -146,7 +146,7 @@ if($_SESSION["logged"] == true) {
 
           $personquery = "SELECT *, DATE_FORMAT(person.geburtsdatum, '%d.%m.%Y') as geburtsdatum FROM person, adresse WHERE adresse.id_adresse = person.id_adresse AND person.id_person = ?";
           $person_sql = $conn->prepare($personquery);
-          $person_sql->bind_param("i",$_GET["id_person"]);
+          $person_sql->bind_param("i",$id_person);
           $person_sql->execute();
           $person = $person_sql->get_result();
 
@@ -191,32 +191,23 @@ if($_SESSION["logged"] == true) {
             
             
             //Abfrage, ob diese Person Beziehungen hat
-            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion <5';
+            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion';
             $funktion_sql = $conn->prepare($funktion_query);
-            $funktion_sql->bind_param("i",$_GET["id_person"]);
+            $funktion_sql->bind_param("i",$id_person);
             $funktion_sql->execute();
             $query1 = $funktion_sql->get_result();
 
-            $lieferant= 5;
-            $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion < ?' ;
-            $funktion_sql = $conn->prepare($funktion_query);
-            $funktion_sql->bind_param("ii",$_GET["id_person"],$lieferant);
-            $funktion_sql->execute();
-            $funktion = $funktion_sql->get_result();
-
             $lieferung_query= "SELECT verbrauchsgutbez, lieferdatum, menge, einkaufspreis, id_verbrauchsguttyp FROM verbrauchsgut WHERE id_person =? AND id_gehoeft = $id_gehoeft";
             $lieferung_sql = $conn->prepare($lieferung_query);
-            $lieferung_sql->bind_param("i",$_GET["id_person"]);
+            $lieferung_sql->bind_param("i",$id_person);
             $lieferung_sql->execute();
             $lieferung = $lieferung_sql->get_result();
-            $lieferant_sql = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $_GET['id_person'];
-            $lieferant = $conn->query($lieferant_sql);
 
               if($query1->num_rows>0 ){
                 
                 $pferd_query= "SELECT pferd.id_pferd, pferdename, funktionsbez FROM pferd, funktion, beziehung WHERE beziehung.id_person = ? AND pferd.id_pferd = beziehung.id_pferd AND beziehung.id_funktion = funktion.id_funktion";
                 $pferd_sql = $conn->prepare($pferd_query);
-                $pferd_sql->bind_param("i",$_GET["id_person"]);
+                $pferd_sql->bind_param("i",$id_person);
                 $pferd_sql->execute();
                 $pferd_bez = $pferd_sql->get_result();
 
@@ -261,7 +252,7 @@ if($_SESSION["logged"] == true) {
                 <br>";
               }
               
-              if($lieferant->num_rows>0){
+              if($row_p['lieferant']==1){
                 echo "<h3 class='float-left'>Lieferungen zu dieser Person</h3>";
                 echo "
                   <div class='table-responsive'>
@@ -298,7 +289,7 @@ if($_SESSION["logged"] == true) {
                     </div>
                     <hr>";
               }
-              if($lieferung->num_rows>0 or $funktion->num_rows>0){
+              if($lieferung->num_rows>0 or $query1->num_rows>0){
                 echo "
                 <div class=\"form-group\">
                   <a class=\"btn btn-primary\" href=\"person-edit.php?id_person=" . $id_person . "\" >Bearbeiten</a>
