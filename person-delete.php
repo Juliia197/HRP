@@ -35,21 +35,6 @@ if($_SESSION["logged"] == true) {
       $id_adresse_sql->bind_param("i", $_GET['id_person']);
       $id_adresse_sql->execute();
       $id_adresse = $id_adresse_sql->get_result();
-
-      //mögliche Beziehungen löschen
-      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =?";
-      $istlieferant_sql = $conn->prepare($istlieferant_query);
-      $istlieferant_sql -> bind_param("i", $_GET['id_person']);
-      $istlieferant_sql -> execute();
-      $istlieferant = $istlieferant_sql ->get_result(); 
-
-      if($istlieferant->num_rows==1){
-        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =?";
-        $deletelieferant_sql = $conn->prepare($deletelieferant_query);
-        $deletelieferant_sql -> bind_param("i", $_GET['id_person']);
-        $deletelieferant_sql -> execute();
-        $deletelieferant = $deletelieferant_sql ->get_result(); 
-      }
     
 
       //Löschen der Person aus der Datenbank
