@@ -64,6 +64,9 @@ if($_SESSION["logged"] == true) {
 
     <title>HRP - <?php echo $name; ?></title>
 
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -165,11 +168,11 @@ if($_SESSION["logged"] == true) {
             // }
 
 
-            $schonvorhanden_query = "SELECT * FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' ";
+            $schonvorhanden_query = "SELECT * FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' AND id_gehoeft = ? ";
             $schonvorhanden_sql = $conn->prepare($schonvorhanden_query);
-            $schonvorhanden_sql -> bind_param("ss",$vorname,$nachname);
+            $schonvorhanden_sql->bind_param("ssi",$vorname, $nachname, $id_gehoeft);
             $schonvorhanden_sql->execute();
-            $schonvorhanden=$schonvorhanden_sql->get_result();
+            $schonvorhanden = $schonvorhanden_sql->get_result();
 
 
               if ($update > 0){ //wird ausgeführt wenn die Person geändert wird
@@ -315,7 +318,7 @@ if($_SESSION["logged"] == true) {
                     }
                   }
 
-                  else{    //Adresse muss hinzugefühgt werden
+                  else{    //Adresse muss hinzugefügt werden
                     $adressenew_query = "INSERT INTO adresse (id_adresse, strasse, hausnr, plz, ort, land) VALUES (NULL, ?,?, $plz, ?, '$land')";
                     $adressenew_sql = $conn->prepare($adressenew_query);
                     $adressenew_sql -> bind_param("sss",$strasse,$hausnr,$ort);
@@ -511,7 +514,7 @@ if($_SESSION["logged"] == true) {
             echo "<input class=\"form-control\" type=\"number\"  min=\"100000000\" max=\"99999999999999999999\" name=\"telefonnr\" required ><br>";
             
             echo "<label>Geburtsdatum</label>";
-            echo "<input class=\"form-control\" type=\"date\"   min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" value=\"" . $row_p["geburtsdatum"] . "\" name=\"geburtsdatum\" required ><br>";
+            echo "<input class=\"form-control\" type=\"date\"   min=\"1900-01-01\" max=\"" . date("Y-m-d") . "\" name=\"geburtsdatum\" required ><br>";
 
             echo "<hr>";
 

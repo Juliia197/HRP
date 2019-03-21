@@ -31,6 +31,9 @@ $admin_mail_array = array("alisa@hrp-projekt.de", "henrik@hrp-projekt.de", "jan@
 
     <title>HRP - Admin</title>
 
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 

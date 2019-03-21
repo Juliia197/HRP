@@ -30,6 +30,9 @@ if($_SESSION["logged"] == true) {
 
     <title>HRP - Box löschen</title>
 
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -141,7 +144,7 @@ if($_SESSION["logged"] == true) {
               <thead class="thead-light">
                 <tr>
                   <th>Boxentyp</th>
-                  <th>Boxenpreis</th>
+                  <th>Boxenpreis in €/Monat</th>
                   <th></th>
                 </tr>
               </thead>

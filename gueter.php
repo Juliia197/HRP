@@ -64,6 +64,9 @@ if($_SESSION["logged"] == true) {
 
     <title>HRP - Güter</title>
 
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -171,7 +174,7 @@ if($_SESSION["logged"] == true) {
               <tr>
                 <th>Typ</th>
                 <th>Bestand in kg</th>
-                <th>Durchschnittspreis je kg</th>
+                <th>Durchschnittspreis in €/kg</th>
                 <th></th>
               </tr>
               </thead>          

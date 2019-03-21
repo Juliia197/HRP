@@ -41,6 +41,9 @@ if($_SESSION["logged"] == true) {
 
     <title>HRP - <?php echo $gutname; ?></title>
 
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -193,7 +196,7 @@ if($_SESSION["logged"] == true) {
                     <th>Lieferung</th>
                     <th>Lieferdatum</th>
                     <th>Menge in kg</th>
-                    <th>Einkaufpreis je kg</th>
+                    <th>Einkaufspreis in €/kg</th>
                     <th>Lieferant</th>
                     <th></th>
                     </tr>
