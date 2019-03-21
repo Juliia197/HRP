@@ -160,7 +160,7 @@ if($_SESSION["logged"] == true) {
               
               //While erzeugt für jede Zeile der Datenbank eine Tabellenzeile
               while($fetch = mysqli_fetch_assoc($query)){
-                $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion AND beziehung.id_funktion < 5 GROUP BY funktion.funktionsbez';
+                $funktion_query = 'SELECT funktion.funktionsbez FROM beziehung, funktion WHERE beziehung.id_person = ? AND beziehung.id_funktion = funktion.id_funktion GROUP BY funktion.funktionsbez';
                 $funktion_sql = $conn->prepare($funktion_query);
                 $funktion_sql->bind_param("i",$fetch["id_person"]);
                 $funktion_sql->execute();
@@ -180,6 +180,10 @@ if($_SESSION["logged"] == true) {
                   
                   while($fetch1 = mysqli_fetch_assoc($query1)){
                     echo'<p>' . $fetch1['funktionsbez'] . '</p>'; 
+                  }
+                  $istlieferant = $fetch['lieferant'];
+                  if ($istlieferant == 1){
+                    echo '<p>Lieferant</p>';
                   }
                   echo '</td>';
 
