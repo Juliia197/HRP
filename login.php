@@ -180,6 +180,94 @@ if (isset($_POST['email'], $_POST['password'])) {
             $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
             $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
             $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+
+            //Lieferungen anpassen HAFER
+            $lieferungenhafer_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+            $lieferungenhafer_result = $mysqli->query($lieferungenhafer_sql);
+            if ($lieferungenhafer_result->num_rows > 0){
+              while ($lhafer = $lieferungenhafer_result->fetch_assoc()){
+                if ($lhafer['menge'] > $bestand_veraenderung_hafer){
+                  $menge_neu = $lhafer['menge'] - $bestand_veraenderung_hafer;
+                  $lieferungenhaferupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lhafer['id_verbrauchsgut'];
+                  $lieferungenhaferupdate_result = $conn->query($lieferungenhaferupdate_sql);
+                  break;
+                } elseif ($lhafer['menge'] == $bestand_veraenderung_hafer){
+                  $lieferunghaferupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lhafer['id_verbrauchsgut'];
+                  $lieferungenhaferupdate_result = $conn->query($lieferungenhaferupdate_sql);
+                  break;
+                } else {
+                  $bestand_veraenderung_hafer = $bestand_veraenderung_hafer - $lhafer['menge'];
+                  $lieferunghaferupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lhafer['id_verbrauchsgut'];
+                  $lieferunghaferupdate_result = $conn->query($lieferunghaferupdate_sql);
+                }
+              }
+            }
+
+            //Lieferungen anpassen HEU
+            $lieferungenheu_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+            $lieferungenheu_result = $mysqli->query($lieferungenheu_sql);
+            if ($lieferungenheu_result->num_rows > 0){
+              while ($lheu = $lieferungenheu_result->fetch_assoc()){
+                if ($lheu['menge'] > $bestand_veraenderung_heu){
+                  $menge_neu = $lheu['menge'] - $bestand_veraenderung_heu;
+                  $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lheu['id_verbrauchsgut'];
+                  $lieferungenheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                  break;
+                } elseif ($lheu['menge'] == $bestand_veraenderung_heu){
+                  $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lheu['id_verbrauchsgut'];
+                  $lieferungheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                  break;
+                } else {
+                  $bestand_veraenderung_heu = $bestand_veraenderung_heu - $lhafer['menge'];
+                  $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lheu['id_verbrauchsgut'];
+                  $lieferungheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                }
+              }
+            }
+
+            //Lieferungen anpassen STROH
+            $lieferungenstroh_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+            $lieferungenstroh_result = $mysqli->query($lieferungenstroh_sql);
+            if ($lieferungenstroh_result->num_rows > 0){
+              while ($lstroh = $lieferungenstroh_result->fetch_assoc()){
+                if ($lstroh['menge'] > $bestand_veraenderung_stroh){
+                  $menge_neu = $lstroh['menge'] - $bestand_veraenderung_stroh;
+                  $lieferungenstrohupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lstroh['id_verbrauchsgut'];
+                  $lieferungenstrohupdate_result = $conn->query($lieferungenstrohupdate_sql);
+                  break;
+                } elseif ($lstroh['menge'] == $bestand_veraenderung_stroh){
+                  $lieferungstrohupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lstroh['id_verbrauchsgut'];
+                  $lieferungstrohupdate_result = $conn->query($lieferungstrohupdate_sql);
+                  break;
+                } else {
+                  $bestand_veraenderung_stroh = $bestand_veraenderung_stroh - $lhafer['menge'];
+                  $lieferungstrohupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lstroh['id_verbrauchsgut'];
+                  $lieferungstrohupdate_result = $conn->query($lieferungstrohupdate_sql);
+                }
+              }
+            }
+
+            //Lieferungen anpassen SÄGESPÄNE
+            $lieferungenspaene_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+            $lieferungenspaene_result = $mysqli->query($lieferungenspaene_sql);
+            if ($lieferungenspaene_result->num_rows > 0){
+              while ($lspaene = $lieferungenspaene_result->fetch_assoc()){
+                if ($lspaene['menge'] > $bestand_veraenderung_spaene){
+                  $menge_neu = $lspaene['menge'] - $bestand_veraenderung_spaene;
+                  $lieferungenspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lspaene['id_verbrauchsgut'];
+                  $lieferungenspaeneupdate_result = $conn->query($lieferungenspaeneupdate_sql);
+                  break;
+                } elseif ($lspaene['menge'] == $bestand_veraenderung_spaene){
+                  $lieferungspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lspaene['id_verbrauchsgut'];
+                  $lieferungspaeneupdate_result = $conn->query($lieferungspaeneupdate_sql);
+                  break;
+                } else {
+                  $bestand_veraenderung_spaene = $bestand_veraenderung_spaene - $lspaene['menge'];
+                  $lieferungspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lspaene['id_verbrauchsgut'];
+                  $lieferungspaeneupdate_result = $conn->query($lieferungspaeneupdate_sql);
+                }
+              }
+            }
           
           }
           
@@ -288,6 +376,94 @@ if (isset($_POST['email'], $_POST['password'])) {
                 $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
                 $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
                 $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+
+                //Lieferungen anpassen HAFER
+                $lieferungenhafer_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenhafer_result = $mysqli->query($lieferungenhafer_sql);
+                if ($lieferungenhafer_result->num_rows > 0){
+                  while ($lhafer = $lieferungenhafer_result->fetch_assoc()){
+                    if ($lhafer['menge'] > $bestand_veraenderung_hafer){
+                      $menge_neu = $lhafer['menge'] - $bestand_veraenderung_hafer;
+                      $lieferungenhaferupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lhafer['id_verbrauchsgut'];
+                      $lieferungenhaferupdate_result = $conn->query($lieferungenhaferupdate_sql);
+                      break;
+                    } elseif ($lhafer['menge'] == $bestand_veraenderung_hafer){
+                      $lieferunghaferupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lhafer['id_verbrauchsgut'];
+                      $lieferungenhaferupdate_result = $conn->query($lieferungenhaferupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_hafer = $bestand_veraenderung_hafer - $lhafer['menge'];
+                      $lieferunghaferupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lhafer['id_verbrauchsgut'];
+                      $lieferunghaferupdate_result = $conn->query($lieferunghaferupdate_sql);
+                    }
+                  }
+                }
+
+                //Lieferungen anpassen HEU
+                $lieferungenheu_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenheu_result = $mysqli->query($lieferungenheu_sql);
+                if ($lieferungenheu_result->num_rows > 0){
+                  while ($lheu = $lieferungenheu_result->fetch_assoc()){
+                    if ($lheu['menge'] > $bestand_veraenderung_heu){
+                      $menge_neu = $lheu['menge'] - $bestand_veraenderung_heu;
+                      $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lheu['id_verbrauchsgut'];
+                      $lieferungenheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                      break;
+                    } elseif ($lheu['menge'] == $bestand_veraenderung_heu){
+                      $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lheu['id_verbrauchsgut'];
+                      $lieferungheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_heu = $bestand_veraenderung_heu - $lhafer['menge'];
+                      $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lheu['id_verbrauchsgut'];
+                      $lieferungheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                    }
+                  }
+                }
+
+                //Lieferungen anpassen STROH
+                $lieferungenstroh_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenstroh_result = $mysqli->query($lieferungenstroh_sql);
+                if ($lieferungenstroh_result->num_rows > 0){
+                  while ($lstroh = $lieferungenstroh_result->fetch_assoc()){
+                    if ($lstroh['menge'] > $bestand_veraenderung_stroh){
+                      $menge_neu = $lstroh['menge'] - $bestand_veraenderung_stroh;
+                      $lieferungenstrohupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lstroh['id_verbrauchsgut'];
+                      $lieferungenstrohupdate_result = $conn->query($lieferungenstrohupdate_sql);
+                      break;
+                    } elseif ($lstroh['menge'] == $bestand_veraenderung_stroh){
+                      $lieferungstrohupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lstroh['id_verbrauchsgut'];
+                      $lieferungstrohupdate_result = $conn->query($lieferungstrohupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_stroh = $bestand_veraenderung_stroh - $lhafer['menge'];
+                      $lieferungstrohupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lstroh['id_verbrauchsgut'];
+                      $lieferungstrohupdate_result = $conn->query($lieferungstrohupdate_sql);
+                    }
+                  }
+                }
+
+                //Lieferungen anpassen SÄGESPÄNE
+                $lieferungenspaene_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenspaene_result = $mysqli->query($lieferungenspaene_sql);
+                if ($lieferungenspaene_result->num_rows > 0){
+                  while ($lspaene = $lieferungenspaene_result->fetch_assoc()){
+                    if ($lspaene['menge'] > $bestand_veraenderung_spaene){
+                      $menge_neu = $lspaene['menge'] - $bestand_veraenderung_spaene;
+                      $lieferungenspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lspaene['id_verbrauchsgut'];
+                      $lieferungenspaeneupdate_result = $conn->query($lieferungenspaeneupdate_sql);
+                      break;
+                    } elseif ($lspaene['menge'] == $bestand_veraenderung_spaene){
+                      $lieferungspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lspaene['id_verbrauchsgut'];
+                      $lieferungspaeneupdate_result = $conn->query($lieferungspaeneupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_spaene = $bestand_veraenderung_spaene - $lspaene['menge'];
+                      $lieferungspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lspaene['id_verbrauchsgut'];
+                      $lieferungspaeneupdate_result = $conn->query($lieferungspaeneupdate_sql);
+                    }
+                  }
+                }
               
               
               }
@@ -386,6 +562,100 @@ if (isset($_POST['email'], $_POST['password'])) {
                 $bestandneu_heu_result = $conn->query($bestandneu_heu_sql);
                 $bestandneu_spaene_result = $conn->query($bestandneu_spaene_sql);
                 $bestandneu_stroh_result = $conn->query($bestandneu_stroh_sql);
+
+                //Lieferungen anpassen HAFER
+                $lieferungenhafer_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 1 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenhafer_result = $mysqli->query($lieferungenhafer_sql);
+                if ($lieferungenhafer_result->num_rows > 0){
+                  while ($lhafer = $lieferungenhafer_result->fetch_assoc()){
+                    if ($lhafer['menge'] > $bestand_veraenderung_hafer){
+                      $menge_neu = $lhafer['menge'] - $bestand_veraenderung_hafer;
+                      $lieferungenhaferupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lhafer['id_verbrauchsgut'];
+                      $lieferungenhaferupdate_result = $conn->query($lieferungenhaferupdate_sql);
+                      break;
+                    } elseif ($lhafer['menge'] == $bestand_veraenderung_hafer){
+                      $lieferunghaferupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lhafer['id_verbrauchsgut'];
+                      $lieferungenhaferupdate_result = $conn->query($lieferungenhaferupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_hafer = $bestand_veraenderung_hafer - $lhafer['menge'];
+                      $lieferunghaferupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lhafer['id_verbrauchsgut'];
+                      $lieferunghaferupdate_result = $conn->query($lieferunghaferupdate_sql);
+                    }
+                  }
+                }
+
+                //Lieferungen anpassen HEU
+                $lieferungenheu_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 2 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenheu_result = $mysqli->query($lieferungenheu_sql);
+                if ($lieferungenheu_result->num_rows > 0){
+                  while ($lheu = $lieferungenheu_result->fetch_assoc()){
+                    if ($lheu['menge'] > $bestand_veraenderung_heu){
+                      $menge_neu = $lheu['menge'] - $bestand_veraenderung_heu;
+                      $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lheu['id_verbrauchsgut'];
+                      $lieferungenheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                      break;
+                    } elseif ($lheu['menge'] == $bestand_veraenderung_heu){
+                      $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lheu['id_verbrauchsgut'];
+                      $lieferungheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_heu = $bestand_veraenderung_heu - $lhafer['menge'];
+                      $lieferungheuupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lheu['id_verbrauchsgut'];
+                      $lieferungheuupdate_result = $conn->query($lieferungheuupdate_sql);
+                    }
+                  }
+                }
+
+                //Lieferungen anpassen STROH
+                $lieferungenstroh_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 3 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenstroh_result = $mysqli->query($lieferungenstroh_sql);
+                if ($lieferungenstroh_result->num_rows > 0){
+                  while ($lstroh = $lieferungenstroh_result->fetch_assoc()){
+                    if ($lstroh['menge'] > $bestand_veraenderung_stroh){
+                      $menge_neu = $lstroh['menge'] - $bestand_veraenderung_stroh;
+                      $lieferungenstrohupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lstroh['id_verbrauchsgut'];
+                      $lieferungenstrohupdate_result = $conn->query($lieferungenstrohupdate_sql);
+                      break;
+                    } elseif ($lstroh['menge'] == $bestand_veraenderung_stroh){
+                      $lieferungstrohupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lstroh['id_verbrauchsgut'];
+                      $lieferungstrohupdate_result = $conn->query($lieferungstrohupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_stroh = $bestand_veraenderung_stroh - $lhafer['menge'];
+                      $lieferungstrohupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lstroh['id_verbrauchsgut'];
+                      $lieferungstrohupdate_result = $conn->query($lieferungstrohupdate_sql);
+                    }
+                  }
+                }
+
+                //Lieferungen anpassen SÄGESPÄNE
+                $lieferungenspaene_sql = "SELECT * FROM verbrauchsgut WHERE id_verbrauchsguttyp = 4 AND id_gehoeft = $id_gehoeft ORDER BY lieferdatum ASC";
+                $lieferungenspaene_result = $mysqli->query($lieferungenspaene_sql);
+                if ($lieferungenspaene_result->num_rows > 0){
+                  while ($lspaene = $lieferungenspaene_result->fetch_assoc()){
+                    if ($lspaene['menge'] > $bestand_veraenderung_spaene){
+                      $menge_neu = $lspaene['menge'] - $bestand_veraenderung_spaene;
+                      $lieferungenspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = $menge_neu WHERE id_verbrauchsgut = " . $lspaene['id_verbrauchsgut'];
+                      $lieferungenspaeneupdate_result = $conn->query($lieferungenspaeneupdate_sql);
+                      break;
+                    } elseif ($lspaene['menge'] == $bestand_veraenderung_spaene){
+                      $lieferungspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lspaene['id_verbrauchsgut'];
+                      $lieferungspaeneupdate_result = $conn->query($lieferungspaeneupdate_sql);
+                      break;
+                    } else {
+                      $bestand_veraenderung_spaene = $bestand_veraenderung_spaene - $lspaene['menge'];
+                      $lieferungspaeneupdate_sql = "UPDATE verbrauchsgut SET menge = 0 WHERE id_verbrauchsgut =" . $lspaene['id_verbrauchsgut'];
+                      $lieferungspaeneupdate_result = $conn->query($lieferungspaeneupdate_sql);
+                    }
+                  }
+                }
+
+                //Was sind meine Veränderungen je Verbrauchsgut -> 2 unterschiedliche Möglichkeiten
+                //älteste Lieferung: genug Menge oder nicht?
+                //genug: angepasst
+                //nicht genug: leer + die nächste Lieferung überprüft
+                //Berechnung des Durchschnittspreis anpassen
               }
 
               header('location:dashboard.php');
