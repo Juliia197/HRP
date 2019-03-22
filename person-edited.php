@@ -258,40 +258,25 @@ if($_SESSION["logged"] == true) {
                     }
 
                   }
-                  $id_person_query = "SELECT id_person FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' ";
-                  $id_person_sql = $conn->prepare($id_person_query);
-                  $id_person_sql -> bind_param("ss",$vorname,$nachname);
-                  $id_person_sql->execute();
-                  $id_person=$id_person_sql->get_result();
-
-                  while ($id = $id_person->fetch_assoc()){
-
-                    if (isset($_POST["id_funktion"]) && $_POST["id_funktion"] == 5){
-
-                      $lieferant_query = "INSERT INTO beziehung (id_beziehung, id_person, id_funktion, id_pferd) VALUES(NULL,?, ?, NULL)";
+                echo $_POST["lieferant"];
+                    if (isset($_POST["lieferant"]) && $_POST["lieferant"] == 1){                     
+                      
+                      $lieferant_query = "UPDATE person SET lieferant = 1 WHERE id_person = ?";
                       $lieferant_sql = $conn->prepare($lieferant_query);
-                      $lieferant_sql -> bind_param("ii", $id['id_person'], $_POST["id_funktion"]);
+                      $lieferant_sql -> bind_param("i", $update);
                       $lieferant_sql -> execute();
-                      $lieferant = $lieferant_sql ->get_result();                          
+                      $lieferant_sql -> close();
 
                     }
                     else{
-                      $istlieferant_query="SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =?";
-                      $istlieferant_sql = $conn->prepare($istlieferant_query);
-                      $istlieferant_sql -> bind_param("i", $id['id_person']);
-                      $istlieferant_sql -> execute();
-                      $istlieferant = $istlieferant_sql ->get_result();
+                      $no_lieferant_query = "UPDATE person SET lieferant = 0 WHERE id_person = ?";
+                      $no_lieferant_sql = $conn->prepare($no_lieferant_query);
+                      $no_lieferant_sql -> bind_param("i", $update);
+                      $no_lieferant_sql -> execute();
+                      $no_lieferant_sql -> close();
 
-                      if($istlieferant->num_rows==1){
-                        $deletelieferant_query = "DELETE FROM beziehung WHERE id_funktion= 5 AND id_person =?";
-                        $deletelieferant_sql = $conn->prepare($deletelieferant_query);
-                        $deletelieferant_sql -> bind_param("i", $id['id_person']);
-                        $deletelieferant_sql -> execute();
-                        $deletelieferant = $deletelieferant_sql ->get_result();
-     
-                      }
                     }
-                  }
+                  
               }
               
               else { //wird bei hinzufügen einer Person ausgeführt
@@ -343,26 +328,30 @@ if($_SESSION["logged"] == true) {
                       $erfolg = 2;
                     }
                   }
-                  $id_person_query = "SELECT id_person FROM person WHERE vorname = ? AND nachname = ? AND geburtsdatum = '$geburtsdatum' ";
-                  $id_person_sql = $conn->prepare($id_person_query);
-                  $id_person_sql -> bind_param("ss",$vorname,$nachname);
-                  $id_person_sql->execute();
-                  $id_person=$id_person_sql->get_result();
 
-                  while ($id = $id_person->fetch_assoc()){
 
-                    if (isset($_POST["id_funktion"]) && $_POST["id_funktion"] == 5){
+                  if (isset($_POST["lieferant"]) && $_POST["lieferant"] == 1){               
+                    $lieferant_bool = 1;
+                    $last_insert_id_person = $conn->insert_id;
+                    $lieferant_query = "UPDATE person SET lieferant = ? WHERE id_person = ?";
+                    $lieferant_sql = $conn->prepare($lieferant_query);
+                    $lieferant_sql -> bind_param("ii", $lieferant_bool, $last_insert_id_person);
+                    $lieferant_sql -> execute();
+                    $lieferant_sql -> close();
 
-                      $lieferant_query = "INSERT INTO beziehung (id_beziehung, id_person, id_funktion, id_pferd) VALUES(NULL,?, ?, NULL)";
-                      $lieferant_sql = $conn->prepare($lieferant_query);
-                      $lieferant_sql -> bind_param("ii", $id['id_person'], $_POST["id_funktion"]);
-                      $lieferant_sql -> execute();
-                      $lieferant = $lieferant_sql ->get_result();                          
-
-                    }
+                  }
+                  else {              
+                    $lieferant_bool = 0;
+                    $last_insert_id_person = $conn->insert_id;
+                    $lieferant_query = "UPDATE person SET lieferant = ? WHERE id_person = ?";
+                    $lieferant_sql = $conn->prepare($lieferant_query);
+                    $lieferant_sql -> bind_param("ii", $lieferant_bool, $last_insert_id_person);
+                    $lieferant_sql -> execute();
+                    $lieferant_sql -> close();
+  
+                  }
                   }
 
-                }
                 else{
                   $erfolg = 3;
 
@@ -430,45 +419,50 @@ if($_SESSION["logged"] == true) {
               echo "<label>Land</label>";
               echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select>";
 
-              $checkbox_query = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $row_p['id_person'];
+              $checkbox_query = "SELECT lieferant FROM person WHERE id_person =" . $row_p['id_person'];
               $checkbox=$conn->query($checkbox_query);
+              $checkbox_fetch = $checkbox->fetch_assoc();
 
               $disabled_query = "SELECT * FROM verbrauchsgut WHERE id_person = " . $row_p['id_person'] . " AND id_gehoeft = $id_gehoeft";
               $disabled_result = $conn->query($disabled_query);
-              if($disabled_result->num_rows > 0){
-                $disabled = 'disabled="disabled"';
-              } else {
-                $disabled = '';
               }
 
-              if ($checkbox->num_rows==1){
-                echo '<br><hr><br><div class="form-check">
-                <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion" ' . $disabled . 'checked>
-                <label class="form-check-label" for="id_funktion">
+              echo '<br><hr><br><div class="form-check">';
+              if ($disabled_result->num_rows > 0){
+                echo '
+                <input class="form-check-input" type="checkbox" name="lieferant_checkbox" value="1" id="lieferant_checkbox" checked disabled>
+                <label class="form-check-label" for="lieferant_checkbox">
                   Hat die Rolle eines Lieferanten
                 </label>
-                </div><br>';
-                echo "<hr><br>"; 
+                <input type="hidden" name="lieferant" value="1">';
               }
-              else{
-                echo '<br><hr><br><div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
-                  <label class="form-check-label" for="id_funktion">
+              else if ($disabled_result->num_rows == 0 && $checkbox_fetch["lieferant"] == 1){
+                echo '
+                  <input class="form-check-input" type="checkbox" name="lieferant" value="1" id="lieferant" checked>
+                  <label class="form-check-label" for="lieferant">
+                    Hat die Rolle eines Lieferanten
+                  </label>';
+              }
+              else if ($checkbox_fetch["lieferant"] == 0){
+                echo '
+                  <input class="form-check-input" type="checkbox" name="lieferant" value="1" id="lieferant">
+                  <label class="form-check-label" for="lieferant">
                     Hat die Rolle eines Lieferanten
                   </label>
-                </div><br>';
-                echo "<hr><br>";
+                  ';
               }
-              
-              echo "<div class=\"form-group\"></div>
-              <div class=\"form-group\">
-                <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
-                <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
-              </div>";
-              echo "</form>";
+            
+
+            echo '
+              </div><br>
+              <hr><br>
+              <div class="form-group">
+                <button type="submit" class="btn btn-success">Abschicken</button>
+                <a class="btn btn-secondary" href="person.php" >Abbrechen</a>
+              </div>
+              </form>';
 
             }
-        }
 
         else if($erfolg==3){
           while($row_v = $schonvorhanden->fetch_assoc()){
@@ -536,17 +530,18 @@ if($_SESSION["logged"] == true) {
             echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
           
             echo '<br><hr><br><div class="form-check">
-              <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
-              <label class="form-check-label" for="id_funktion">
+              <input class="form-check-input" type="checkbox" name="lieferant" value="1" id="lieferant">
+              <label class="form-check-label" for="lieferant">
                 Hat die Rolle eines Lieferanten
               </label>
             </div><br>';
 
-            echo "<div class=\"form-group\"></div>
+            echo "
             <div class=\"form-group\">
               <button type=\"submit\" class=\"btn btn-success\">Abschicken</button>
               <a class=\"btn btn-secondary\" href=\"person.php\" >Abbrechen</a>
-            </div>";
+            </div>
+            </form>";
         }
       }
 

@@ -155,7 +155,7 @@ if($_SESSION["logged"] == true) {
           
           <h1 class="float-left">Güter</h1>
           <div class="d-flex flex-row-reverse">
-            <div class="p-2"><a class="btn btn-secondary" role="button" href="lieferung.php?id_verbrauchsgut=0">Zu den Lieferungen</a></div>
+            <div class="p-2"><a class="btn btn-secondary" role="button" href="lieferung.php">Zu den Lieferungen</a></div>
             <div class="p-2"><a class="btn btn-success" role="button" href="gut-edit.php?id_verbrauchsgut=0">Lieferung hinzufügen</a></div>
           </div>
           <hr>
