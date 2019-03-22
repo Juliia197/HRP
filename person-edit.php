@@ -216,30 +216,36 @@ if($_SESSION["logged"] == true) {
                     if($row_p['land'] == 'CH'){echo "selected";}
               echo ">Schweiz</option></select>";
 
-              $checkbox_query = "SELECT id_beziehung FROM beziehung WHERE id_funktion = 5 AND id_person =" . $row_p['id_person'];
+              $checkbox_query = "SELECT lieferant FROM person WHERE id_person =" . $row_p['id_person'];
               $checkbox=$conn->query($checkbox_query);
+              $checkbox_fetch = $checkbox->fetch_assoc();
 
               $disabled_query = "SELECT * FROM verbrauchsgut WHERE id_person = " . $row_p['id_person'] . " AND id_gehoeft = $id_gehoeft";
               $disabled_result = $conn->query($disabled_query);
-              if($disabled_result->num_rows > 0){
-                $disabled = 'disabled="disabled"';
-              } else {
-                $disabled = '';
-              }
 
-              if ($checkbox->num_rows==1){
+              if ($disabled_result->num_rows > 0){
                 echo '<br><hr><br><div class="form-check">
-                <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion" ' . $disabled . 'checked>
-                <label class="form-check-label" for="id_funktion">
+                <input class="form-check-input" type="checkbox" name="lieferant_checkbox" value="1" id="lieferant" checked disabled>
+                <label class="form-check-label" for="lieferant_checkbox">
                   Hat die Rolle eines Lieferanten
                 </label>
+                <input type="hidden" name="lieferant" value="1">
                 </div><br>';
                 echo "<hr><br>"; 
               }
-              else{
+              else if ($disabled_result->num_rows == 0 && $checkbox_fetch["lieferant"] == 1){
                 echo '<br><hr><br><div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
-                  <label class="form-check-label" for="id_funktion">
+                  <input class="form-check-input" type="checkbox" name="lieferant" value="1" id="lieferant" checked>
+                  <label class="form-check-label" for="lieferant">
+                    Hat die Rolle eines Lieferanten
+                  </label>
+                </div><br>';
+                echo "<hr><br>";
+              }
+              else if ($checkbox_fetch["lieferant"] == 0){
+                echo '<br><hr><br><div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="lieferant" value="1" id="lieferant">
+                  <label class="form-check-label" for="lieferant">
                     Hat die Rolle eines Lieferanten
                   </label>
                 </div><br>';
@@ -311,8 +317,8 @@ if($_SESSION["logged"] == true) {
             echo "<select class=\"custom-select\" name=\"land\" required ><option value=\"DE\">Deutschland</option><option value=\"AT\">Österreich</option><option value=\"CH\">Schweiz</option></select><br>";
 
             echo '<br><hr><br><div class="form-check">
-            <input class="form-check-input" type="checkbox" name="id_funktion" value="5" id="id_funktion">
-            <label class="form-check-label" for="id_funktion">
+            <input class="form-check-input" type="checkbox" name="lieferant" value="1" id="lieferant">
+            <label class="form-check-label" for="lieferant">
               Hat die Rolle eines Lieferanten
             </label>
           </div><br>';

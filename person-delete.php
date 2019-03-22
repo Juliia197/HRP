@@ -34,8 +34,8 @@ if($_SESSION["logged"] == true) {
       $id_adresse_sql = $conn->prepare($id_adresse_query);
       $id_adresse_sql->bind_param("i", $_GET['id_person']);
       $id_adresse_sql->execute();
+
       $id_adresse = $id_adresse_sql->get_result();
-    
 
       //Löschen der Person aus der Datenbank
       $personloeschen_query = "DELETE FROM person WHERE id_person=?";

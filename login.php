@@ -700,7 +700,7 @@ if (isset($_POST['email'], $_POST['password'])) {
 }
 
 // Prüfung, ob in der Registrierung alle Felder gesetzt sind
-if (isset($_POST['register_email'], $_POST['register_password'], $_POST['register_confirm_password'])) {
+if (isset($_POST['register_email'], $_POST['register_password'], $_POST['register_confirm_password'], $_POST['datenschutz'])) {
   // Prüfung, ob in der Registrieung Passwort und Passwortwiederholung übereinstimmen
   if ($_POST['register_password'] == $_POST['register_confirm_password']) {
     $register_email = $_POST['register_email'];
@@ -911,8 +911,11 @@ if (isset($_POST['register_email'], $_POST['register_password'], $_POST['registe
                             <span class="fa fa-eye-slash pwd-toggle"></span>
                           </div>
                         </div>
-                        <div class="form-group">
-                          <p class="term-policy text-muted small">Ich stimme der <a href="impressum.html#datenschutz" target="_blank">Datenschutzerklärung</a> zu.</p>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" name="datenschutz" id="datenschutz" required>
+                          <label class="form-check-label" for="datenschutz">
+                            Ich stimme der <a href="impressum.html#datenschutz" target="_blank">Datenschutzerklärung</a> zu.
+                          </label>
                         </div>
                         <div class="form-group">
                           <button class="btn btn-lg btn-primary btn-block" type="submit">Registrierung abschließen</button>

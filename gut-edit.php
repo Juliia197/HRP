@@ -202,7 +202,7 @@ if($_SESSION["logged"] == true) {
                       echo "<option value=\"" . $row_l["id_person"] . "\" selected>" . $row_l["vorname"] . " " . $row_l["nachname"] . "</option>";
                     }
                   }
-                  $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
+                  $lieferanten_sql = "SELECT * FROM person WHERE lieferant = 1 AND id_gehoeft = $id_gehoeft";
                   $lieferanten_result = $conn->query($lieferanten_sql);
                   if($lieferanten_result->num_rows > 0) {
                     while($row_al = $lieferanten_result->fetch_assoc()){
@@ -257,7 +257,7 @@ if($_SESSION["logged"] == true) {
                 echo "<input required class=\"form-control\" type=\"date\" min=\"2018-10-01\" max=\"" . date("Y-m-d") . "\" name=\"lieferdatum\"><br>";
                 echo "<label>Lieferant</label>";
                 echo "<select required class=\"form-control custom-select\" name=\"id_person\">";
-                $lieferanten_sql = "SELECT * FROM person, beziehung WHERE person.id_person = beziehung.id_person AND beziehung.id_funktion = 5 AND person.id_gehoeft=$id_gehoeft";
+                $lieferanten_sql = "SELECT * FROM person WHERE lieferant = 1 AND id_gehoeft = $id_gehoeft";
                   $lieferanten_result = $conn->query($lieferanten_sql);
                   if($lieferanten_result->num_rows > 0) {
                     while($row_al = $lieferanten_result->fetch_assoc()){
