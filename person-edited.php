@@ -258,7 +258,7 @@ if($_SESSION["logged"] == true) {
                     }
 
                   }
-                echo $_POST["lieferant"];
+                  
                     if (isset($_POST["lieferant"]) && $_POST["lieferant"] == 1){                     
                       
                       $lieferant_query = "UPDATE person SET lieferant = 1 WHERE id_person = ?";
