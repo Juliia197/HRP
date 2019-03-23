@@ -16,6 +16,18 @@ session_start();
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
 
+  $auth = false;
+	    
+  $query = "SELECT id_gehoeft FROM box WHERE id_box = ?";
+  $auth_sql = $conn->prepare($query);
+  $auth_sql->bind_param("i", $_GET['id_box']);
+  $auth_sql->execute();
+  $result = $auth_sql->get_result();
+  $auth_result = $result->fetch_assoc();
+	  
+	if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+	    $auth = true;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,15 +136,17 @@ if($_SESSION["logged"] == true) {
           </ol>
           <!-- Box löschen, wenn GET-Parameter gesetzt ist -->
           <?php
-            if (isset($_GET['id_box'])){
-              $id_box = $_GET['id_box'];
-              $boxdelete_sql = "DELETE FROM box WHERE id_box = ?";
-              $boxdelete_prepare = $conn->prepare($boxdelete_sql);
-              $boxdelete_prepare->bind_param('i', $id_box);
-              $boxdelete_prepare->execute();
-              $boxdelete_prepare->close();
-              echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div><hr><br>';
-            }
+            if ($auth == true) {
+
+              if (isset($_GET['id_box'])){
+                $id_box = $_GET['id_box'];
+                $boxdelete_sql = "DELETE FROM box WHERE id_box = ?";
+                $boxdelete_prepare = $conn->prepare($boxdelete_sql);
+                $boxdelete_prepare->bind_param('i', $id_box);
+                $boxdelete_prepare->execute();
+                $boxdelete_prepare->close();
+                echo '<div class="alert alert-success" role="alert">Ihre Box wurde gelöscht!</div><hr><br>';
+              }
 
           ?>
 
@@ -167,6 +181,12 @@ if($_SESSION["logged"] == true) {
             <a class="btn btn-secondary" href="gehoeft.php">Zurück zur Übersicht</a>
           </div>
 
+          <?php
+            }
+            else {
+              echo '<div class="alert alert-danger" role="alert">Keine Berechtigung für diese Box!</div><br>';
+            }  
+          ?>
         </div>
         <!-- /.container-fluid -->
 
