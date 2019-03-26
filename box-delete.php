@@ -16,18 +16,23 @@ session_start();
 if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION['id_gehoeft'];
 
-  $auth = false;
-	    
-  $query = "SELECT id_gehoeft FROM box WHERE id_box = ?";
-  $auth_sql = $conn->prepare($query);
-  $auth_sql->bind_param("i", $_GET['id_box']);
-  $auth_sql->execute();
-  $result = $auth_sql->get_result();
-  $auth_result = $result->fetch_assoc();
-	  
-	if ($auth_result['id_gehoeft'] == $id_gehoeft) {
-	    $auth = true;
-	}
+  if (isset($_GET["id_box"])) {
+    $auth = false;
+        
+    $query = "SELECT id_gehoeft FROM box WHERE id_box = ?";
+    $auth_sql = $conn->prepare($query);
+    $auth_sql->bind_param("i", $_GET['id_box']);
+    $auth_sql->execute();
+    $result = $auth_sql->get_result();
+    $auth_result = $result->fetch_assoc();
+      
+    if ($auth_result['id_gehoeft'] == $id_gehoeft) {
+        $auth = true;
+    }
+}
+  else {
+    $auth = true;
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
