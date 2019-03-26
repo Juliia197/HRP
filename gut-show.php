@@ -193,7 +193,7 @@ if($_SESSION["logged"] == true) {
                     <th>Lieferung</th>
                     <th>Lieferdatum</th>
                     <th>Menge in kg</th>
-                    <th>Einkaufspreis ind €/kg</th>
+                    <th>Einkaufspreis in €/kg</th>
                     <th>Lieferant</th>
                     <th></th>
                     </tr>

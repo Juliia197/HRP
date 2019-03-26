@@ -18,7 +18,7 @@ if($_SESSION["logged"] == true) {
   $id_gehoeft = $_SESSION["id_gehoeft"];
 
   /* Berechnung der Durchschnittspreise der Verbrauchsgüter */
-  $preis_verbrauchsguttyp1_sql = "SELECT ROUND(avg(verbrauchsgut.einkaufspreis),2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=1 AND menge > 0";
+  $preis_verbrauchsguttyp1_sql = "SELECT ROUND(SUM(menge*einkaufspreis)/SUM(menge),2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=1 AND menge > 0";
   $preis_verbrauchsguttyp1_result = $conn->query($preis_verbrauchsguttyp1_sql);
   if ($preis_verbrauchsguttyp1_result->num_rows > 0) {
     while($row = $preis_verbrauchsguttyp1_result->fetch_assoc()) {
@@ -26,7 +26,7 @@ if($_SESSION["logged"] == true) {
     }
   }
 
-  $preis_verbrauchsguttyp2_sql = "SELECT ROUND(avg(verbrauchsgut.einkaufspreis),2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=2 AND menge > 0";
+  $preis_verbrauchsguttyp2_sql = "SELECT ROUND(SELECT ROUND(SUM(menge*einkaufspreis)/SUM(menge),2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1 AND menge > 0,2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=2 AND menge > 0";
   $preis_verbrauchsguttyp2_result = $conn->query($preis_verbrauchsguttyp2_sql);
   if ($preis_verbrauchsguttyp2_result->num_rows > 0) {
     while($row = $preis_verbrauchsguttyp2_result->fetch_assoc()) {
@@ -34,7 +34,7 @@ if($_SESSION["logged"] == true) {
     }
   }
 
-  $preis_verbrauchsguttyp3_sql = "SELECT ROUND(avg(verbrauchsgut.einkaufspreis),2) as preis_verbrauchsguttyp3 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=3 AND menge > 0";
+  $preis_verbrauchsguttyp3_sql = "SELECT ROUND(SELECT ROUND(SUM(menge*einkaufspreis)/SUM(menge),2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1 AND menge > 0,2) as preis_verbrauchsguttyp3 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=3 AND menge > 0";
   $preis_verbrauchsguttyp3_result = $conn->query($preis_verbrauchsguttyp3_sql);
   if ($preis_verbrauchsguttyp3_result->num_rows > 0) {
     while($row = $preis_verbrauchsguttyp3_result->fetch_assoc()) {
@@ -42,7 +42,7 @@ if($_SESSION["logged"] == true) {
     }
   }
 
-  $preis_verbrauchsguttyp4_sql = "SELECT ROUND(avg(verbrauchsgut.einkaufspreis),2) as preis_verbrauchsguttyp4 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=4 AND menge > 0";
+  $preis_verbrauchsguttyp4_sql = "SELECT ROUND(SELECT ROUND(SUM(menge*einkaufspreis)/SUM(menge),2) as preis_verbrauchsguttyp2 from verbrauchsgut WHERE id_gehoeft=1 AND id_verbrauchsguttyp=1 AND menge > 0,2) as preis_verbrauchsguttyp4 from verbrauchsgut WHERE id_gehoeft=$id_gehoeft AND id_verbrauchsguttyp=4 AND menge > 0";
   $preis_verbrauchsguttyp4_result = $conn->query($preis_verbrauchsguttyp4_sql);
   if ($preis_verbrauchsguttyp4_result->num_rows > 0) {
     while($row = $preis_verbrauchsguttyp4_result->fetch_assoc()) {
